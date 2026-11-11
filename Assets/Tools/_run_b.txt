@@ -1,0 +1,18 @@
+OK  : CombatStateMachine.cs 1-summary
+OK  : CombatStateMachine.cs 2-ctor
+OK  : CombatStateMachine.cs 3-comment
+OK  : CombatStateMachine.cs 4-errmsg
+OK  : CombatStateMachine.cs 5-disabled
+OK  : CombatStateMachine.cs 6-cantransit
+OK  : CombatStateMachine.cs 7-ifdef-head
+OK  : CombatStateMachine.cs 7-ifdef-tail
+OK  : CombatTransitionTable.cs 8-missing
+OK  : CombatTransitionMatrixWindow.cs 9-hint
+WRITE OK
+VERIFY OK (绗竴娆?
+OK  : FSM #if 澶?
+OK  : FSM #else 绌哄疄鐜?
+OK  : FSM #endif
+OK  : TABLE LogError
+VERIFY OK (绗簩娆★紝寤惰繜 3 绉?
+FSM lines = 276

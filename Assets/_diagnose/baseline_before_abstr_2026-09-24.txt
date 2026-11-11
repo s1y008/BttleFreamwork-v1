@@ -1,0 +1,12 @@
+[HitEffectCalc] 技能10003 第3段 → 受击特效 id=10003 目标=GBL(Clone)
+[HitEffect] GBL(Clone) 播放特效 effectId=10003
+[HitReact] GBL(Clone) 受击反应 来自=NYT(Clone) 
+[AttackState] skill=10003 seg=1 t=0.041
+[SegEffect] 技能10003 第1段 效果=[0]
+[HitEffectCalc] 技能10003 第1段 → 受击特效 id=10001 目标=GBL(Clone)
+[HitEffect] GBL(Clone) 播放特效 effectId=10001
+[AttackState] skill=10003 seg=2 t=0.113
+[SegEffect] 技能10003 第2段 效果=[0,22]
+[HitEffectCalc] 技能10003 第2段 → 受击特效 id=10002 目标=GBL(Clone)
+[HitEffect] GBL(Clone) 播放特效 effectId=10002
+[HitReact] GBL(Clone) 受击反应 来自=NYT(Clone) 

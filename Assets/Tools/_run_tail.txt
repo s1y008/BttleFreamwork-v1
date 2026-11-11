@@ -1,0 +1,46 @@
+鏈疆鏂板 2589 琛?
+--- 璁℃暟 ---
+  [BuffTick]         6
+  [AddBuff]          3
+  [Combat]           9
+  [HitReact]         2
+  [SegEffect]        3
+  [HitEffectCalc]    3
+  [HitEffect]        3
+  Exception          0
+  error CS           0
+--- [AddBuff] 鏍锋湰锛堝叡 3锛?---
+   [AddBuff] 鎶€鑳?0002 绗?娈?鈫?鐩爣=GBL(Clone) buffId=1003
+   [AddBuff] 鎶€鑳?0002 绗?娈?鈫?鐩爣=GBL(Clone) buffId=1003
+   [AddBuff] 鎶€鑳?0002 绗?娈?鈫?鐩爣=GBL(Clone) buffId=1003
+--- [BuffTick] 鏍锋湰锛堝叡 6锛?---
+   [BuffTick] GBL(Clone) buffId=1003 灞傛暟=2 鍗曡烦=12 鈫?鏈浼ゅ=24 鏂藉姞鑰呭瓨鍦?True
+   [BuffTick] GBL(Clone) buffId=1003 灞傛暟=3 鍗曡烦=12 鈫?鏈浼ゅ=36 鏂藉姞鑰呭瓨鍦?True
+   [BuffTick] GBL(Clone) buffId=1003 灞傛暟=3 鍗曡烦=12 鈫?鏈浼ゅ=36 鏂藉姞鑰呭瓨鍦?True
+   [BuffTick] GBL(Clone) buffId=1003 灞傛暟=3 鍗曡烦=12 鈫?鏈浼ゅ=36 鏂藉姞鑰呭瓨鍦?True
+   [BuffTick] GBL(Clone) buffId=1003 灞傛暟=3 鍗曡烦=12 鈫?鏈浼ゅ=36 鏂藉姞鑰呭瓨鍦?True
+   [BuffTick] GBL(Clone) buffId=1003 灞傛暟=3 鍗曡烦=12 鈫?鏈浼ゅ=36 鏂藉姞鑰呭瓨鍦?True
+--- [Combat] 鏍锋湰锛堝叡 9锛?---
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=7465 HP=109992535
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=7465 HP=109985070
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=24 HP=109985046
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=7465 HP=109977581
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=36 HP=109977545
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=36 HP=109977509
+   ...灏鹃儴:
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=36 HP=109977473
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=36 HP=109977437
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=36 HP=109977401
+--- GBL 琛€閲?HP 鐩稿叧鏍锋湰 ---
+   [UnitView] GBL(Clone) 鐨?Animator Controller 缂哄皯琛ㄧ幇鍗忚鍙傛暟锛歔HitType]銆傚疄闄?controller=GBL锛岀幇鏈夊弬鏁?[Die, Run, SkillId, Hit, Move]銆傜帺瀹朵笌鏁屼汉蹇呴』鍏辩敤鍚屼竴濂楀彈鍑?/ 姝讳骸鍗忚 鈥斺€?璇峰湪 Animator 璧勪骇閲岃ˉ榻愶紝涓嶈鐢ㄤ唬鐮佽繍琛屾椂璺宠繃锛堥潤榛橀檷绾т細鎶娿€岃祫浜ф紡閰嶃€嶄吉瑁呮垚銆屾墦浜嗘病鍙嶅簲銆嶏級銆?
+   [HitEffectCalc] 鎶€鑳?0002 绗?娈?鈫?鍙楀嚮鐗规晥 id=10017 鐩爣=GBL(Clone)
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=7465 HP=109992535
+   [HitEffectCalc] 鎶€鑳?0002 绗?娈?鈫?鍙楀嚮鐗规晥 id=10017 鐩爣=GBL(Clone)
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=7465 HP=109985070
+   [HitReact] GBL(Clone) 鍙楀嚮鍙嶅簲 鏉ヨ嚜=NYT(Clone)
+   [Combat] GBL(Clone) 鍙楀嚮 dmg=24 HP=109985046
+   [HitEffectCalc] 鎶€鑳?0002 绗?娈?鈫?鍙楀嚮鐗规晥 id=10017 鐩爣=GBL(Clone)
+   锛堝叡 15 鏉★級
+--- 姝讳骸鐩稿叧 ---
+   [UnitView] NYT(Clone) 鐨?Animator Controller 缂哄皯琛ㄧ幇鍗忚鍙傛暟锛歔Hit, HitType, Die]銆傚疄闄?controller=NYT锛岀幇鏈夊弬鏁?[Atk, Run, SkillId]銆傜帺瀹朵笌鏁屼汉蹇呴』鍏辩敤鍚屼竴濂楀彈鍑?/ 姝讳骸鍗忚 鈥斺€?璇峰湪 Animator 璧勪骇閲岃ˉ榻愶紝涓嶈鐢ㄤ唬鐮佽繍琛屾椂璺宠繃锛堥潤榛橀檷绾т細鎶娿€岃祫浜ф紡閰嶃€嶄吉瑁呮垚銆屾墦浜嗘病鍙嶅簲銆嶏級銆?
+   [UnitView] GBL(Clone) 鐨?Animator Controller 缂哄皯琛ㄧ幇鍗忚鍙傛暟锛歔HitType]銆傚疄闄?controller=GBL锛岀幇鏈夊弬鏁?[Die, Run, SkillId, Hit, Move]銆傜帺瀹朵笌鏁屼汉蹇呴』鍏辩敤鍚屼竴濂楀彈鍑?/ 姝讳骸鍗忚 鈥斺€?璇峰湪 Animator 璧勪骇閲岃ˉ榻愶紝涓嶈鐢ㄤ唬鐮佽繍琛屾椂璺宠繃锛堥潤榛橀檷绾т細鎶娿€岃祫浜ф紡閰嶃€嶄吉瑁呮垚銆屾墦浜嗘病鍙嶅簲銆嶏級銆?

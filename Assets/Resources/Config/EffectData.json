@@ -1,0 +1,56 @@
+[
+  {
+    "ID": 2001,
+    "BindName": "Atk1",
+    "IsSave": true,
+    "IsBind": true,
+    "IsRate": true,
+    "IsActive": false,
+    "ResName": "skill2_01"
+  },
+  {
+    "ID": 2002,
+    "BindName": "Atk2",
+    "IsSave": true,
+    "IsBind": true,
+    "IsRate": true,
+    "IsActive": false,
+    "ResName": "skill2_02"
+  },
+  {
+    "ID": 2003,
+    "BindName": "Atk3",
+    "IsSave": true,
+    "IsBind": true,
+    "IsRate": true,
+    "IsActive": false,
+    "ResName": "skill2_03"
+  },
+  {
+    "ID": 10017,
+    "BindName": "MindHit",
+    "IsSave": true,
+    "IsBind": true,
+    "IsRate": true,
+    "IsActive": false,
+    "ResName": "baodian xiao"
+  },
+  {
+    "ID": 30001,
+    "BindName": "",
+    "IsSave": false,
+    "IsBind": false,
+    "IsRate": true,
+    "IsActive": false,
+    "ResName": "skill_test5"
+  },
+  {
+    "ID": 30002,
+    "BindName": "",
+    "IsSave": false,
+    "IsBind": false,
+    "IsRate": true,
+    "IsActive": false,
+    "ResName": "baodian xiao"
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "ID": 1,
+    "Name": "魔法球",
+    "TrajectoryType": 1,
+    "Speed": 8.0,
+    "MaxRange": 25.0,
+    "LifeTime": 4.0,
+    "HitRadius": 0.8,
+    "HomingTurnRate": 360.0,
+    "LaunchHeight": 1.2,
+    "FxId": 30001,
+    "ImpactFxId": 30002,
+    "PierceCount": 0
+  }
+]

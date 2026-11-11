@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>战斗框架全链路与数据流转 · v5</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#070B14;--bg2:#0B1120;--card:#111A2E;--card2:#151F36;
+--line:rgba(255,255,255,.09);--line2:rgba(255,255,255,.16);
+--txt:#E6EAF2;--txt2:#94A3B8;--txt3:#64748B;
+--a1:#635BFF;--a2:#00D4FF;--warn:#FEB67E;--danger:#FF6B6B;--ok:#3DDC97;
+--mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+}
+body{background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;line-height:1.7;font-size:14px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px}
+header{padding:56px 0 32px;border-bottom:1px solid var(--line);margin-bottom:36px}
+.kicker{font-size:12px;letter-spacing:.14em;color:var(--a2);text-transform:uppercase;margin-bottom:14px}
+h1{font-size:34px;font-weight:600;letter-spacing:-.5px;
+background:linear-gradient(120deg,#fff 10%,var(--a1) 55%,var(--a2) 95%);
+-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+.sub{color:var(--txt2);font-size:15px;max-width:760px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chip{font-size:12px;padding:5px 12px;border:1px solid var(--line);border-radius:999px;color:var(--txt2);background:var(--card)}
+.chip b{color:var(--txt);font-weight:500}
+nav{position:sticky;top:0;z-index:20;background:rgba(7,11,20,.88);backdrop-filter:blur(12px);
+border-bottom:1px solid var(--line);margin-bottom:40px}
+nav .inner{max-width:1180px;margin:0 auto;padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+nav a{padding:14px 14px;font-size:13px;color:var(--txt2);text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent}
+nav a:hover{color:var(--txt)}
+nav a.on{color:var(--a2);border-bottom-color:var(--a2)}
+section{margin-bottom:64px;scroll-margin-top:64px}
+h2{font-size:22px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+h2::before{content:"";width:3px;height:20px;border-radius:2px;background:linear-gradient(180deg,var(--a1),var(--a2))}
+.lead{color:var(--txt2);margin-bottom:24px;max-width:820px}
+h3{font-size:15px;font-weight:600;margin:28px 0 12px;color:var(--txt)}
+.split{display:grid;grid-template-columns:340px 1fr;gap:28px;align-items:start}
+@media(max-width:900px){.split{grid-template-columns:1fr}.wrap{padding:0 16px 60px}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.flow{width:100%;height:auto;display:block}
+.flow g{cursor:pointer}
+.flow rect.box{fill:var(--card2);stroke:var(--line2);stroke-width:1;transition:all .22s}
+.flow g:hover rect.box{stroke:var(--a1)}
+.flow g.on rect.box{fill:#1B2545;stroke:var(--a1)}
+.flow text{pointer-events:none}
+.flow .num{fill:var(--txt3);font-size:11px;font-family:var(--mono)}
+.flow g.on .num{fill:var(--a2)}
+.flow .t1{fill:var(--txt);font-size:14px;font-weight:500}
+.flow .t2{fill:var(--txt2);font-size:11.5px}
+.flow .ln{stroke:var(--line2);stroke-width:1.5;fill:none}
+.detail{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.dhead{padding:18px 20px;border-bottom:1px solid var(--line);background:var(--card2)}
+.dnum{font-size:11px;font-family:var(--mono);color:var(--a2);letter-spacing:.1em}
+.dtitle{font-size:18px;font-weight:600;margin-top:4px}
+.dfile{font-size:12px;font-family:var(--mono);color:var(--txt3);margin-top:6px}
+.dbody{padding:18px 20px}
+.dbody ul{list-style:none;margin-bottom:16px}
+.dbody li{position:relative;padding-left:18px;margin-bottom:8px;color:var(--txt2);font-size:13.5px}
+.dbody li::before{content:"";position:absolute;left:2px;top:9px;width:5px;height:5px;border-radius:50%;background:var(--a1)}
+.dbody li b{color:var(--txt);font-weight:500}
+pre{background:#0A0F1C;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;
+font-family:var(--mono);font-size:12.5px;line-height:1.65;color:#C9D4E8}
+.k{color:#C792EA}.s{color:#7EE787}.c{color:#5A6B85;font-style:italic}.n{color:#F78C6C}
+.io{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+@media(max-width:640px){.io{grid-template-columns:1fr}}
+.iobox{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#0A0F1C}
+.iobox .lb{font-size:11px;color:var(--txt3);letter-spacing:.08em;margin-bottom:6px}
+.iobox .vl{font-size:13px;color:var(--txt);font-family:var(--mono);word-break:break-all}
+.controls{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+button{background:var(--card2);color:var(--txt);border:1px solid var(--line2);border-radius:8px;
+padding:8px 16px;font-size:13px;cursor:pointer;font-family:inherit;transition:all .18s}
+button:hover{border-color:var(--a1);color:#fff}
+button.primary{background:linear-gradient(120deg,var(--a1),#7C6BFF);border-color:transparent}
+.tl{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px 24px 18px}
+.bar{position:relative;height:6px;border-radius:3px;background:linear-gradient(90deg,#1B2545,#243356);margin:34px 0 8px}
+.tick{position:absolute;top:-9px;width:2px;height:24px;background:var(--a2);border-radius:1px}
+.tick.cast{background:var(--warn)}
+.tick.skip{background:var(--txt3);opacity:.55}
+.tick.skip .vl{color:var(--txt3);font-style:italic}
+.tick .lb{position:absolute;top:-30px;left:50%;transform:translateX(-50%);white-space:nowrap;
+font-size:11.5px;color:var(--txt2);font-family:var(--mono)}
+.tick .vl{position:absolute;top:26px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11.5px;color:var(--txt3)}
+.tick.cast .lb{color:var(--warn)}
+.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--txt3);font-family:var(--mono)}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.grid4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.grid4{grid-template-columns:1fr}}
+.layer{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;transition:all .2s}
+.layer:hover{border-color:var(--a1);transform:translateY(-2px)}
+.layer .no{font-size:11px;font-family:var(--mono);color:var(--a2);letter-spacing:.1em}
+.layer h4{font-size:15px;font-weight:600;margin:6px 0 4px}
+.layer .desc{font-size:12.5px;color:var(--txt3);margin-bottom:14px;min-height:38px}
+.layer ul{list-style:none}
+.layer li{font-size:12.5px;color:var(--txt2);padding:7px 10px;background:#0A0F1C;border:1px solid var(--line);
+border-radius:7px;margin-bottom:6px;font-family:var(--mono)}
+.layer li span{color:var(--txt3);font-family:system-ui,sans-serif}
+.arw{text-align:center;color:var(--txt3);font-size:18px;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--card);
+border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th{background:var(--card2);text-align:left;padding:12px 14px;font-weight:500;color:var(--txt2);font-size:12px;letter-spacing:.04em}
+td{padding:12px 14px;border-top:1px solid var(--line);color:var(--txt2);vertical-align:top}
+td b{color:var(--txt);font-weight:500}
+code{font-family:var(--mono);font-size:12.5px;background:#0A0F1C;padding:2px 6px;border-radius:5px;color:var(--a2)}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:5px;font-family:var(--mono)}
+.tag.p0{background:rgba(255,107,107,.14);color:#FF8A8A;border:1px solid rgba(255,107,107,.3)}
+.tag.p1{background:rgba(254,182,126,.14);color:var(--warn);border:1px solid rgba(254,182,126,.3)}
+.tag.p2{background:rgba(99,91,255,.14);color:#A9A2FF;border:1px solid rgba(99,91,255,.3)}
+.mtx{overflow-x:auto}
+.mtx table{min-width:620px}
+.mtx td{text-align:center;padding:9px;font-family:var(--mono);font-size:12px}
+.mtx td.ok{color:var(--ok);background:rgba(61,220,151,.06)}
+.mtx td.no{color:#2A3348}
+.mtx th:first-child,.mtx td:first-child{text-align:left;font-family:system-ui,sans-serif;color:var(--txt2)}
+.note{border-left:3px solid var(--warn);background:rgba(254,182,126,.06);padding:14px 18px;border-radius:0 10px 10px 0;margin-top:16px}
+.note b{color:var(--warn)}
+.note p{color:var(--txt2);font-size:13.5px}
+footer{border-top:1px solid var(--line);padding-top:24px;color:var(--txt3);font-size:12.5px}
+</style>
+</head>
+<body>
+<nav><div class="inner">
+<a href="#s1" class="on">技能释放全链路</a>
+<a href="#s2">三段时序</a>
+<a href="#s3">数据流转</a>
+<a href="#s4">数据字典</a>
+<a href="#s5">状态机转换</a>
+<a href="#s6">隐患清单</a>
+</div></nav>
+
+<div class="wrap">
+<header>
+<div class="kicker">Unity 2022.3.62f2c1 · BattleFramework</div>
+<h1>战斗框架全链路与数据流转</h1>
+<p class="sub">从一次技能释放出发，把「谁在什么时候调谁、数据从哪来到哪去」讲清楚。基于 v5 全部五个阶段实施后的代码现状：P0 GC 消除 · P1 状态信息缓存 · P2 反射禁用 · P3 阶段枚举 · P4/P5 出手特效按段 / 按独立时机播放。</p>
+<div class="meta">
+<span class="chip">版本 <b>v5</b></span>
+<span class="chip">梳理日期 <b>2026-09-14</b></span>
+<span class="chip">状态机 <b>7 状态</b></span>
+<span class="chip">技能配置列 <b>26 列</b></span>
+<span class="chip">样例技能 <b>10003 三连斩</b></span>
+</div>
+</header>
+
+<section id="s1">
+<h2>一、技能释放全链路</h2>
+<p class="lead">点击左侧任一阶段，右侧展开该阶段的触发条件、关键代码与输入输出。也可以直接用「自动演示」按时间顺序走一遍。</p>
+<div class="split">
+<div class="panel">
+<svg class="flow" id="flow" viewBox="0 0 320 500" role="img" aria-label="技能释放六个阶段">
+<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+</svg>
+<div class="controls">
+<button class="primary" id="play">自动演示</button>
+<button id="reset">回到第一步</button>
+</div>
+</div>
+<div class="detail" id="detail"></div>
+</div>
+</section>
+
+<section id="s2">
+<h2>二、10003 三连斩的时序</h2>
+<p class="lead">动画归一化进度 0 → 1 上，<b>伤害段</b>的时机由 CSV 的 <code>SegTimings = 0.3;0.6;0.9</code> 定义；<b>出手特效</b>走另一条独立时间轴，时机来自 <code>CastEffectTimings</code>，与伤害段无关。<code>AttackState.OnUpdate</code> 每帧读一次 <code>normalizedTime</code>，两条轴各自比对。</p>
+<div class="tl">
+<div class="bar" id="bar"></div>
+<div class="scale"><span>0.0 起手</span><span>0.5</span><span>1.0 动画结束</span></div>
+</div>
+<div class="note">
+<b>特效与伤害段已经解耦。</b>
+<p>P4 之前刀光是伤害的附属品：数量必须等于段数，时机写死成 <code>SegTimings[i] − 0.05</code>，结果因为早于本段伤害触发、读到的 <code>m_SegIdx</code> 还是上一段（首段为 0），被 <code>PlayCastEffect</code> 的守卫全部拦下 —— 一件都播不出来（原隐患 #1，已修复）。</p>
+<p>现在是两条平行的时间轴，各自独立推进：<code>CastEffectTimings</code> 给时机、<code>AttackEffectID</code>（CSV 列 22）给特效 id，按下标配对。<b>3 段伤害配 4 个特效也可以，位置随便放</b>，甚至可以让同一个特效在多个时间点重复播出。</p>
+<p style="margin-top:8px"><span class="tag p1">2026-09-15 去重</span> 原先还有一个语义完全相同的 <code>CastEffectIds</code> 列（列 24），与 <code>AttackEffectID</code> 都是「出手特效 id 集合」。两列并存会导致「策划填 A、程序读 B」，已整列删除，特效 id 的唯一来源是 <code>AttackEffectID</code>。</p>
+</div>
+<div class="note">
+<b>规则：不配时机就不播。</b>
+<p>实际播放条数 = <code>min(特效 id 数, 时机数)</code>。<code>CastEffectTimings</code> 留空意味着该技能<b>一件出手特效都不播</b>，系统会打出 <code>[SkillData]</code> 警告指名是哪个技能 —— 这里刻意放弃了「没配就按 −5% 推算」的兜底：刀光缺席一眼可见，而时机错位要对着设计稿逐帧比对才能发现。</p>
+</div>
+</section>
+
+<section id="s3">
+<h2>三、数据流转四层</h2>
+<p class="lead">配置层一次性加载后只读；数据层持有战斗实体与技能实例；控制层每帧驱动；表现层既接收输出，又反向提供推进信号。</p>
+<div class="grid4" id="layers"></div>
+<div class="arw">↓ 写入参数　↑ 回读状态</div>
+<div class="panel">
+<h3>三条数据主线</h3>
+<ul style="list-style:none">
+<li style="padding-left:18px;position:relative;margin-bottom:10px;color:var(--txt2)"><span style="position:absolute;left:0;color:var(--a1)">▸</span><b style="color:var(--txt)">下行（配置 → 运行时）</b>：CSV 在 <code>SkillDataManager</code> 里解析成字典，<code>Skill</code> 构造时拿走 <code>BaseData</code> 引用，此后全程只读。配置与状态严格分离。</li>
+<li style="padding-left:18px;position:relative;margin-bottom:10px;color:var(--txt2)"><span style="position:absolute;left:0;color:var(--a1)">▸</span><b style="color:var(--txt)">横向（实体之间）</b>：不走事件总线，是直接方法调用 —— 攻击者的 <code>Skill</code> 持有受击者引用，直接 <code>target.OnDamaged(...)</code>。受击特效 id <b>由攻击方按段号算好后随调用传入</b>（<code>Skill.GetHitEffectIdForSegment</code>），受击方不反查攻击者的任何字段。</li>
+<li style="padding-left:18px;position:relative;color:var(--txt2)"><span style="position:absolute;left:0;color:var(--a1)">▸</span><b style="color:var(--txt)">上行（表现 → 控制）</b>：FSM 反向依赖 Animator —— 写入 <code>SkillId</code> 推动动画，再回读 <code>normalizedTime</code> 决定何时触发伤害、何时切回待机。</li>
+</ul>
+</div>
+</section>
+
+<section id="s4">
+<h2>四、关键数据字典</h2>
+<p class="lead">以 10003 三连斩为例，列出链路中真正在流动的那些字段。</p>
+<table>
+<thead><tr><th style="width:150px">字段</th><th style="width:110px">来源</th><th style="width:170px">10003 取值</th><th>作用与流向</th></tr></thead>
+<tbody>
+<tr><td><b>SegCount</b> <span class="tag p1">新</span></td><td>CSV 列 25</td><td><code>3</code></td><td><b>伤害总段数（int，策划配置）</b>——段数的唯一真相源。旧版用 <code>SegTimings.Length</code> 顶替，于 2026-09-15 拆成独立列</td></tr>
+<tr><td><b>SegTimings</b></td><td>CSV 列 23</td><td><code>0.3;0.6;0.9</code></td><td>各段的<b>结算时机</b>；AttackState 每帧比对 <code>normalizedTime</code>，跨过即推进一段。<b>只管"什么时候"，不管"几段"</b></td></tr>
+<tr><td><b>AttackEffectID</b> <span class="tag p1">唯一来源</span></td><td>CSV 列 22</td><td><code>10001;10002;10003</code></td><td><b>出手特效 id 的唯一来源</b>，按下标与 CastEffectTimings 配对，挂到武器挂点。<b>2026-09-15 删除了语义重复的 CastEffectIds 列</b>（原列 24，其数据已迁移到本列）</td></tr>
+<tr><td><b>CastEffectTimings</b></td><td>CSV 列 24</td><td><code>0.05;0.28;0.58;0.88</code></td><td><b>出手特效的独立时机轴</b>，与伤害段无关；留空则该技能不出手特效。条数多于特效 id 时，多出的时机被丢弃并告警</td></tr>
+<tr><td><b>HitEffect</b> <span class="tag p1">唯一来源</span></td><td>CSV 列 14</td><td><code>10017</code></td><td><b>受击特效 id 的唯一来源</b>，由<b>攻击方</b> <code>Skill.GetHitEffectIdForSegment(SegIdx)</code> 按段算出后随 <code>OnDamaged</code> 入参传入（<b>v5 P10 前</b>是受击方反查攻击者的 SegIdx）。<span class="tag p1">2026-09-28</span> 原第 25 列 <code>HitEffectIds</code> 已整列删除，受击特效统一走本列；<b>段数多于特效数时复用最后一个</b> —— 只配 1 个即所有段都播它</td></tr>
+<tr><td><b>SegIdx</b></td><td>Skill 运行时</td><td>1 → 2 → 3</td><td>唯一段号真相源。先写后调：<code>TriggerSegmentHit</code> 里赋值早于 <code>SkillHit()</code>。<b>v5 P10 起只在 <code>Skill</code> 内部使用</b>，不再外泄给其他实体</td></tr>
+<tr><td><b>HitType / SharpType</b></td><td>CSV 列 7 / 8</td><td><code>1 范围敌方 / 2 扇形</code></td><td>决定走单体直打还是 OverlapSphere 范围索敌</td></tr>
+<tr><td><b>Attack</b></td><td>CSV 列 15</td><td><code>140</code></td><td>伤害公式倍率（整数），乘以攻方攻击力与各类系数</td></tr>
+<tr><td><b>SkillEffectTypes</b> <span class="tag p1">合并</span></td><td>CSV 列 13</td><td><code>0|0;5|6</code></td><td><b>逐段效果表 —— 敌人表现的唯一真相源</b>。两级分隔：<code>|</code> 分段、<code>;</code> 分效果。上例 = 第1段仅掉血 / 第2段掉血+浮空 / 第3段<b>只后退不掉血</b>。<b>关键规则：不写 <code>|</code> 则整串只在第 1 段生效</b>，第 2 段起没有任何效果。<span class="tag p1">2026-09-15 合并</span> 原先还有语义相同的 <code>SegEffectTypes</code> 列（原列 27），两列并存导致「效果该听谁的」不可判定，已整列删除</td></tr>
+<tr><td><s>SegEffectTypes</s></td><td colspan="4" style="color:var(--muted)">已于 2026-09-15 删除。原「逐段 vs 共用」的二选一规则取消，统一由上面一列表达</td></tr>
+<tr><td><b>HP</b></td><td>CombatUnit 属性</td><td>运行时</td><td>setter 内部触发 <code>OnHpChangeEvent</code>（血条）与 <code>OnDeadEvent</code>（死亡）</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="s5">
+<h2>五、状态机转换表</h2>
+<p class="lead"><code>CombatStateMachine</code> 用 <code>Dictionary&lt;CombatState, HashSet&lt;CombatState&gt;&gt;</code> 维护合法边，<code>CanTransitTo()</code> 拦截一切非法跳转。行是源状态，列是目标状态。</p>
+<div class="mtx"><table id="mtx"></table></div>
+<div class="note" style="border-left-color:var(--a2);background:rgba(0,212,255,.05)">
+<b style="color:var(--a2)">Move 状态目前是孤岛。</b>
+<p>它在 <code>InitStateMachine()</code> 里注册了，但全工程没有任何一处 <code>RequestState(CombatState.Move)</code>。追击走的是 <code>m_NeedMoveTarget → MoveTarget()</code> 直接调 NavMesh，绕过了状态机。</p>
+</div>
+</section>
+
+<section id="s6">
+<h2>六、隐患清单</h2>
+<p class="lead">梳理链路时发现的 8 个问题。第 1 项已于 2026-09-14 下午修复（P4/P5），其余 7 项按优先级排序，前两个会直接影响玩法表现。</p>
+<table>
+<thead><tr><th style="width:44px">#</th><th style="width:64px">级别</th><th style="width:210px">问题</th><th style="width:200px">位置</th><th>说明与建议</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><span class="tag p2">已修复</span></td><td>刀光永远不播</td><td><code>Skill.cs:266</code><br><code>CombatStates.cs:248</code></td><td><b>2026-09-14 下午修复（P4+P5）。</b><code>PlayCastEffect</code> 改为接收显式序号 <code>PlayCastEffect(int effectIndex)</code>，时机不再由代码推算、改由 CSV 的 <code>CastEffectTimings</code> 提供，并与 <code>AttackEffectID</code>（原 CastEffectIds 列，2026-09-15 已删并合并）按下标配对；修复细节见第二节</td></tr>
+<tr><td>2</td><td><span class="tag p0">P0</span></td><td><b>技能 CD 不生效</b></td><td><code>CombatUnitController.cs:988</code></td><td><code>SetCd(Skill)</code> 是空函数体，CD 只靠 <code>IsIdleToUseSkill</code> 的动画参数节流。需要接回 TimerManager</td></tr>
+<tr><td>3</td><td><span class="tag p0">P0</span></td><td><b>扇形角度单位错误</b></td><td><code>Skill.cs:722</code></td><td><code>Mathf.Cos(AttackAngle)</code> 把配置值 180 当<b>弧度</b>用，实际判定半角约 126.7°，与配置语义不符。需先 <code>Mathf.Deg2Rad</code></td></tr>
+<tr><td>4</td><td><span class="tag p0">P0</span></td><td><b>Str2IntList("") 返回含 0 的 List</b></td><td><code>CommonHelper.cs:289</code></td><td>空串 <code>Split(';')</code> 得到长度 1 的数组，于是「CSV 里没配」的字段实际值是 <code>[0]</code> 而非空 —— 会让 <code>Count &gt; 0</code> 的兜底判断全部失效。已在 SkillData 侧用 <code>GetCastEffectIdList()</code> 绕过，根治需改 CommonHelper</td></tr>
+<tr><td>5</td><td><span class="tag p1">P1</span></td><td>Release 仍有日志 GC</td><td><code>CombatUnitController.cs:1130</code></td><td><code>TriggerSegmentHit</code> 里的 <code>Debug.Log</code> 没包 <code>#if UNITY_EDITOR</code>，是 P0 优化漏网的一条</td></tr>
+<tr><td>6</td><td><span class="tag p1">P1</span></td><td>Stun / Silence / Knockback 未接线</td><td>Buff 侧</td><td>三个状态已注册，但需 Buff 组件主动 <code>RequestState</code>，否则永不进入（遗留缺陷）</td></tr>
+<tr><td>7</td><td><span class="tag p1">P1</span></td><td>Move 状态孤岛</td><td>—</td><td>已注册但无人请求，追击绕开 FSM 直调 NavMesh</td></tr>
+<tr><td>8</td><td><span class="tag p2">P2</span></td><td>CSV 按列序号读取</td><td><code>SkillData.cs:224</code></td><td><code>proArray[26]</code> 这类硬编码下标，中间插列会静默错位。建议改按表头名建映射（<b>2026-09-15 已因删列整体左移一位，正是这个隐患的实证</b>）</td></tr>
+<tr><td>9</td><td><span class="tag p0">P0</span></td><td><b>233 个技能没配 SegCount / SegTimings</b></td><td><code>SkillData.csv</code></td><td>只配了 10002 / 10003 两个技能。由于 <code>TriggerSegmentHit</code> 是<b>唯一的伤害出口</b>，其余技能的 <code>GetSegmentCount()==0</code> → 动画照播但<b>一点伤害都不结算</b>。需批量补 <code>SegCount=1</code> + 一个时机点（如 <code>0.5</code>）</td></tr>
+</tbody>
+</table>
+<div class="note" style="border-left-color:var(--a2);background:rgba(0,212,255,.05)">
+<b style="color:var(--a2)">段推进仍用 if 而非 while。</b>
+<p><b>伤害段</b>用 <code>if</code>：极端掉帧时一段一帧，延迟 1 帧但不漏段，可接受。而<b>出手特效</b>轨道已改为 <code>while</code>：多个时机点落在同一帧时会全部补播（否则配得较近的几个特效会被挤到不同帧，出现「拖尾迟到」的错觉）。两者刻意不同。</p>
+</div>
+</section>
+
+<footer>
+<p>蔡振立 · 战斗框架 v5 全链路梳理 · 2026-09-14（含下午 P4/P5 特效改造）</p>
+<p style="margin-top:6px">所有行号对应 P0~P5 全部实施后的代码现状；修改代码前请先备份。</p>
+</footer>
+</div>
+
+<script>
+const STEPS=[
+{n:"STEP 01",title:"自动战斗决策",file:"CombatUnitController.cs:1012 → WarrorController.cs:55",
+code:`// 每帧驱动入口
+protected override void Update()
+{
+    if (m_BuffComponent != null)
+        m_BuffComponent.Tick(Time.deltaTime);   // Buff 先于死亡判断
+    if (IsDead) return;
+    if (m_StateMachine != null)
+        m_StateMachine.Tick(Time.deltaTime);    // ★ 唯一的真实入口：驱动当前状态的 OnUpdate
+    else AutoFightUpdate();                      // ← 死分支：InitStateMachine() 在 Start() 里无条件执行
+}
+
+// WarrorController 覆写：摇杆 → 门禁 → 选技能 → 索敌 → 施法判定
+protected override void AutoFightUpdate()
+{
+    if (JoystickMoveUpdate()) return;           // 摇杆接管时跳过
+    if (!IsIdleToUseSkill) return;              // SkillId==0 且非过渡中
+    if (m_CurSelectedSkill == null)
+        m_CurSelectedSkill = CurWarrior.GetSkill(10003);
+    SelectTartgetBySkill();
+    if (m_CurSelectedSkill != null && m_Target != null)
+        TryCastSkill();
+}`,
+pts:["<b>Buff 先于死亡判断</b>：死亡当帧仍需正常结算 DoT。","<b>IsIdleToUseSkill</b> 是节流门禁：<code>SkillId == 0</code> 且 <code>!IsInTransition(0)</code>。","<b>技能当前硬编码</b> <code>GetSkill(10003)</code>，正式应走 <code>GetCanUseSkill()</code> 或技能栏。","<b>索敌按 HitType 分流</b>：范围敌 / 单体敌 / 友方 / 自身，各自选不同的层与半径。","<b>决策的真实入口是 FSM</b>：<code>InitStateMachine()</code> 在 <code>Start()</code> 里无条件执行，故 <code>m_StateMachine</code> 恒非 null，<code>else AutoFightUpdate()</code> 是<b>死分支</b>。每帧实际路径为 <code>Tick</code> → 当前状态的 <code>OnUpdate</code> → <code>Owner.DoAutoFight()</code>。因此「攻击期间要不要继续决策」由 <code>AttackState.OnUpdate</code> 决定（v5 P12 起：不决策）。"],
+in:"每帧 deltaTime、摇杆输入",out:"m_CurSelectedSkill、m_Target"},
+
+{n:"STEP 02",title:"技能起手",file:"CombatUnitController.cs:864 → 913 → 1065",
+code:`private void StarSKill(float skillAttackDis)
+{
+    float dis = Dis(transform.position, m_Target.transform.position);
+    if (dis <= Math.Pow(skillAttackDis, 2) && IsIdleToUseSkill)
+    {
+        int index = CurCombatUnit.IsUseSkill.IndexOf(m_CurSelectedSkill.SkillId);
+        if (index < 0) CurCombatUnit.IsUseSkill.Add(m_CurSelectedSkill.SkillId);
+        SetCd(m_CurSelectedSkill);                                  // 空实现
+        m_Animator.SetInteger("SkillId", m_CurSelectedSkill.SkillId); // 推动动画
+
+        // v5 P9：不再传 skillId —— AttackState 直接读 Owner.CurSelectedSkill
+        RequestState(CombatState.Attack);
+    }
+}
+
+// 状态机内部：合法性校验 → OnExit → OnEnter
+public bool ChangeState(CombatState to)
+{
+    if (!CanTransitTo(to)) return false;
+    if (_states.TryGetValue(from, out fromState)) fromState.OnExit();
+    _currentState = to;
+    if (_states.TryGetValue(to, out toState)) toState.OnEnter();
+    return true;
+}`,
+pts:["距离比较用的是<b>平方距离</b>，与配置里的 <code>AttackDist</code> 平方对齐。","<code>SetInteger(\"SkillId\")</code> 到动画真正过渡之间有一两帧延迟，这是 AttackState 要「等切离 Idle」的原因。","<b>v5 P9 起不再传参</b>：<code>object context</code> 通道已删除，状态所需数据一律从 <code>Owner</code> 读取 —— 技能直接取 <code>Owner.CurSelectedSkill</code>；<b>v5 P11</b> 起连 owner 参数本身也删掉了：每个状态在构造时就注入 owner（<code>new AttackState(this)</code>），状态机只转状态、不再转参数。","FSM 用 <code>CanTransitTo</code> 拦截非法跳转，Dead 是终态无出边。"],
+in:"m_CurSelectedSkill、m_Target",out:"Animator.SkillId、FSM 进入 Attack（技能由 Owner.CurSelectedSkill 提供）"},
+
+{n:"STEP 03",title:"AttackState 进入",file:"CombatStates.cs:61",
+code:`public override void OnEnter()
+{
+    _phase = AttackPhase.WaitingForLeave;   // v5 P3：阶段枚举
+    _elapsed = 0f;
+    _firedSegIdx = 0;      // 伤害段游标
+    _castCursor = 0;       // v5 P5：特效轨道游标
+    _castCount = 0;
+    _currentSkill = null;
+    _segCount = 0;
+    _segTimings = null;
+
+    // v5 P9：直接取 owner 的当前选中技能
+    // （原为 context 传 int skillId，再 GetSkill 线性查表 —— 把引用降级成 int 又捞回来）
+    _currentSkill = Owner.CurSelectedSkill;
+    if (_currentSkill != null)
+    {
+        _currentSkill.SetSkillCaster(Owner, Owner.m_Target);
+
+        // ★ v5 P6：段数来自 CSV 的 SegCount 列（策划显式配置的 int），
+        //   不再用 SegTimings.Length 顶替 —— 「时机点个数」不等于「伤害段数」。
+        //   GetSegmentCount() 内部取 min(SegCount, SegTimings.Length)，越界风险为零。
+        _segCount = _currentSkill.BaseData.GetSegmentCount();
+        _segTimings = _currentSkill.BaseData.SegTimings;
+
+        // v5 P5：特效条目数独立统计，可能多于 / 少于伤害段数
+        _castCount = _currentSkill.BaseData.GetCastEffectCount();   // v5 P8：下沉到 SkillData
+    }
+    else
+    {
+        // v5 P9 补偿：删掉 object context 后编译器拦不住「空技能进攻击」，
+        // 而那种失败完全静默（动画照播、零伤害、控制台干净）→ 必须显式告警
+        Debug.LogWarning("[AttackState] 进入 Attack 但 Owner.CurSelectedSkill 为空 → 本次不结算伤害与特效");
+    }
+}`,
+pts:["<b>七个字段全量重置</b>，杜绝上一轮的段号与特效游标残留。","<code>SetSkillCaster(Owner, Owner.m_Target)</code> 把施法者与受术者绑定到技能实例。","<b>三条配置各司其职</b>：<code>SegCount</code> 决定伤害分几段，<code>SegTimings</code> 决定每段在何时结算，<code>_castCount</code> 决定播几个特效 —— 互不推导。","<code>_castCount = min(特效 id 数, 时机数)</code>，任一为空即为 0，该技能不出手特效。"],
+in:"Owner.CurSelectedSkill",out:"_currentSkill、_segCount/_segTimings、_castCount"},
+
+{n:"STEP 04",title:"逐帧推进两条时间轴",file:"CombatStates.cs:86",
+code:`public override void OnUpdate(float deltaTime)
+{
+    // ① 起手守卫：等 Animator 真正离开待机，才开始推进本轮（★ 2026-09-22 抽出）
+    if (!TryEnterPlaying(deltaTime)) return;      // 内含 5 秒保险丝，超时放 LogError 指名
+
+    // ② 结束判定：动画播完、Animator 自动回待机 ⇒ 本轮攻击结束
+    if (TryFinishSkill()) return;
+
+    // ★ v5 P1：每帧只读一次 Animator 状态，两条轨道共用（native call 2 → 1）
+    AnimatorStateInfo info = Owner.View.StateInfo;
+
+    // ③ 出手特效轨道：时机来自 CSV 的 CastEffectTimings，与伤害段条数无关
+    //    ⚠ 必须排在伤害之前：同一帧同时跨过两点时，先出特效再结算，避免「先掉血后见刀光」
+    AdvanceCastEffect(info);                      // 每帧最多播一个（while → if）
+
+    // ④ 伤害段轨道：时机来自 CSV 的 SegTimings
+    AdvanceSegment(info);                         // 每帧最多推进一段
+
+    // ★ v5 P12：此处不再调用 DoAutoFight —— 攻击期间锁移动
+}
+
+// ══ 上面四个步骤在类里各有一个专属方法（2026-09-22 从 OnUpdate 抽出，逻辑逐行等价）══
+//   private bool TryEnterPlaying(float deltaTime)            ① 起手守卫 + 保险丝 + 超时报错
+//   private bool TryFinishSkill()                            ② 动画播完 ⇒ 请求回 Idle
+//   private void AdvanceCastEffect(AnimatorStateInfo info)   ③ 刀光：读完时机即播，游标自增
+//   private void AdvanceSegment(AnimatorStateInfo info)      ④ 伤害：跨过时机点即结算一段
+
+    // ★ v5 P12：此处**不再调用 Owner.DoAutoFight()** —— 攻击期间「锁移动」。
+    //   旧实现在此调用它，效果玩家/NPC 完全不同：
+    //     · 玩家：AutoFightUpdate 首句 JoystickMoveUpdate() 在 IsIdleToUseSkill 闸门之前，
+    //             故实际只买到「摇杆走位」，索敌/选技能/施法全被 SkillId != 0 挡住；
+    //     · NPC ：AttackNpcController 没有那道闸 → 每帧重选目标 + 转身 + 追击 =「边挥刀边追人」。
+    //   攻击本身的推进与结算全部在本方法上方，与本行无关；切回 Idle 后由 IdleState 恢复决策。
+    //
+    // ★ v5 P13：本状态用到的画面端读写全部改走 Owner.View ——
+    //   Owner.View.IsInIdleState（原 IsAnimatorInIdleState）、Owner.View.StateInfo（原 GetCurrentAnimatorStateInfo）、
+    //   Owner.View.ResetSkillId / SetMoveAnim（原 Owner 同名方法）。
+    //   CombatUnitController 至此不再有一行代码触碰 Animator。
+}`,
+pts:["<b>两阶段设计</b>：先等动画切离 Idle，再等它切回来 —— 否则进状态当帧就会被误判成「已播完」。","<b>5 秒保险丝</b>：动画事件 / 过渡异常时强制回 Idle，避免卡死在 Attack。","<b>v5 P1 优化</b>：两条轨道共用一次 <code>GetCurrentAnimatorStateInfo()</code>，native call 从 2 次降到 1 次。","<b>特效轨道用 while</b>：多个时机点落在同一帧时全部补播，避免「拖尾迟到」的错觉。","<b>伤害段用 if</b>：掉帧时延迟一帧但不漏段，也不会一帧打出双倍伤害。","<b>v5 P12 锁移动</b>：攻击期间不再跑战斗决策 —— 摇杆位移与 NPC 的追击/重选目标一并停止；出招判定、5 秒保险丝、三段伤害、出手特效全部在上方，<b>不受影响</b>。","<b>v5 P13 画面端分层</b>：状态里的动画读写全部走 <code>Owner.View</code>；受击管线搬进 <code>UnitHitReaction</code>，画面出口搬进 <code>UnitView</code>，Controller 只留 Facade。"],
+in:"normalizedTime、SegTimings、CastEffectTimings",out:"TriggerSegmentHit(skill, segIdx)、PlayCastEffect(effectIndex)"},
+
+{n:"STEP 04-P13",title:"v5 P13 · 受击表现抽离为 View / HitReaction",file:"UnitView.cs、UnitHitReaction.cs（新增）",
+code:`// UnitHitReaction：一次受击从进门到出门的编排者
+public HitOutcome ApplyHit(CombatUnitController attacker, int damage, int hitEffectId)
+{
+    if (attacker == null || m_Owner.IsDead || m_Owner.CanbeAttack > 0) return HitOutcome.Ignored;
+
+    m_Owner.Hp = Mathf.Max(0, m_Owner.Hp - damage);                                  // ① 先扣血
+    if (m_Owner.Hp <= 0) { m_Owner.RequestState(CombatState.Dead); return HitOutcome.Dead; }  // ② 死者不加火花
+    if (hitEffectId > 0) m_View.PlayEffect(hitEffectId);                             // ③ 再出画面
+    if (m_Owner.m_Target == null) m_Owner.m_Target = attacker;                       // ④ 死了就不需要仇恨
+    return HitOutcome.Normal;
+}
+
+// UnitView：画面端唯一出口（原 Controller.OnAttackEffect 搬来，日志标签原样保留）
+// ⚠ 普通 C# 类：由 Controller 持有，故一切 GameObject 访问都要经构造注入的 m_Owner
+public UnitView(CombatUnitController owner, Animator animator)
+{
+    m_Owner    = owner;
+    m_Animator = animator;   // 复用宿主基类 Awake 里已取好的引用，View 不再自己 GetComponent
+}
+
+public void PlayEffect(int effectId)
+{
+    Debug.Log(\$"[HitEffect] {m_Owner.name} 播放特效 effectId={effectId}");
+    EffectManager.Instance.CreateEffect(effectId, m_Owner.transform);
+}
+
+// Controller 侧降为 Facade —— 签名不变，外部调用点一行没改
+public virtual UnitHitReaction.HitOutcome OnDamaged(CombatUnitController attactker, float hp, int hitEffectId)
+{
+    if (m_HitReaction == null) return UnitHitReaction.HitOutcome.Ignored;
+    return m_HitReaction.ApplyHit(attactker, (int)hp, hitEffectId);
+}`,
+pts:["<b>三层分工</b>：UnitView 回答「怎么让它看起来发生了」；UnitHitReaction 决定「受这一下要播什么、切什么状态」；Controller 留数据与决策。","<b>Facade 的意义</b>：<code>OnDamaged</code> / <code>OnHitOut</code> / <code>OnAirHit</code> 保留原签名转发，<code>Skill.ImmedDamage</code> 与 <code>UnitBuffComponent</code> 的 DoT 结算<b>零改动</b>，将来二十个技能效果桩仍只认识 Controller 这一层。","<b>三个击退入口收敛</b>：OnHitOut / OnAirHit / OnPlayerAirHit 此前做的事完全一样，只有防御判断多少不同 —— 这是复制粘贴漂移；全量扫描确认此刻外部零调用，趁早统一到 ApplyKnockback。","<b>KnockbackDuration 改为受控写入</b>：<code>private set</code> + <code>SetKnockbackDuration()</code>，把「谁能写」锁死在贴着 RequestState 的那个唯一正确位置。","<b>顺带删死代码</b>：OnHurt / IsUseAttSkill / EffectGo / _IsHitPoint / _SubHpCount / count，均经全量扫描确认零引用。","<b>验证</b>：术前术后各一轮 Play，<code>[HitEffectCalc]</code> 与 <code>[HitEffect]</code> 各 32 次严格 1:1，三段日志逐条等价。","<b>持有方式（P13-fix）</b>：这两个类<b>不是 MonoBehaviour</b>，由 Controller 在 <code>Start()</code> 里 <code>new UnitView(this, m_Animator)</code> / <code>new UnitHitReaction(this, m_View)</code> 持有 —— 依赖进 <code>readonly</code> 字段，消灭「漏调 Setup → 远处空引用」这一失败模式；单位 GameObject 上不再多两个无从配置的组件，其 GUID 在全部场景 / 预制体中经核验为零引用。"],
+in:"hitEffectId（攻击方按段算好）、damage、控制时长",out:"UnitView.PlayEffect、RequestState(Dead / Knockback / Stun / Silence)、m_Target"},
+
+{n:"STEP 04-P15",title:"v5 P15 · 受击表现接通（Hure=22 + 受击动画 + 顿帧；打断已回退）",file:"Skill.cs:362 → UnitHitReaction.ApplyHurt → UnitView.PlayHit → GBL.controller",
+code:`// ① Skill.cs：效果 22（Hure）此前是空桩 —— 这是「敌人挨打毫无反应」的根因
+case SkillEffectTypes.Hure:
+    OnHure(target);        // ★ 改用本次命中的 target，不用施法者身上缓存的 m_SkillTarget
+    break;                 //   多目标技能下后者会把所有人的受击表现打在同一个人身上
+
+private void OnHure(CombatUnitController target)
+{
+    if (target == null || target.HitReaction == null) return;
+    // CSV 目前只有「受击」一个语义、没有轻/重之分，故统一轻型；将来加强度列时此处是唯一替换点
+    target.HitReaction.ApplyHurt(m_SkillCaseter, BattleConst.HIT_TYPE_LIGHT);
+}
+
+// ② UnitHitReaction：受击「表现」的落点（数值与结局仍在 ApplyHit，两条管线由 CSV 分别触发）
+public void ApplyHurt(CombatUnitController attacker, int hitType)
+{
+    if (attacker == null || m_Owner.IsDead || hitType <= BattleConst.HIT_TYPE_NONE) return;
+    Debug.Log(\$"[HitReact] {m_Owner.name} 受击反应 来自={attacker.name} type={hitType}");
+
+    // ★ 刻意不打断攻击：本方法对玩家与敌人对称生效，一旦在这里 RequestState(Idle)，
+    //   敌人技能配了效果 22 时玩家的三连斩也会被同样打断 —— 那是玩法规则，归 FSM / Buff
+    m_Owner.StartCoroutine(HitStopRoutine());   // 顿帧：只冻受击方
+    m_View.PlayHit(hitType);                    // 受击动作
+}
+
+// ③ UnitView：先写 HitType 再触发 Hit —— 顺序颠倒会用上一次残留的类型分流到错误动作
+//    ★ 资产契约校验已前移到构造期（ValidateAnimationContract），运行时不再兜底
+public void PlayHit(int hitType)
+{
+    if (m_Animator == null) return;
+    m_Animator.SetInteger(BattleConst.ani_HitType, hitType);
+    m_Animator.SetTrigger(BattleConst.ani_Hit);
+}
+
+// ★ 构造期一次性契约校验（UnitView 构造函数内调用）—— 缺参数直接报红
+private void ValidateAnimationContract()
+{
+    if (m_Animator == null) return;
+    // 必查三项：Hit(Trigger) / HitType(Int) / Die
+    // 缺失 → Debug.LogError 指名：玩家与敌人必须共用同一套受击 / 死亡协议
+    // 不再「每次受击查一次 + 静默 return」—— 那会把 Unity 的告警吞掉，
+    // 把「资产漏配」伪装成「打了没反应」（正是 P15 排查时的表象）
+}
+
+// ④ GBL.controller（动画资源，走 Unity Editor API 脚本化建造，不手写 YAML）
+//    参数 +Hit(Trigger) +HitType(Int) +Move(Bool)
+//    Any State → Hit(SM) [Hit]      idle → Hit(SM) [Hit]  ← 插在 idle 转换列表第一位
+//    Hit 内部：Entry → LightHit [HitType Equals 1]，LightHit → idle [ExitTime=1]`,
+pts:["<b>两头都断着</b>：代码侧 <code>OnHure()</code> 是空桩；动画侧 13 段受击动画<code>整齐收在 Hit 子状态机里</code>，但<b>整棵子树没有任何转换能进入</b> —— 只修一边都不会有反应。","<b>为什么入口做两条</b>：<code>idle</code> 上挂着 4 条<b>真正的无条件出边</b>（Run_F / Down / FloatHit / Die），Unity 对「当前状态转换」与「Any State 转换」谁优先没有公开保证。故把 <code>idle → Hit</code> 插到列表首位，再补 Any State 兜底。","<b>打断已于同日回退</b>：实现过一版后撤销 —— 这条管线<b>对玩家与敌人对称</b>，敌人技能一旦配效果 22，玩家三连斩会被同样打断；而「挨打即打断」是玩法规则（霸体 / 韧性），应落在 FSM / Buff 的显式判定，不能藏在通用受击表现里。","<b>顿帧只冻受击方</b>：攻击方段号推进读 <code>normalizedTime</code>，一起冻住会卡段；令牌递增防连击提前解冻；<code>PlayDeath</code> 首行恢复 <code>speed=1</code>，否则顿帧窗口内死亡会「站着不动地死」。","<b>画面端仍只走 UnitView</b>：Controller 与状态机没有新增任何一处直接摸 Animator 的代码，P13 的三层边界未被削弱。","<b>拍板取舍</b>：受击<b>不打断</b>攻击（对称性否掉后回退）；第 1 段<b>不补配 Hure</b>（第一刀只有掉血与火花）；<b>不区分轻重</b>（CSV 无强度列，统一轻型）；范围 A+B，击退位移缓办。","<b>验证</b>：<code>[SegEffect] 效果=[0,22]</code> 99 条 ↔ <code>[HitReact]</code> 99 条严格 1:1；<code>[HitEffectCalc]</code> ↔ <code>[HitEffect]</code> 149:149 仍 1:1；<code>Parameter 'Move' does not exist</code> 告警消失；Play 期间 0 Error 0 Warning。"],
+in:"效果 22（Hure）、hitType、顿帧时长",out:"Animator Hit/HitType、顿帧（speed=0→1）"},
+
+{n:"STEP 04-P15fix",title:"v5 P15-fix · 死亡链路修复（Die 是 Bool，死亡动画从未播放）",file:"CombatUnitController.SetDead → UnitView.PlayDeath → GBL.controller",
+code:`// ① 根因 —— 敌人 GBL.controller 的 Die 参数是 Bool(m_Type:4)，代码却写 SetTrigger：
+//    SetTrigger("Die");   // ✗ 对 Bool 参数设触发器：不报错、不生效，纯静默失效
+m_Animator.SetBool(BattleConst.ani_Die, true);   // ✓ 先查类型再写值
+
+// ② UnitView.WriteDeathParam：按真实类型写入；参数不存在时不再重复告警
+//    —— 构造期 ValidateAnimationContract 已经把缺失项 LogError 报出来了
+AnimatorControllerParameter p = FindParameter(BattleConst.ani_Die);
+if (p == null) return;
+switch (p.type) {
+    case Bool:    m_Animator.SetBool(ani_Die, true); break;
+    case Trigger: m_Animator.SetTrigger(ani_Die);    break;
+    default:      Debug.LogError("Die 参数类型不支持"); return;
+}
+
+// ③ GBL.controller：死亡既无入口、又有回边 —— 三处一起改
+//    Any   → Die     [Die==true]   ★ 真入口，排 AnyState 首位 + canTransitionToSelf=false
+//    idle  → Die     [Die==true]   ★ 原无条件脏边，补条件
+//    Die   → idle    [Die==false]  ★ 不拦会形成「死亡 → 回待机 → 再死亡」无限循环`,
+pts:["<b>不是一处写错，是三个病根叠着</b>：① Die 是 <code>Bool</code> 而代码写 <code>SetTrigger</code>；② <code>idle → Die</code> 无条件却排在列表末位，被 Run_F 抢先导致<b>从未生效</b>；③ <code>Die → idle</code> 有回边，播完就被拉回待机。缺哪个都播不出来。","<b>为什么类型自适应而不是改资产</b>：两套控制器是历史资产，改 YAML 要同步所有旧分支；改代码只动一处，且查询成本是每个单位<b>一次</b>（有缓存）。","<b>为什么必须拦回边</b>：只加 Any State 入口而不加 <code>[Die == false]</code>，会立刻变成死亡无限循环 —— 这是本次改动<b>最反直觉的一步</b>。","<b>为什么 <code>canTransitionToSelf = false</code></b>：Any State 转换默认允许目标就是当前状态，不关掉的话死亡动画每帧被重新进入，永远重播第一段。","<b>验证</b>：新增运行时探针 <code>DeathLinkProbe</code>（<code>#if UNITY_EDITOR</code>）走真实路径 <code>SetDead(true)</code>，8 次采样 <code>inDie=True</code> 全部成立，<code>[DeathDiag] 结论 PASS</code>；<code>[Death]</code> 日志确认真写的是 <code>Die(Bool)</code>。","<b>顺带修工具</b>：<code>parse_animator.py</code> 把参数类型当连续下标，<code>4</code> 被误报成 Trigger（应为 Bool）—— 正是它掩盖了这个缺陷。"],
+in:"IsDead=true",out:"Animator Die(Bool)=true、卸载 CapsuleCollider / CharacterController"},
+
+{n:"STEP 04b",title:"v5 P8 · 特效三问全部下沉 SkillData",file:"SkillData.cs → Skill.cs:220",
+code:`// ① 一共播几个：min(有效特效 id 数, 时机数)，任一为空即为 0
+public int GetCastEffectCount()
+{
+    int idCount     = GetValidCastEffectIdCount();
+    int timingCount = CastEffectTimings != null ? CastEffectTimings.Length : 0;
+    return Mathf.Min(idCount, timingCount);
+}
+
+// ② 第 idx 个（0-based）什么时候播：只认 CastEffectTimings，读不到返回 -1
+public float GetCastEffectTiming(int idx) { ... }
+
+// ③ 第 n 个（1-based）播哪个 id：无效 / 越界 / 该位空 → 0
+public int GetCastEffectId(int effectIndex) { ... }
+
+// Skill 侧只剩「拿到 id 交给谁播」，绑点由 EffectManager 按 EffectDot 自行解析
+public void PlayCastEffect(int effectIndex)
+{
+    if (m_SkillCaseter == null) return;
+    int castEffectId = BaseData.GetCastEffectId(effectIndex);
+    if (castEffectId <= 0) return;
+    EffectManager.Instance.CreateEffect(castEffectId, m_SkillCaseter.transform);
+}`,
+pts:["<b>为什么下沉</b>：三个方法都必须遵守「CSV 空列会被解析成含一个 0 的 List」这条脏数据规则，规则只属于数据类；留在 Skill 就等于让每个调用方抄一遍。","<b>0-based vs 1-based</b>：<code>GetCastEffectTiming</code> 是 0-based（配合自增游标），<code>GetCastEffectId</code> 是 1-based（配合「第 n 个」语义），两处注释互相点名。","<b>2026-09-15 同时删除</b> <code>CombatUnitController.GetWeaponAnchor()</code> —— 它的 <code>m_WeaponAnchor</code> 是 private 且无 <code>[SerializeField]</code>，永远为 null，实际一直回落 <code>transform</code>，与 EffectManager 自解析绑点重复。"],
+in:"effectIndex / idx",out:"特效 id 或 -1/0（无效）"},
+
+{n:"STEP 05",title:"段伤害结算",file:"CombatUnitController.cs:1123 → Skill.cs:616 → 689 → 451",
+code:`// 1. 先写段号，再触发
+public void TriggerSegmentHit(Skill skill, int segIdx)
+{
+    if (skill == null) return;
+    skill.SegIdx = segIdx;      // 供本技能内部按段取效果 / 算受击特效 id
+    skill.SkillHit();
+}
+
+// 2. 按 HitType 分流：10003 是 范围敌方 + 扇形
+private void HitTargetsInFan()
+{
+    Collider[] colliders = Physics.OverlapSphere(
+        m_SkillCaseter.transform.position, BaseData.AttackRadius + 0.1f, TargetLayerMask);
+    foreach (Collider c in colliders)
+    {
+        CombatUnitController unit = c.GetComponent<CombatUnitController>();
+        if (unit == null) continue;
+        Vector3 testDir = c.transform.position - m_SkillCaseter.transform.position;
+        testDir.y = 0; testDir.Normalize();
+        float dotProduct = Vector3.Dot(testDir, m_SkillCaseter.transform.forward);
+        if (dotProduct >= Mathf.Cos(BaseData.AttackAngle)) { HitTarget(unit); }
+    }
+}
+
+// 3. 伤害公式
+private int GetSkillDamage()
+{
+    float extra = (100 + m_SkillCaseter.CurCombatUnit.Penetrate / 400.0f
+                       - m_SkillTarget.CurCombatUnit.Parry / 400.0f) / 100f;
+    float defPercent = (12000 + m_SkillTarget.CurCombatUnit.Defend)
+                     / (12000 + m_SkillTarget.CurCombatUnit.Defend * 10.0f);
+    return (int)Math.Max(Math.Round(
+        m_SkillCaseter.CurCombatUnit.Damage * defPercent * extra * BaseData.Attack), 1);
+}`,
+pts:["<b>先写 SegIdx 再 SkillHit</b>：<code>Skill</code> 内部靠它分两处取值 —— ① <code>HitTarget</code> 取分段效果 <code>SkillEffectTypes</code>；② <code>ImmedDamage</code> 按段算出受击特效 id。段号全程不出 <code>Skill</code>，没有跨对象时序窗口（v5 P10 之前是受击方反查 <code>attacker.m_CurSkill.SegIdx</code>，那才必须严格保序）。","<b>索敌是物理球 + 点乘筛选</b>：<code>OverlapSphere</code> 先按半径取，再用点乘判角度，<code>HitNum = -1</code> 表示不限数量。","<b>v5 P7 效果按段取</b>：<code>GetEffectTypesForSegment(m_SegIdx)</code> 直接取 <code>SkillEffectTypes</code> 的第 <code>m_SegIdx</code> 组（按 <code>|</code> 切分），取不到就什么都不做——<b>没有「共用兜底」这回事了</b>。","<b>10003 实测</b>：第1段 <code>[0]</code> 掉血 / 第2段 <code>[0,5]</code> 掉血+浮空 / 第3段 <code>[6]</code> 只后退不掉血。","暴击在 <code>GetSkillOneDamage()</code> 里判定，命中后 ×1.5。"],
+in:"段号、目标列表、受击特效 id",out:"target.OnDamaged(caster, dmg, hitEffectId)"},
+
+{n:"STEP 06",title:"受击落地与收尾",file:"CombatUnitController.cs:528 → CombatStates.cs:8",
+code:`// ★ v5 P13：OnDamaged 降为 Facade —— 下列逻辑整体迁往 UnitHitReaction.ApplyHit（详见 STEP 04-P13）
+public virtual UnitHitReaction.HitOutcome OnDamaged(CombatUnitController attactker, float hp, int hitEffectId)
+{
+    if (m_HitReaction == null) return UnitHitReaction.HitOutcome.Ignored;
+    return m_HitReaction.ApplyHit(attactker, (int)hp, hitEffectId);
+}
+
+// 迁移前本方法亲自做的四件事，现由 ApplyHit 按同样顺序执行：
+//   ① 扣血 Hp = Max(0, Hp - damage)                  setter 内触发事件
+//   ② 死后 return —— 死者身上不再加一朵火花
+//   ③ 受击特效：id 由攻击方按段算好后直接传入（0 = 该段无特效），径直交给 UnitView.PlayEffect
+//   ④ m_Target == null 时反锁攻击者 —— 死者不需要仇恨，排在死亡分支之后天然被跳过
+}
+
+// 收尾：动画播完 Animator 自行回 Idle
+public override void OnEnter()
+{
+    Owner.NavStop();
+    Owner.ResetSkillId();        // SkillId = 0
+}`,
+pts:["<b>三道门</b>：攻击者为空 / 已死亡 / 不可被攻击（隐身等），任一命中直接返回。","<code>HP</code> 的 setter 内部会触发 <code>OnHpChangeEvent</code>（血条）与 <code>OnDeadEvent</code>（死亡事件）。","<b>受击特效 id 是入参</b>：由攻击方 <code>Skill.ImmedDamage</code> 按段算好后传入，受击方不读攻击者的任何状态（v5 P10）。","<b>段索引按「轮」归零</b>：v5 P10 起改在 <code>AttackState.OnEnter</code> 重置，比挂在 <code>IdleState</code> 上更贴合「一轮攻击开始」的语义。"],
+in:"伤害值、攻击者引用",out:"HP 变更 / 受击特效 / RequestState(Dead) 或反锁目标"}
+];
+
+const LAYERS=[
+{no:"LAYER 01",name:"配置层",desc:"启动后一次性加载，此后全程只读",items:[
+["SkillData.csv","26 列 · 列 24/25 为 CastEffectTimings / SegCount；原第 25 列 HitEffectIds 已于 2026-09-28 整列删除；原 SegEffectTypes 列已并入列 13"],
+["SkillDataManager","懒加载 Dictionary 单例"],
+["SkillData","技能静态数据实例"]]},
+{no:"LAYER 02",name:"数据层",desc:"战斗实体与技能实例，持有可变状态",items:[
+["CombatUnit","<span>HP / 攻击 / 防御 / 穿透 / 招架</span>"],
+["Skill 实例","<span>BaseData + SegIdx + 施法者 / 受术者</span>"],
+["BuffSystem","<span>ClassObjectPool 池化，200 预热</span>"]]},
+{no:"LAYER 03",name:"控制层",desc:"每帧驱动，唯一的决策中心",items:[
+["CombatUnitController","<span>Update → Buff → FSM Tick</span>"],
+["CombatStateMachine","<span>7 状态 + 转换表 + 合法性校验</span>"],
+["ICombatState × 7","<span>Idle / Move / Attack / Stun / Silence / Knockback / Dead</span>"]]},
+{no:"LAYER 04",name:"表现层",desc:"接收输出，同时反向提供推进信号",items:[
+["Animator","<span>写 SkillId / Move，读 normalizedTime</span>"],
+["EffectManager","<span>出手与受击特效</span>"],
+["NavMeshAgent","<span>寻路与追击</span>"],
+["UI","<span>OnHpChangeEvent 血条</span>"]]}
+];
+
+const STATES=["Idle","Move","Attack","Stun","Silence","Knockback","Dead"];
+const TRANS={Idle:["Move","Attack","Stun","Silence","Knockback","Dead"],
+Move:["Idle","Attack","Stun","Silence","Knockback","Dead"],
+Attack:["Idle","Stun","Silence","Knockback","Dead"],
+Stun:["Idle","Silence","Dead"],
+Silence:["Idle","Stun","Knockback","Dead"],
+Knockback:["Idle","Stun","Silence","Dead"],Dead:[]};
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function hl(code){
+let s=esc(code),cs=[];
+s=s.replace(/(\/\/[^\n]*)/g,m=>{cs.push(m);return "__CMT"+(cs.length-1)+"__"});
+s=s.replace(/&quot;([^&]*)&quot;/g,'<span class="s">"$1"</span>');
+s=s.replace(/"([^"\n]*)"/g,'<span class="s">"$1"</span>');
+s=s.replace(/\b(public|private|protected|override|virtual|void|int|float|bool|string|if|else|return|null|new|this|class|var|for|foreach|switch|case|break|continue|true|false|is|in)\b/g,'<span class="k">$1</span>');
+s=s.replace(/\b(\d+\.?\d*f?)\b/g,'<span class="n">$1</span>');
+s=s.replace(/__CMT(\d+)__/g,(m,i)=>'<span class="c">'+cs[i]+"</span>");
+return s}
+
+let cur=0,timer=null;
+const svg=document.getElementById("flow");
+const NS="http://www.w3.org/2000/svg";
+
+function buildFlow(){
+STEPS.forEach((st,i)=>{
+const y=10+i*82;
+const g=document.createElementNS(NS,"g");
+g.setAttribute("class","step");g.dataset.i=i;
+g.innerHTML='<rect class="box" x="8" y="'+y+'" width="304" height="58" rx="10"/>'+
+'<text class="num" x="26" y="'+(y+20)+'">'+st.n+'</text>'+
+'<text class="t1" x="26" y="'+(y+38)+'">'+st.title+'</text>'+
+'<text class="t2" x="26" y="'+(y+52)+'" fill="#64748B">'+st.file.split(" → ")[0]+'</text>';
+g.addEventListener("click",()=>{stop();show(i)});
+svg.appendChild(g);
+if(i<STEPS.length-1){
+const p=document.createElementNS(NS,"path");
+p.setAttribute("class","ln");
+p.setAttribute("d","M160 "+(y+58)+" L160 "+(y+76));
+p.setAttribute("marker-end","url(#ar)");
+svg.appendChild(p);
+}
+});
+}
+
+function show(i){
+cur=i;
+svg.querySelectorAll(".step").forEach(g=>g.classList.toggle("on",+g.dataset.i===i));
+const st=STEPS[i];
+document.getElementById("detail").innerHTML=
+'<div class="dhead"><div class="dnum">'+st.n+'</div><div class="dtitle">'+st.title+
+'</div><div class="dfile">'+st.file+'</div></div><div class="dbody"><ul>'+
+st.pts.map(p=>"<li>"+p+"</li>").join("")+
+'</ul><pre><code>'+hl(st.code)+'</code></pre><div class="io">'+
+'<div class="iobox"><div class="lb">输入</div><div class="vl">'+st.in+'</div></div>'+
+'<div class="iobox"><div class="lb">输出</div><div class="vl">'+st.out+'</div></div>'+
+'</div></div>';
+}
+
+function stop(){if(timer){clearInterval(timer);timer=null;document.getElementById("play").textContent="自动演示"}}
+document.getElementById("play").addEventListener("click",function(){
+if(timer){stop();return}
+this.textContent="暂停演示";
+show(0);
+timer=setInterval(()=>{cur=(cur+1)%STEPS.length;show(cur)},2000);
+});
+document.getElementById("reset").addEventListener("click",()=>{stop();show(0)});
+
+function buildTicks(){
+const bar=document.getElementById("bar");
+const marks=[[0.05,"特效 1 · 0.05","cast","AttackEffectID[0] = 10001 · 起手"],
+[0.28,"特效 2 · 0.28","cast","AttackEffectID[1] = 10002"],
+[0.30,"段 1 · 0.30","","HitEffect = 10017"],
+[0.58,"特效 3 · 0.58","cast","AttackEffectID[2] = 10003"],
+[0.60,"段 2 · 0.60","","HitEffect = 10017（复用末位）"],
+[0.88,"时机 4 · 未播","skip","只有 3 个特效 id，第 4 个时机被丢弃并告警"],
+[0.90,"段 3 · 0.90","","HitEffect = 10017（复用末位）"]];
+bar.innerHTML=marks.map(m=>'<div class="tick '+(m[2]||"")+'" style="left:'+(m[0]*100)+'%">'+
+'<span class="lb">'+m[1]+'</span><span class="vl">'+m[3]+'</span></div>').join("");
+}
+
+function buildLayers(){
+document.getElementById("layers").innerHTML=LAYERS.map(l=>
+'<div class="layer"><div class="no">'+l.no+'</div><h4>'+l.name+'</h4><div class="desc">'+l.desc+
+'</div><ul>'+l.items.map(it=>"<li>"+it[0]+"<br><span>"+it[1]+"</span></li>").join("")+"</ul></div>").join("");
+}
+
+function buildMtx(){
+let h="<thead><tr><th>从 \\ 到</th>"+STATES.map(s=>"<th>"+s+"</th>").join("")+"</tr></thead><tbody>";
+STATES.forEach(f=>{h+="<tr><td>"+f+"</td>"+STATES.map(t=>{
+const ok=TRANS[f].indexOf(t)>=0;
+return '<td class="'+(ok?"ok":"no")+'">'+(ok?"●":"·")+"</td>"}).join("")+"</tr>"});
+document.getElementById("mtx").innerHTML=h+"</tbody>";
+}
+
+buildFlow();buildTicks();buildLayers();buildMtx();show(0);
+
+const secs=[].slice.call(document.querySelectorAll("section"));
+const links=[].slice.call(document.querySelectorAll("nav a"));
+window.addEventListener("scroll",()=>{
+let y=window.scrollY+90,cur=secs[0];
+secs.forEach(s=>{if(s.offsetTop<=y)cur=s});
+links.forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+cur.id));
+},{passive:true});
+</script>
+</body>
+</html>

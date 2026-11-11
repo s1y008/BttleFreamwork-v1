@@ -1,0 +1,6 @@
+OK  : using 鏇挎崲 1 澶?
+OK  : ctor 鏇挎崲 1 澶?
+WRITE OK
+VERIFY OK (绗竴娆?
+VERIFY OK (绗簩娆★紝寤惰繜 3 绉?
+lines = 254

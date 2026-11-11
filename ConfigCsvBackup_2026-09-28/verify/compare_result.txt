@@ -1,0 +1,2 @@
+rows=1726 fields=34493 diffs=0 normAllowed=482
+★ ALL GREEN：CSV 与 JSON 加载终态完全等价

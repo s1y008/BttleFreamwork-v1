@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="QZtnBnsHgJr7L5uF3EvQar">
+<head data-page-node-id="jsWBnX6IYXGY1ZYI8cDRv5">
+<meta charset="UTF-8" data-page-node-id="7JfE7qxXViRFti51FNB59e">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="E67vM6eBf80ZwG8DEjrY61">
+<title>战斗框架 · 数据流向图 | 蔡振立</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg-0: #050d1c;
+    --bg-1: #0a1426;
+    --bg-2: #0f1e35;
+    --bg-3: #142844;
+    --border: #1e3a5f;
+    --border-bright: #2d5689;
+    --text-1: #e4e9f0;
+    --text-2: #a8b9d1;
+    --text-3: #6b7e9c;
+    --blue: #395B8F;
+    --blue-light: #5a82bf;
+    --orange: #FEB67E;
+    --orange-bright: #fdc89a;
+    --purple: #8b5cf6;
+    --pink: #ec4899;
+    --amber: #f59e0b;
+    --cyan: #06b6d4;
+    --emerald: #10b981;
+    --slate: #64748b;
+  }
+
+  html, body {
+    font-family: 'Microsoft YaHei', 'PingFang SC', -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg-0);
+    color: var(--text-1);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(57, 91, 143, 0.10), transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(254, 182, 126, 0.06), transparent 45%);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app {
+    max-width: 1760px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  /* ============== HEADER ============== */
+  .header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .title-block h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    background: linear-gradient(120deg, var(--text-1) 0%, var(--orange) 70%, var(--blue-light) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .title-block .subtitle {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .title-block .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    margin-left: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--orange);
+    background: rgba(254, 182, 126, 0.10);
+    border: 1px solid rgba(254, 182, 126, 0.30);
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .control-select {
+    padding: 9px 14px;
+    border: 1px solid var(--border-bright);
+    background: var(--bg-2);
+    color: var(--text-1);
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+  }
+
+  .control-select:hover { border-color: var(--orange); }
+  .control-select:focus { border-color: var(--orange); box-shadow: 0 0 0 2px rgba(254, 182, 126, 0.20); }
+
+  .btn {
+    padding: 9px 16px;
+    border: 1px solid var(--border-bright);
+    background: var(--bg-2);
+    color: var(--text-1);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+  .btn:hover { border-color: var(--orange); background: var(--bg-3); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+  .btn.btn-primary { background: linear-gradient(135deg, var(--blue), #4a6fa5); border-color: var(--blue-light); }
+  .btn.btn-primary:hover { background: linear-gradient(135deg, #4a6fa5, var(--blue)); }
+  .btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+  .btn[disabled]:hover { transform: none; border-color: var(--border-bright); background: var(--bg-2); }
+
+  /* ============== LAYOUT ============== */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+  }
+
+  @media (max-width: 1280px) {
+    .main-grid { grid-template-columns: 1fr; }
+  }
+
+  .diagram-card {
+    background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .diagram-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(57, 91, 143, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(57, 91, 143, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  /* ============== SVG ============== */
+  .svg-wrap {
+    position: relative;
+    z-index: 1;
+  }
+
+  .svg-diagram {
+    width: 100%;
+    height: auto;
+    display: block;
+    user-select: none;
+  }
+
+  .layer-band {
+    fill: rgba(57, 91, 143, 0.05);
+    stroke: rgba(45, 86, 137, 0.40);
+    stroke-width: 1;
+    stroke-dasharray: 2 4;
+  }
+
+  .layer-label {
+    fill: var(--text-3);
+    font-size: 11px;
+    font-family: inherit;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+  }
+
+  .layer-sublabel {
+    fill: var(--text-3);
+    font-size: 10px;
+    font-family: inherit;
+    opacity: 0.65;
+  }
+
+  .node { cursor: pointer; transition: opacity 0.2s; }
+  .node.dim { opacity: 0.25; }
+
+  .node-rect {
+    fill: var(--bg-2);
+    stroke: var(--border-bright);
+    stroke-width: 1.5;
+    transition: all 0.3s;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.40));
+  }
+
+  .node:hover .node-rect {
+    stroke: var(--orange);
+    fill: var(--bg-3);
+    filter: drop-shadow(0 4px 12px rgba(254, 182, 126, 0.30));
+  }
+
+  .node.active .node-rect {
+    stroke: var(--orange);
+    fill: var(--bg-3);
+    filter: drop-shadow(0 0 14px rgba(254, 182, 126, 0.55));
+    animation: nodePulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes nodePulse {
+    0%, 100% { filter: drop-shadow(0 0 10px rgba(254, 182, 126, 0.40)); }
+    50%      { filter: drop-shadow(0 0 18px rgba(254, 182, 126, 0.80)); }
+  }
+
+  .node-type-controller .node-rect { stroke: var(--blue-light); fill: rgba(57, 91, 143, 0.18); }
+  .node-type-fsm       .node-rect { stroke: #8b5cf6;         fill: rgba(139, 92, 246, 0.18); }
+  .node-type-skill     .node-rect { stroke: #ec4899;         fill: rgba(236, 72, 153, 0.18); }
+  .node-type-buff      .node-rect { stroke: var(--amber);    fill: rgba(245, 158, 11, 0.18); }
+  .node-type-data      .node-rect { stroke: var(--cyan);     fill: rgba(6, 182, 212, 0.18); }
+  .node-type-config    .node-rect { stroke: var(--emerald);  fill: rgba(16, 185, 129, 0.18); }
+  .node-type-util      .node-rect { stroke: var(--slate);    fill: rgba(100, 116, 139, 0.18); }
+
+  .node.active.node-type-controller .node-rect { stroke: var(--orange); }
+  .node.active.node-type-fsm       .node-rect { stroke: var(--orange); }
+  .node.active.node-type-skill     .node-rect { stroke: var(--orange); }
+  .node.active.node-type-buff      .node-rect { stroke: var(--orange); }
+  .node.active.node-type-data      .node-rect { stroke: var(--orange); }
+  .node.active.node-type-config    .node-rect { stroke: var(--orange); }
+  .node.active.node-type-util      .node-rect { stroke: var(--orange); }
+
+  .node-label {
+    fill: var(--text-1);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Microsoft YaHei', sans-serif;
+    pointer-events: none;
+    text-anchor: middle;
+  }
+
+  .node-sublabel {
+    fill: var(--text-2);
+    font-size: 10px;
+    font-family: 'Microsoft YaHei', sans-serif;
+    pointer-events: none;
+    text-anchor: middle;
+  }
+
+  .node-id {
+    fill: var(--text-3);
+    font-size: 9px;
+    font-family: 'Consolas', monospace;
+    pointer-events: none;
+    text-anchor: middle;
+    letter-spacing: 0.1em;
+  }
+
+  /* Edges */
+  .edge {
+    fill: none;
+    stroke: var(--border-bright);
+    stroke-width: 1.5;
+    transition: all 0.3s;
+    opacity: 0.35;
+  }
+  .edge.dashed { stroke-dasharray: 5 4; opacity: 0.30; }
+
+  .edge.active {
+    stroke: var(--orange);
+    stroke-width: 2.5;
+    opacity: 1;
+    filter: drop-shadow(0 0 5px rgba(254, 182, 126, 0.60));
+  }
+  .edge.active.dashed {
+    stroke: var(--orange);
+    stroke-width: 2;
+    stroke-dasharray: 8 4;
+    opacity: 0.95;
+  }
+
+  .edge-flow {
+    fill: none;
+    stroke: var(--orange);
+    stroke-width: 2;
+    stroke-linecap: round;
+    opacity: 0;
+    stroke-dasharray: 4 14;
+  }
+  .edge.active ~ .edge-flow { opacity: 1; animation: flowMove 1.2s linear infinite; }
+  @keyframes flowMove { to { stroke-dashoffset: -36; } }
+
+  .edge-label {
+    fill: var(--text-3);
+    font-size: 10px;
+    font-family: 'Microsoft YaHei', sans-serif;
+    text-anchor: middle;
+    pointer-events: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+  .edge.active ~ .edge-label { fill: var(--orange); opacity: 1; font-weight: 600; }
+
+  .edge-label-bg {
+    fill: var(--bg-1);
+    stroke: var(--border);
+    stroke-width: 0.5;
+    opacity: 0.85;
+  }
+
+  /* ============== DETAIL PANEL ============== */
+  .detail-panel {
+    background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    height: fit-content;
+    position: sticky;
+    top: 16px;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+  }
+
+  .detail-panel::-webkit-scrollbar { width: 6px; }
+  .detail-panel::-webkit-scrollbar-track { background: var(--bg-2); border-radius: 3px; }
+  .detail-panel::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+
+  .detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-header h3 {
+    font-size: 12px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    font-weight: 600;
+  }
+
+  .clear-btn {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-3);
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .clear-btn:hover { color: var(--orange); border-color: var(--orange); }
+
+  .detail-node-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--orange);
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+  }
+
+  .detail-meta {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .tag-controller { background: rgba(90, 130, 191, 0.18); color: var(--blue-light); border: 1px solid rgba(90, 130, 191, 0.30); }
+  .tag-fsm        { background: rgba(139, 92, 246, 0.18); color: #a78bfa;          border: 1px solid rgba(139, 92, 246, 0.30); }
+  .tag-skill      { background: rgba(236, 72, 153, 0.18); color: #f472b6;          border: 1px solid rgba(236, 72, 153, 0.30); }
+  .tag-buff       { background: rgba(245, 158, 11, 0.18); color: var(--amber);      border: 1px solid rgba(245, 158, 11, 0.30); }
+  .tag-data       { background: rgba(6, 182, 212, 0.18); color: #67e8f9;           border: 1px solid rgba(6, 182, 212, 0.30); }
+  .tag-config     { background: rgba(16, 185, 129, 0.18); color: #6ee7b7;          border: 1px solid rgba(16, 185, 129, 0.30); }
+  .tag-util       { background: rgba(100, 116, 139, 0.18); color: var(--text-2);   border: 1px solid rgba(100, 116, 139, 0.30); }
+
+  .detail-desc {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+
+  .conn-section h4 {
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .conn-list { list-style: none; margin-bottom: 16px; }
+  .conn-item {
+    padding: 8px 12px;
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .conn-item:hover { border-color: var(--orange); transform: translateX(2px); }
+  .conn-icon { color: var(--orange); font-weight: 700; font-size: 13px; min-width: 16px; text-align: center; }
+  .conn-name { color: var(--text-1); font-weight: 500; }
+  .conn-tag {
+    margin-left: auto;
+    color: var(--text-3);
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.25);
+  }
+  .conn-tag.config { color: var(--amber); }
+  .conn-tag.direct { color: var(--blue-light); }
+
+  .empty-detail {
+    color: var(--text-3);
+    font-size: 13px;
+    text-align: center;
+    padding: 48px 16px;
+    line-height: 1.8;
+  }
+  .empty-detail .icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+    opacity: 0.6;
+  }
+
+  /* ============== STEP DETAIL PANEL ============== */
+  .step-detail {
+    animation: stepFadeIn 0.45s ease;
+  }
+  @keyframes stepFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step-num {
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--orange);
+    font-family: 'Consolas', monospace;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--orange), #fdc89a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .step-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-1);
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .flow-card {
+    background: linear-gradient(135deg, var(--bg-3), var(--bg-2));
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    position: relative;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .flow-card.from { border-left: 3px solid var(--blue-light); }
+  .flow-card.to   { border-left: 3px solid var(--orange); }
+  .flow-card.cur  { border-left: 3px solid var(--purple); }
+
+  .flow-card:hover { transform: translateX(2px); }
+
+  .flow-card-label {
+    font-size: 10px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .flow-card-id {
+    display: inline-block;
+    padding: 1px 6px;
+    background: rgba(0,0,0,0.3);
+    color: var(--orange);
+    border-radius: 3px;
+    font-size: 10px;
+    font-family: 'Consolas', monospace;
+    margin-bottom: 4px;
+  }
+
+  .flow-card-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-1);
+  }
+
+  .flow-card-sub {
+    font-size: 11px;
+    color: var(--text-2);
+    margin-top: 2px;
+  }
+
+  .flow-card-role {
+    font-size: 11px;
+    color: var(--text-3);
+    margin-top: 6px;
+    font-style: italic;
+    padding-top: 6px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .flow-arrow-down {
+    text-align: center;
+    color: var(--orange);
+    font-size: 16px;
+    margin: 2px 0;
+    animation: bounceDown 1.2s ease-in-out infinite;
+    text-shadow: 0 0 8px rgba(254, 182, 126, 0.6);
+  }
+  @keyframes bounceDown {
+    0%, 100% { transform: translateY(0); opacity: 0.7; }
+    50%      { transform: translateY(4px); opacity: 1; }
+  }
+
+  .step-section {
+    background: var(--bg-3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-top: 10px;
+  }
+  .step-section h4 {
+    font-size: 11px;
+    color: var(--orange);
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    margin-bottom: 8px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .step-section p {
+    font-size: 13px;
+    color: var(--text-2);
+    line-height: 1.65;
+  }
+  .step-techpoints {
+    list-style: none;
+    padding: 0;
+  }
+  .step-techpoints li {
+    font-size: 12px;
+    color: var(--text-2);
+    padding: 4px 0 4px 18px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .step-techpoints li::before {
+    content: '▸';
+    color: var(--orange);
+    position: absolute;
+    left: 4px;
+    top: 4px;
+  }
+
+  /* ============== ENHANCED EDGE ANIMATION ============== */
+  .edge-flow {
+    fill: none;
+    stroke: var(--orange);
+    stroke-width: 2;
+    stroke-linecap: round;
+    opacity: 0;
+    stroke-dasharray: 4 14;
+  }
+  .edge.active ~ .edge-flow { opacity: 1; animation: flowMove 1.0s linear infinite; }
+  @keyframes flowMove { to { stroke-dashoffset: -36; } }
+
+  .edge-pulse {
+    fill: none;
+    stroke: var(--orange);
+    stroke-width: 6;
+    stroke-linecap: round;
+    opacity: 0;
+  }
+  .edge.active ~ .edge-pulse { opacity: 0.35; animation: pulseFade 1.4s ease-in-out infinite; }
+  @keyframes pulseFade {
+    0%   { opacity: 0.5; stroke-width: 6; }
+    50%  { opacity: 0.15; stroke-width: 3; }
+    100% { opacity: 0.5; stroke-width: 6; }
+  }
+
+  /* ============== DATA PACKETS (animated circles) ============== */
+  .data-packet {
+    fill: var(--orange);
+    filter: drop-shadow(0 0 6px rgba(254, 182, 126, 0.9));
+    pointer-events: none;
+  }
+  .data-packet-trail {
+    fill: var(--orange);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* ============== NODE SOURCE/TARGET EMPHASIS ============== */
+  .node.source .node-rect {
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 14px rgba(90, 130, 191, 0.7));
+  }
+  .node.target .node-rect {
+    stroke-width: 3;
+    filter: drop-shadow(0 0 18px rgba(254, 182, 126, 0.85));
+  }
+  .node.source.target .node-rect {
+    stroke-dasharray: 6 4;
+    filter: drop-shadow(0 0 18px rgba(254, 182, 126, 0.85));
+  }
+
+  /* ============== BOTTOM BAR ============== */
+  .bottom-bar {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 900px) { .bottom-bar { grid-template-columns: 1fr; } }
+
+  .step-bar {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .step-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .step-info strong { color: var(--orange); font-weight: 600; }
+  .step-counter { color: var(--text-3); font-size: 11px; font-family: 'Consolas', monospace; }
+  .progress {
+    height: 4px;
+    background: var(--bg-3);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--orange));
+    transition: width 0.4s ease;
+    border-radius: 2px;
+  }
+
+  .legend {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+  }
+  .legend-title {
+    font-size: 11px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 8px 14px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--text-2);
+  }
+  .legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .legend-line {
+    width: 24px;
+    height: 0;
+    flex-shrink: 0;
+  }
+  .legend-line.solid { border-top: 2px solid var(--border-bright); }
+  .legend-line.dashed { border-top: 2px dashed var(--border-bright); }
+  .legend-line.active { border-top: 2px solid var(--orange); }
+
+  /* ============== FOOTER ============== */
+  .footer {
+    margin-top: 18px;
+    text-align: center;
+    color: var(--text-3);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============== TOOLTIP ============== */
+  .tooltip {
+    position: absolute;
+    background: var(--bg-3);
+    border: 1px solid var(--orange);
+    color: var(--text-1);
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 100;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .tooltip.show { opacity: 1; }
+</style>
+</head>
+<body data-page-node-id="kpCcGhn2d2i4ibwc07hsr6">
+<div class="app" data-page-node-id="Zo9NVYIRG7KttSlO7TByS2">
+  <!-- ============ HEADER ============ -->
+  <header class="header" data-page-node-id="wIOnT1xcszsFFVtFARgTKK">
+    <div class="title-block" data-page-node-id="YKClcTR98JTFBv8DFFZahb">
+      <h1 data-page-node-id="Hg0C5KZ3ZxJNywOqmuyOnO">战斗框架 · 数据流向图
+        <span class="badge" data-page-node-id="y2Kbw8jgOEqRXbAlXD7Hx1">Battle Framework v1.9.4</span>
+      </h1>
+      <div class="subtitle" data-page-node-id="Be5n6cpkrAULdoSxnCHq3K">Dynamic Data Flow Visualization · Unity 2022.3 · 蔡振立</div>
+    </div>
+    <div class="controls" data-page-node-id="WY0Jvh7Ldf5bhw36S8eVov">
+      <select class="control-select" id="scenarioSelect" data-page-node-id="acMInhGzwOsoauxbWMkEzr">
+        <option value="all" data-page-node-id="EGPABoCOddLUjMc7vwCnF6">📊  全局视图</option>
+        <option value="boot" data-page-node-id="zrGW0DTWPi5qtBR7r0sK8q">🚀  启动装配流程</option>
+        <option value="tick" data-page-node-id="LfvOlRCgpuwwcZoEbZsHBo">⚔️  战斗 Tick 循环</option>
+        <option value="skill" data-page-node-id="6MRfxpAgo24yGMGNZk6P36">💥  技能释放流程</option>
+        <option value="buff" data-page-node-id="lLXHUwEPrFhKTnuvEiMBgh">🔥  Buff DoT 结算</option>
+        <option value="data" data-page-node-id="Y7zvSLjluw8YFIruo8Ys53">📦  数据加载流程</option>
+      </select>
+      <button class="btn btn-primary" id="playBtn" data-page-node-id="hqy5tgbSfazNuA0U1kFr2P">▶  自动播放</button>
+      <button class="btn" id="prevBtn" disabled data-page-node-id="ogLBM61bUsAyOut6jynCFD">⏮  上一步</button>
+      <button class="btn" id="nextBtn" disabled data-page-node-id="bDYiugONM2IWnqNI57FZ17">⏭  下一步</button>
+      <button class="btn" id="resetBtn" data-page-node-id="yHxL82ddk2i2fiQr5fMB0I">↺  重置</button>
+    </div>
+  </header>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main-grid" data-page-node-id="YjXTCqwNBpvXb2NLPWMMxl">
+    <!-- Diagram -->
+    <div class="diagram-card" data-page-node-id="UyD6NNWNvM6Kqcn3KDkh4O">
+      <div class="svg-wrap" data-page-node-id="CSiCFeh9jJMxNUD5ZKBcU4">
+        <svg class="svg-diagram" id="diagram" viewBox="0 0 1700 880" preserveAspectRatio="xMidYMid meet" data-page-node-id="jVXT8nsLIXLO560x0cboB1">
+          <defs data-page-node-id="3tQcND3pXzCZiybeMjRATF">
+            <marker id="arrow-default" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse" data-page-node-id="WeTdb8QfKnkYmGjif4wfQ0">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#2d5689" data-page-node-id="gz8P3rawVpqmEUvFgeLZdu"/>
+            </marker>
+            <marker id="arrow-active" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse" data-page-node-id="lSXSnmHAptvABqQBvYNV9r">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#FEB67E" data-page-node-id="R1d9a0FjpIzSk4BH789RtW"/>
+            </marker>
+            <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%" data-page-node-id="HKOo8swwTohQYKcqe0jF2j">
+              <feGaussianBlur stdDeviation="2" result="blur" data-page-node-id="wffwfBVg3i4Dx1AbNABwVN"/>
+              <feMerge data-page-node-id="SKZ4DdvFdVES9qiMY1zDGG"><feMergeNode in="blur" data-page-node-id="gxkebNtNLiVPgjwsTdsA5J"/><feMergeNode in="SourceGraphic" data-page-node-id="FX4SjZb7XKk8u40Zk2MDsY"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- Layer backgrounds -->
+          <g id="layer-bands" data-page-node-id="0SxtbxUnKc34wB8KGoqzdi"></g>
+          <!-- Layer labels -->
+          <g id="layer-labels" data-page-node-id="5YLDHKuN2CyTyBn7On8wtI"></g>
+          <!-- Edges -->
+          <g id="edges-group" data-page-node-id="1yTsWojoJTOjsKN9mqyKuR"></g>
+          <!-- Nodes -->
+          <g id="nodes-group" data-page-node-id="GAGqqUeCnp8Ym7MLjwGu08"></g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <aside class="detail-panel" id="detailPanel" data-page-node-id="qaxIcv1C7nBSrgUU7haEDt">
+      <div class="detail-header" data-page-node-id="Tv23RmVw6ys5qja57e2vkv">
+        <h3 data-page-node-id="x8tDr9E5Gs0Fjn0zeMHVd9">📋 步骤说明 · Step Inspector</h3>
+        <button class="clear-btn" id="clearBtn" data-page-node-id="FYIlhJPwuYWdGCGTPWx55w">清空选择</button>
+      </div>
+      <div id="detailContent" data-page-node-id="XteWtMjviWUXvcbqFqsGdj">
+        <div class="empty-detail" data-page-node-id="cIkcyrwEqBn4nXwBCX1ZvQ">
+          <div class="icon" data-page-node-id="lBWZpTndtyACkMCiZqy6tm">🎬</div>
+          <strong style="color: var(--orange); font-size: 14px;" data-page-node-id="w0abGy8VOuLULyx6Kg5JtD">开始数据流向演示</strong><br data-page-node-id="g6nXXUTi4YGAVxKZQV9HHf"><br data-page-node-id="mkLfuCh0zteLLBS9sL2ZAt">
+          上方选择场景，点击 <strong style="color: var(--orange);" data-page-node-id="7tVh3nGAKxJzDGfvS16eKo">▶ 自动播放</strong>，<br data-page-node-id="Tv23RmVw6ys5qja57e2vkv">
+          即可看到每个模块的逐次调用过程：<br data-page-node-id="Tv23RmVw6ys5qja57e2vkv"><br data-page-node-id="Tv23RmVw6ys5qja57e2vkv">
+          <span style="color: var(--text-3); font-size: 11px;" data-page-node-id="w0abGy8VOuLULyx6Kg5JtD">每一步右侧都会显示：</span><br data-page-node-id="Tv23RmVw6ys5qja57e2vkv">
+          <span style="color: var(--text-2); font-size: 12px;" data-page-node-id="Tv23RmVw6ys5qja57e2vkv">• 来源模块 / 目标模块</span><br data-page-node-id="Tv23RmVw6ys5qja57e2vkv">
+          <span style="color: var(--text-2); font-size: 12px;" data-page-node-id="Tv23RmVw6ys5qja57e2vkv">• 这一步干了什么</span><br data-page-node-id="Tv23RmVw6ys5qja57e2vkv">
+          <span style="color: var(--text-2); font-size: 12px;" data-page-node-id="Tv23RmVw6ys5qja57e2vkv">• 技术要点</span><br data-page-node-id="Tv23RmVw6ys5qja57e2vkv"><br data-page-node-id="Tv23RmVw6ys5qja57e2vkv">
+          <span style="color: var(--text-3); font-size: 11px;" data-page-node-id="w0abGy8VOuLULyx6Kg5JtD">点击任意节点也可查看其上下游</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ============ BOTTOM BAR ============ -->
+  <div class="bottom-bar" data-page-node-id="OcN4lb4d4td2znywZGvDk7">
+    <div class="step-bar" data-page-node-id="CF3VLpDfsA8w5YIsB2UKQD">
+      <div class="step-info" data-page-node-id="wIK2QtNPFA6WIvmzKeT0p5">
+        <div data-page-node-id="cML0eem1ynBEWX2rB3YcBu">
+          <strong id="scenarioName" data-page-node-id="yyASwLnjFJlN3ZyZG0GD4a">全局视图</strong>
+          <span id="stepDesc" style="color: var(--text-3); margin-left: 8px;" data-page-node-id="3tYfcHNOjGbuUGAZkTikEh"></span>
+        </div>
+        <div class="step-counter" id="stepCounter" data-page-node-id="FIOXtRpVxDlP25V4HahuUH">— / —</div>
+      </div>
+      <div class="progress" data-page-node-id="F0ny5xlAIRwjT5TPyFU1av"><div class="progress-fill" id="progressFill" style="width: 0%;" data-page-node-id="D52SArGaBIhWWRvVJJzc5A"></div></div>
+    </div>
+    <div class="legend" data-page-node-id="cdH1HhlAeeVegQOjzMrb4T">
+      <div class="legend-title" data-page-node-id="BJ12VRC1dTqMb9GHNpoxtb">图例 · Legend</div>
+      <div class="legend-grid" data-page-node-id="CYaCSrEu4l91JyGILN4Sm7">
+        <div class="legend-item" data-page-node-id="SztGZkur4fabHl3bwlWDBf"><span class="legend-swatch" style="background: rgba(90,130,191,0.4); border: 1px solid #5a82bf;" data-page-node-id="RsBHWhrEExOgE3Ef6KnS6S"></span>控制器</div>
+        <div class="legend-item" data-page-node-id="EWkQGEZMI2wROlj9m2F0T2"><span class="legend-swatch" style="background: rgba(139,92,246,0.4); border: 1px solid #8b5cf6;" data-page-node-id="wQXD2ozvJfngIFSBi4CFIO"></span>状态机</div>
+        <div class="legend-item" data-page-node-id="600xSI8F265bMYoNZBHCzP"><span class="legend-swatch" style="background: rgba(236,72,153,0.4); border: 1px solid #ec4899;" data-page-node-id="A3CiYtHFwolZzYdrzLQ5Ll"></span>技能</div>
+        <div class="legend-item" data-page-node-id="y5dOOlCSYF8fDSvMmvCs3o"><span class="legend-swatch" style="background: rgba(245,158,11,0.4); border: 1px solid #f59e0b;" data-page-node-id="9hYFc8ZI01VGmGuzox0719"></span>Buff</div>
+        <div class="legend-item" data-page-node-id="35V2ImG7NXDkN7MheW4Rui"><span class="legend-swatch" style="background: rgba(6,182,212,0.4); border: 1px solid #06b6d4;" data-page-node-id="aOZBD5nS4USMKKIbBPdzsk"></span>数据</div>
+        <div class="legend-item" data-page-node-id="NVg3QXa8HpCPGeQ3EHVuse"><span class="legend-swatch" style="background: rgba(16,185,129,0.4); border: 1px solid #10b981;" data-page-node-id="6T3du5UOrK9jZKVfgtgH77"></span>配置</div>
+        <div class="legend-item" data-page-node-id="3Nt8sUYsUcOcZB7tku4fxv"><span class="legend-swatch" style="background: rgba(100,116,139,0.4); border: 1px solid #64748b;" data-page-node-id="bXOvZYvNUdiBXgGXYcTVUs"></span>工具</div>
+        <div class="legend-item" data-page-node-id="ZPUNucfUWhvfXQxuw6BgyT"><span class="legend-line solid" data-page-node-id="CUKumoeFMGExPvh06QyO8Z"></span>直接调用</div>
+        <div class="legend-item" data-page-node-id="AHyuc6iUJJoK5AED18jhJN"><span class="legend-line dashed" data-page-node-id="HxrlNcGOgMFmeqfBNgcsDc"></span>配置/间接</div>
+        <div class="legend-item" data-page-node-id="8QzINbZ4z4rXkMZVTtI5EG"><span class="legend-line active" data-page-node-id="OcRLS9RGWwrybXDAcfiyJF"></span>激活流向</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer" data-page-node-id="vllH5Z1fDXcw9rFW7fNo4k">
+    BattleFramework Flow · 蔡振立 © 2026 · Unity 2022.3.62f2c1
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip" data-page-node-id="iXBdCNCvfz1w0QtYOLlE2A"></div>
+
+<script>
+// ============================================
+// NODE DEFINITIONS
+// ============================================
+const NODE_W = 170;
+const NODE_H = 60;
+
+const LAYER_INFO = [
+  { y: 40,   name: 'L0 · 启动层',       sub: '场景入口' },
+  { y: 130,  name: 'L1 · 控制层',        sub: 'MonoBehaviour' },
+  { y: 220,  name: 'L2 · 状态机',        sub: '纯 C# FSM' },
+  { y: 310,  name: 'L3 · 技能系统',      sub: 'Skill Runtime' },
+  { y: 400,  name: 'L4 · Buff 系统',     sub: '零 GC Pooled' },
+  { y: 490,  name: 'L5 · 数据层',        sub: '纯 C# 模型' },
+  { y: 580,  name: 'L6 · 配置层',        sub: 'CSV → 内存' },
+  { y: 670,  name: 'L7 · 工具与常量',    sub: 'Helper / Const' }
+];
+
+// Node positions (centers within their layers)
+const nodes = {
+  // L0
+  GS:  { label: 'GameStart',            sub: '游戏启动器',         id: 'GS',  layer: 0, x: 850,  y: 70,    type: 'controller' },
+
+  // L1 (spread across)
+  VJ:  { label: 'VirtualJoystick',      sub: '虚拟摇杆',           id: 'VJ',  layer: 1, x: 220,  y: 160,   type: 'controller' },
+  MBC: { label: 'MoveBaseController',   sub: '移动基类',           id: 'MBC', layer: 1, x: 410,  y: 160,   type: 'controller' },
+  CUC: { label: 'CombatUnitController', sub: '战斗控制器 · 中间层',id: 'CUC', layer: 1, x: 600,  y: 160,   type: 'controller' },
+  WC:  { label: 'WarrorController',     sub: '玩家控制器',         id: 'WC',  layer: 1, x: 790,  y: 160,   type: 'controller' },
+  ANC: { label: 'AttackNpcController',  sub: '怪物控制器',         id: 'ANC', layer: 1, x: 980,  y: 160,   type: 'controller' },
+  UBC: { label: 'UnitBuffComponent',    sub: 'Buff 接线组件',      id: 'UBC', layer: 1, x: 1170, y: 160,   type: 'controller' },
+  EDOT:{ label: 'EffectDot',            sub: '特效绑点',           id: 'EDOT',layer: 1, x: 1380, y: 160,   type: 'controller' },
+
+  // L2
+  CSM: { label: 'CombatStateMachine',   sub: '状态机核心',         id: 'CSM', layer: 2, x: 600,  y: 250,   type: 'fsm' },
+  ICS: { label: 'ICombatState',         sub: '接口 + 七个状态',    id: 'ICS', layer: 2, x: 790,  y: 250,   type: 'fsm' },
+
+  // L3
+  SK:  { label: 'Skill',                sub: '技能运行时',         id: 'SK',  layer: 3, x: 600,  y: 340,   type: 'skill' },
+  SKD: { label: 'SkillData',            sub: '技能配置数据',       id: 'SKD', layer: 3, x: 790,  y: 340,   type: 'skill' },
+
+  // L4
+  COP: { label: 'ClassObjectPool',      sub: '通用对象池',         id: 'COP', layer: 4, x: 220,  y: 430,   type: 'buff' },
+  BSP: { label: 'BuffSystemPooled',     sub: 'Buff 管理器',        id: 'BSP', layer: 4, x: 600,  y: 430,   type: 'buff' },
+  BF:  { label: 'Buff',                 sub: '运行时载体',         id: 'BF',  layer: 4, x: 790,  y: 430,   type: 'buff' },
+  BFD: { label: 'BuffData / BuffMsg',   sub: '配置 / 消息',        id: 'BFD', layer: 4, x: 980,  y: 430,   type: 'buff' },
+
+  // L5
+  BU:  { label: 'BaseUnit',             sub: '基础属性',           id: 'BU',  layer: 5, x: 220,  y: 520,   type: 'data' },
+  CU:  { label: 'CombatUnit',           sub: '战斗数据',           id: 'CU',  layer: 5, x: 790,  y: 520,   type: 'data' },
+  WR:  { label: 'Warrior',              sub: '玩家数据',           id: 'WR',  layer: 5, x: 980,  y: 520,   type: 'data' },
+  AN:  { label: 'AttackNpc',            sub: '怪物数据',           id: 'AN',  layer: 5, x: 1170, y: 520,   type: 'data' },
+
+  // L6
+  CM:  { label: 'ConfigManager',        sub: '配置门面',           id: 'CM',  layer: 6, x: 220,  y: 610,   type: 'config' },
+  MGR: { label: 'DataManager 集群',     sub: 'Skill / Warrior / Npc / EffectMsg', id: 'MGR', layer: 6, x: 790, y: 610, type: 'config' },
+  FXM: { label: 'EffectManager',        sub: '特效管理器',         id: 'FXM', layer: 6, x: 1380, y: 610,   type: 'config' },
+
+  // L7
+  CH:  { label: 'CommonHelper',         sub: '工具类',             id: 'CH',  layer: 7, x: 220,  y: 700,   type: 'util' },
+  BC:  { label: 'BattleConst',          sub: '战斗常量',           id: 'BC',  layer: 7, x: 1380, y: 700,   type: 'util' }
+};
+
+// Edges with explicit IDs for clarity
+const edges = [
+  // ──────── Solid: 直接调用 ────────
+  { id: 'e01', from: 'GS',  to: 'WC',   type: 'solid', label: '生成装配' },
+  { id: 'e02', from: 'GS',  to: 'ANC',  type: 'solid', label: '生成装配' },
+  { id: 'e03', from: 'MBC', to: 'CUC',  type: 'solid', label: '继承' },
+  { id: 'e04', from: 'CUC', to: 'WC',   type: 'solid', label: '绑定' },
+  { id: 'e05', from: 'CUC', to: 'ANC',  type: 'solid', label: '绑定' },
+  { id: 'e06', from: 'CUC', to: 'UBC',  type: 'solid', label: '自动挂载' },
+  { id: 'e07', from: 'CUC', to: 'CSM',  type: 'solid', label: '每帧 Tick' },
+  { id: 'e08', from: 'CSM', to: 'ICS',  type: 'solid', label: '状态切换' },
+  { id: 'e09', from: 'CUC', to: 'SK',   type: 'solid', label: '索敌/施法' },
+  { id: 'e10', from: 'SK',  to: 'SKD',  type: 'solid', label: '查询' },
+  { id: 'e11', from: 'UBC', to: 'BSP',  type: 'solid', label: 'AddBuff / DoT' },
+  { id: 'e12', from: 'BSP', to: 'BF',   type: 'solid', label: '创建' },
+  { id: 'e13', from: 'BSP', to: 'COP',  type: 'solid', label: '取对象' },
+  { id: 'e14', from: 'BF',  to: 'BFD',  type: 'solid', label: '配置引用' },
+  { id: 'e15', from: 'BU',  to: 'CU',   type: 'solid', label: '继承' },
+  { id: 'e16', from: 'WR',  to: 'CU',   type: 'solid', label: '继承' },
+  { id: 'e17', from: 'AN',  to: 'CU',   type: 'solid', label: '继承' },
+  { id: 'e18', from: 'CM',  to: 'MGR',  type: 'solid', label: '加载' },
+  { id: 'e19', from: 'CM',  to: 'FXM',  type: 'solid', label: '加载' },
+
+  // ──────── Dashed: 配置/间接 ────────
+  { id: 'e20', from: 'GS',  to: 'CU',   type: 'dashed', label: 'new W/N' },
+  { id: 'e21', from: 'CUC', to: 'CU',   type: 'dashed', label: '持有 CurCU' },
+  { id: 'e22', from: 'SKD', to: 'MGR',  type: 'dashed', label: 'CSV' },
+  { id: 'e23', from: 'BFD', to: 'MGR',  type: 'dashed', label: 'CSV' },
+  { id: 'e24', from: 'VJ',  to: 'WC',   type: 'dashed', label: '摇杆输入' },
+  { id: 'e25', from: 'FXM', to: 'EDOT', type: 'dashed', label: '绑点查询' },
+  { id: 'e26', from: 'BC',  to: 'CUC',  type: 'dashed', label: 'Tag/Layer' }
+];
+
+const edgeById = {};
+edges.forEach(e => edgeById[e.id] = e);
+
+// Node descriptions for inspector
+const descriptions = {
+  GS:   '游戏启动入口。负责场景初始化与战斗单元装配：创建 Warrior/AttackNpc 数据、绑定对应 Controller、挂载 UnitBuffComponent。',
+  VJ:   '虚拟摇杆 UI 组件。捕获玩家方向输入并转换为移动向量，注入到 WarrorController。',
+  MBC:  '所有移动控制器的基类，封装通用位移、转向、A* 寻路等基础能力。CombatUnitController 继承自它。',
+  CUC:  '战斗单元控制器的中间层。统一管理状态机 Tick、技能施法、自动挂载 UnitBuffComponent。每帧驱动 CSM.Tick()，持有 CurCombatUnit 引用。',
+  WC:   '玩家控制器（Warror，拼写源自 Warrior）。由 CUC 派生，处理玩家输入、施法与命中。',
+  ANC:  '怪物控制器。由 CUC 派生，AI 行为、寻敌、释放技能。',
+  UBC:  'Buff 接线组件。挂载在 CUC 上，对外屏蔽 BuffSystem 的实现细节，对内转发 AddBuff / DoT 结算请求。',
+  EDOT: '特效绑点。挂在角色骨骼上，由 EffectManager 通过绑点名称查找并播放特效。',
+  CSM:  '战斗状态机核心，纯 C# 实现，不依赖 MonoBehaviour。维护当前状态，每帧调用 Tick()。',
+  ICS:  '状态接口与七个具体状态类（待机、追击、施法、受击、死亡等）。状态切换由 CSM 调度。',
+  SK:   '技能运行时对象，处理技能冷却、命中判定、伤害结算。由 CUC 调用释放。',
+  SKD:  '技能配置数据，从 SkillDataManager（CSV）加载，定义伤害、CD、特效绑点等。',
+  COP:  '通用对象池。零 GC 关键：Buff 创建/回收复用对象，避免频繁 new。',
+  BSP:  'Buff 池化系统，纯 C#，零 GC。管理 Buff 创建、DoT/Tick 结算、过期回收。',
+  BF:   'Buff 运行时载体，持有 BuffData 配置引用，记录叠加层数、剩余时间。',
+  BFD:  'Buff 配置数据（BuffData）与 Buff 消息（BuffMsg），从 CSV 加载。',
+  BU:   '基础属性实体，提供最底层字段（id、name 等）。',
+  CU:   '战斗数据基类，封装 HP/MP/攻击力等通用属性。被 Warrior 与 AttackNpc 继承。',
+  WR:   '玩家数据类，继承 CombatUnit，扩展玩家特有属性与逻辑。',
+  AN:   '怪物数据类，继承 CombatUnit，扩展怪物 AI 参数与掉落。',
+  CM:   '配置门面，对外暴露统一接口。内部按需加载 SkillDataManager、WarriorDataManager、AttackNpcDataManager、EffectMsg。',
+  MGR:  '数据管理集群：SkillDataManager / WarriorDataManager / AttackNpcDataManager / EffectMsg，统一管理 CSV 加载与查询。',
+  FXM:  '特效管理器，按绑点名称（EffectDot）创建并播放特效。',
+  CH:   '通用工具类，提供数学、字符串、随机数等常用静态方法。',
+  BC:   '战斗常量类，统一管理 Tag、Layer、动画状态名等字符串，避免硬编码散落各处。'
+};
+
+// ============================================
+// SCENARIOS
+// ============================================
+const scenarios = {
+  all: {
+    name: '全局视图',
+    desc: '展示所有节点与连接',
+    nodes: Object.keys(nodes),
+    edges: edges.map(e => e.id),
+    steps: null
+  },
+  boot: {
+    name: '🚀 启动装配流程',
+    desc: 'GameStart → 创建数据 → 装配控制器 → 加载配置',
+    steps: [
+      {
+        desc: '① GameStart 启动场景',
+        title: 'GameStart 启动场景',
+        nodes: ['GS'], edges: [],
+        from: null,
+        cur: { id: 'GS', label: 'GameStart', sub: '游戏启动器', role: '场景入口 / 总装配枢纽' },
+        description: '游戏启动后，GameStart 类作为场景入口被 Unity 自动加载。其 Awake() / Start() 接管整个战斗场景的初始化工作，是所有战斗单元创建的源头。',
+        techPoints: [
+          'GameStart 挂载在场景根 GameObject 上',
+          '持有玩家与怪物的 prefab 引用',
+          '读取 BattleConst 中的生成点配置'
+        ]
+      },
+      {
+        desc: '② 创建玩家与怪物数据 (new W/N)',
+        title: '创建玩家与怪物数据',
+        nodes: ['GS', 'WR', 'AN'], edges: ['e20'],
+        from: { id: 'GS', label: 'GameStart', sub: '游戏启动器', role: '发起实例化' },
+        to: { id: 'CU', label: 'CombatUnit', sub: '战斗数据', role: '被实例化的数据对象' },
+        description: 'GameStart 调用 `new Warrior()` 与 `new AttackNpc()` 创建数据实体。这两个对象继承自 CombatUnit，分别扩展玩家与怪物特有的字段（攻击力、HP、经验值等）。',
+        techPoints: [
+          'WR / AN 是纯 C# 类（POCO），不挂 MonoBehaviour',
+          '数据创建后由 GameStart 持有引用',
+          '后续 Controller 会读取这些数据并驱动战斗'
+        ]
+      },
+      {
+        desc: '③ 数据继承 BaseUnit → CombatUnit',
+        title: '数据继承 BaseUnit → CombatUnit',
+        nodes: ['BU', 'CU', 'WR', 'AN'], edges: ['e15', 'e16', 'e17'],
+        from: { id: 'BU', label: 'BaseUnit', sub: '基础属性', role: '最底层实体' },
+        to:   { id: 'CU', label: 'CombatUnit', sub: '战斗数据', role: '中层抽象' },
+        description: '通过继承链 BaseUnit ← CombatUnit ← { Warrior, AttackNpc }，每一层叠加新能力。WR 与 AN 共享 CU 的所有战斗字段，避免重复定义。',
+        techPoints: [
+          'BU 提供 id / name 等基础字段',
+          'CU 扩展 HP / MP / ATK 等战斗字段',
+          'WR/AN 分别添加玩家/怪物特有的状态'
+        ]
+      },
+      {
+        desc: '④ 装配控制器 (继承 MBC → CUC)',
+        title: '装配控制器：MBC → CUC',
+        nodes: ['MBC', 'CUC', 'WC', 'ANC'], edges: ['e03'],
+        from: { id: 'MBC', label: 'MoveBaseController', sub: '移动基类', role: '通用位移能力' },
+        to:   { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: '战斗逻辑中枢' },
+        description: 'CombatUnitController 继承自 MoveBaseController，获得位移、转向等通用能力，并在此基础上叠加战斗相关的 Tick / 施法 / Buff 管理。',
+        techPoints: [
+          'MBC 是 MonoBehaviour，封装通用 Transform 操作',
+          'CUC 覆盖战斗相关的 Update 逻辑',
+          'WC / ANC 继承 CUC，分别实现玩家/AI 行为'
+        ]
+      },
+      {
+        desc: '⑤ GS 生成 WC 与 ANC',
+        title: 'GameStart 生成控制器',
+        nodes: ['GS', 'WC', 'ANC'], edges: ['e01', 'e02'],
+        from: { id: 'GS', label: 'GameStart', sub: '游戏启动器', role: '场景装配' },
+        to:   { id: 'WC', label: 'WarrorController', sub: '玩家控制器', role: '玩家行为入口' },
+        description: 'GameStart 通过 AddComponent 或者 GameObject.Instantiate 方式创建 WarrorController 与 AttackNpcController，并将上一步创建的数据对象注入到 Controller 中。',
+        techPoints: [
+          'WC 接收 Warrior 数据引用',
+          'ANC 接收 AttackNpc 数据引用 + AI 参数',
+          'Controller 持有对 CombatUnit 的 CurCombatUnit 引用'
+        ]
+      },
+      {
+        desc: '⑥ CUC 绑定到 WC / ANC',
+        title: 'CUC 绑定到 WC / ANC',
+        nodes: ['CUC', 'WC', 'ANC'], edges: ['e04', 'e05'],
+        from: { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: '中间层服务' },
+        to:   { id: 'WC', label: 'WarrorController', sub: '玩家控制器', role: '上层表现' },
+        description: 'CUC 作为战斗逻辑的中间层，被 WC 与 ANC 显式绑定。它对外暴露施法、索敌、Buff 等接口，对内驱动状态机和技能系统。',
+        techPoints: [
+          'WC.Awake() 中调用 CUC.Bind(this)',
+          'CUC 缓存所有战斗接口的引用',
+          'WC 与 ANC 通过虚函数 hook CUC 事件'
+        ]
+      },
+      {
+        desc: '⑦ CUC 自动挂载 UnitBuffComponent',
+        title: 'CUC 自动挂载 UnitBuffComponent',
+        nodes: ['CUC', 'UBC'], edges: ['e06'],
+        from: { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: 'Buff 入口接线' },
+        to:   { id: 'UBC', label: 'UnitBuffComponent', sub: 'Buff 接线组件', role: '对外 Buff 接口' },
+        description: 'CUC 在初始化时通过 AddComponent 自动挂载 UnitBuffComponent。这个组件对外屏蔽了 BuffSystemPooled 的实现细节，对内转发 AddBuff / DoT 结算请求。',
+        techPoints: [
+          'UBC 内部持有 BuffSystemPooled 引用',
+          '外部只通过 UBC.AddBuff() 调用，无需关心对象池',
+          'CUC 每帧调用 UBC.Tick() 驱动 DoT 结算'
+        ]
+      },
+      {
+        desc: '⑧ CUC 持有 CurCombatUnit',
+        title: 'CUC 持有 CurCombatUnit',
+        nodes: ['CUC', 'CU'], edges: ['e21'],
+        from: { id: 'CU', label: 'CombatUnit', sub: '战斗数据', role: '数据对象' },
+        to:   { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: '逻辑控制器' },
+        description: 'CUC 通过虚线引用持有当前 Controller 对应的 CombatUnit 数据对象。所有战斗逻辑都通过 CurCombatUnit 读写数据，避免直接修改 Controller 内部状态。',
+        techPoints: [
+          'CurCombatUnit 是 CUC 的虚属性',
+          'WC.CurCombatUnit 返回 Warrior',
+          'ANC.CurCombatUnit 返回 AttackNpc'
+        ]
+      },
+      {
+        desc: '⑨ 加载 ConfigManager / DataManagers',
+        title: '加载 ConfigManager / DataManagers',
+        nodes: ['CM', 'MGR', 'FXM'], edges: ['e18', 'e19'],
+        from: { id: 'CM', label: 'ConfigManager', sub: '配置门面', role: '统一配置入口' },
+        to:   { id: 'MGR', label: 'DataManager 集群', sub: 'Skill / Warrior / Npc / EffectMsg', role: '数据管理集群' },
+        description: 'ConfigManager 启动时按需加载各类 DataManager：SkillDataManager 解析技能 CSV，WarriorDataManager / AttackNpcDataManager 解析角色 CSV，EffectMsg 解析特效配置。同时加载 EffectManager。',
+        techPoints: [
+          'CM 是单例 Facade，对外屏蔽 DataManager 细节',
+          'CSV 加载后驻留内存，供运行时 O(1) 查询',
+          'FXM 在 CM 加载时同步初始化特效缓存'
+        ]
+      },
+      {
+        desc: '⑩ BattleConst 提供 Tag/Layer 常量',
+        title: 'BattleConst 提供 Tag/Layer 常量',
+        nodes: ['BC', 'CUC'], edges: ['e26'],
+        from: { id: 'BC', label: 'BattleConst', sub: '战斗常量', role: '常量集中地' },
+        to:   { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: '使用方' },
+        description: 'BattleConst 集中存放 Tag / Layer / 动画状态名 / Skill ID 等字符串常量。Controller 通过它进行物理比较、动画切换、技能查询，避免硬编码散落各处。',
+        techPoints: [
+          'BattleConst 是静态类',
+          'Tag 比对：gameObject.CompareTag(BattleConst.TAG_ENEMY)',
+          '动画触发：animator.SetTrigger(BattleConst.ANIM_ATTACK)'
+        ]
+      }
+    ]
+  },
+  tick: {
+    name: '⚔️ 战斗 Tick 循环',
+    desc: 'VJ → WC → CUC → CSM → ICS',
+    steps: [
+      {
+        desc: '① 虚拟摇杆等待玩家输入',
+        title: '虚拟摇杆等待玩家输入',
+        nodes: ['VJ'], edges: [],
+        cur: { id: 'VJ', label: 'VirtualJoystick', sub: '虚拟摇杆', role: '玩家输入入口' },
+        description: 'VirtualJoystick 是挂在 UI Canvas 上的 MonoBehaviour。它持续监听鼠标/触摸拖拽事件，将屏幕坐标转换为虚拟方向向量。',
+        techPoints: [
+          '实现 IDragHandler / IEndDragHandler 接口',
+          '输出归一化的 (-1, 1) 方向向量',
+          '玩家松手时归零并触发 OnPointerUp'
+        ]
+      },
+      {
+        desc: '② 摇杆向量注入 WarrorController',
+        title: '摇杆向量注入 WarrorController',
+        nodes: ['VJ', 'WC'], edges: ['e24'],
+        from: { id: 'VJ', label: 'VirtualJoystick', sub: '虚拟摇杆', role: '输入源' },
+        to:   { id: 'WC', label: 'WarrorController', sub: '玩家控制器', role: '接收输入' },
+        description: '虚拟摇杆通过 UnityEvent / C# Event / 直接调用，将方向向量注入到 WarrorController。WC 在 Update() 中读取这个向量并交给 CUC 处理。',
+        techPoints: [
+          'VJ.OnDrag → 实时写入 WC.MoveDir',
+          'VJ.OnPointerUp → WC.MoveDir = Vector2.zero',
+          'WC 不直接消费向量，先缓存给 CUC'
+        ]
+      },
+      {
+        desc: '③ WC 转发到 CombatUnitController',
+        title: 'WC 转发到 CombatUnitController',
+        nodes: ['WC', 'CUC'], edges: ['e04'],
+        from: { id: 'WC', label: 'WarrorController', sub: '玩家控制器', role: '中转' },
+        to:   { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: '消费方' },
+        description: 'WC 在 Update 中调用 CUC.HandleMoveInput(direction)，将摇杆方向转发到战斗层。CUC 决定是否接受输入（例如眩晕状态下忽略移动）。',
+        techPoints: [
+          'CUC 内部检查当前状态（Stun/Silence 等）',
+          '状态允许时调用 MBC.Move(direction)',
+          '状态不允许时静默丢弃输入'
+        ]
+      },
+      {
+        desc: '④ CUC 每帧 Tick 驱动状态机',
+        title: 'CUC 每帧 Tick 驱动状态机',
+        nodes: ['CUC', 'CSM'], edges: ['e07'],
+        from: { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: 'Tick 发起者' },
+        to:   { id: 'CSM', label: 'CombatStateMachine', sub: '状态机核心', role: '状态调度' },
+        description: 'CUC.Update() 每帧调用 CSM.Tick(deltaTime)。状态机遍历当前状态的 OnUpdate()，根据条件决定是否切换状态。这是战斗循环的核心节拍。',
+        techPoints: [
+          'CSM 是纯 C# 类，无 MonoBehaviour 依赖',
+          '状态切换由 ChangeState<T>() 触发',
+          '每帧统一节拍，便于调试与回放'
+        ]
+      },
+      {
+        desc: '⑤ CSM 调度当前 ICombatState',
+        title: 'CSM 调度当前 ICombatState',
+        nodes: ['CSM', 'ICS'], edges: ['e08'],
+        from: { id: 'CSM', label: 'CombatStateMachine', sub: '状态机核心', role: '调度' },
+        to:   { id: 'ICS', label: 'ICombatState', sub: '接口 + 7 状态类', role: '具体行为' },
+        description: 'CSM 将 Tick 派发到当前活动的 ICombatState 实例（IdleState / ChaseState / CastState / HitState / DeathState 等）。每个状态类独立实现 OnEnter / OnUpdate / OnExit。',
+        techPoints: [
+          '状态类实现 ICombatState 接口',
+          'OnEnter 进入时初始化（播放动画、记录时间）',
+          'OnUpdate 每帧执行逻辑 + 检查转换条件'
+        ]
+      },
+      {
+        desc: '⑥ MoveBaseController 提供位移能力',
+        title: 'MoveBaseController 提供位移能力',
+        nodes: ['MBC', 'CUC', 'WC'], edges: ['e03'],
+        from: { id: 'MBC', label: 'MoveBaseController', sub: '移动基类', role: '能力提供者' },
+        to:   { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: '能力使用者' },
+        description: 'MoveBaseController 封装了 Transform.Translate、Rigidbody.MovePosition、A* 寻路等通用位移能力。CUC 继承它后调用 Move(dir) 即可让角色移动，无需关心底层实现。',
+        techPoints: [
+          'MBC.Move(dir) 自动处理朝向旋转',
+          '支持速度倍率（如减速/加速 Buff）',
+          'CUC 在状态机允许时调用 Move'
+        ]
+      }
+    ]
+  },
+  skill: {
+    name: '💥 技能释放流程',
+    desc: 'WC → CUC → SK → SKD ← MGR (CSV)',
+    steps: [
+      {
+        desc: '① 玩家触发技能输入',
+        title: '玩家触发技能输入',
+        nodes: ['WC'], edges: [],
+        cur: { id: 'WC', label: 'WarrorController', sub: '玩家控制器', role: '输入接收' },
+        description: '玩家点击技能按钮或按下快捷键，UI 层触发事件并调用 WarrorController.OnSkillInput(skillId)。WC 收到输入后校验冷却/MP 后请求 CUC 施法。',
+        techPoints: [
+          '技能按钮绑定 UnityEvent',
+          'WC 内部维护技能 CD 字典',
+          '校验通过后调用 CUC.CastSkill(skillId)'
+        ]
+      },
+      {
+        desc: '② WC 请求 CUC 索敌/施法',
+        title: 'WC 请求 CUC 索敌/施法',
+        nodes: ['WC', 'CUC'], edges: ['e04'],
+        from: { id: 'WC', label: 'WarrorController', sub: '玩家控制器', role: '请求发起' },
+        to:   { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: '执行者' },
+        description: 'WC 调用 CUC.CastSkill(skillId)。CUC 接管后先调用内部的 FindTarget() 索敌，再根据目标与朝向决定施法方向（朝向型 / 范围型 / 弹道型）。',
+        techPoints: [
+          'FindTarget 按 SkillData.TargetType 过滤',
+          '朝向型技能无需目标，直接播动画',
+          '返回 false 时施法失败（保持原状态）'
+        ]
+      },
+      {
+        desc: '③ CUC 调用 Skill 运行时',
+        title: 'CUC 调用 Skill 运行时',
+        nodes: ['CUC', 'SK'], edges: ['e09'],
+        from: { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: '发起施法' },
+        to:   { id: 'SK', label: 'Skill', sub: '技能运行时', role: '执行施法' },
+        description: 'CUC 通过 Skill 工厂或对象池拿到 Skill 实例，调用 skill.Init(skillData, owner, target) 并启动协程驱动技能生命周期（起手 → 判定 → 命中 → 收招）。',
+        techPoints: [
+          'Skill 是纯 C# 对象，可放入对象池',
+          'Coroutine 驱动时间轴',
+          'OnCast / OnHit / OnFinish 三个回调'
+        ]
+      },
+      {
+        desc: '④ Skill 加载 SkillData 配置',
+        title: 'Skill 加载 SkillData 配置',
+        nodes: ['SK', 'SKD'], edges: ['e10'],
+        from: { id: 'SK', label: 'Skill', sub: '技能运行时', role: '运行时' },
+        to:   { id: 'SKD', label: 'SkillData', sub: '技能配置数据', role: '配置数据' },
+        description: 'Skill 在初始化时根据 SkillId 从 SkillDataManager 中查询 SkillData，获取伤害、CD、特效绑点、判定盒大小等静态配置。',
+        techPoints: [
+          'SkillData 是 ScriptableObject 或普通类',
+          '包含伤害公式、CD、特效路径、判定参数',
+          '运行时只读，避免修改污染全局配置'
+        ]
+      },
+      {
+        desc: '⑤ SkillData 从 MGR (CSV) 查询数据',
+        title: 'SkillData 从 MGR (CSV) 查询',
+        nodes: ['SKD', 'MGR'], edges: ['e22'],
+        from: { id: 'SKD', label: 'SkillData', sub: '技能配置数据', role: '数据消费者' },
+        to:   { id: 'MGR', label: 'DataManager 集群', sub: '数据管理集群', role: '数据源' },
+        description: 'SkillData 通过虚线引用从 SkillDataManager 拉取底层 CSV 数据。CSV 在 ConfigManager 启动时已被解析为内存字典，查询是 O(1) 操作。',
+        techPoints: [
+          'CSV 解析后缓存为 Dictionary<int, RowData>',
+          '修改 CSV 需重启游戏（运行时热重载可选）',
+          'SkillData 是数据快照，与 CSV 解耦'
+        ]
+      },
+      {
+        desc: '⑥ Skill 命中目标',
+        title: 'Skill 命中目标',
+        nodes: ['SK', 'CUC'], edges: ['e09'],
+        from: { id: 'SK', label: 'Skill', sub: '技能运行时', role: '命中判定' },
+        to:   { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: '接收命中结果' },
+        description: 'Skill 在命中判定阶段调用 OnHit(target)。CUC 通过回调收到命中事件后，扣除目标 HP，并通过 UnitBuffComponent 触发对应 Buff（如灼烧、减速）。',
+        techPoints: [
+          '命中判定使用 Physics.OverlapBox',
+          '伤害结算走 CUC.TakeDamage()',
+          'Buff 附加通过 UBC.AddBuff(buffId, source)'
+        ]
+      },
+      {
+        desc: '⑦ 触发 AddBuff 进入 Buff 系统',
+        title: '触发 AddBuff 进入 Buff 系统',
+        nodes: ['CUC', 'UBC'], edges: ['e06'],
+        from: { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: 'Buff 发起' },
+        to:   { id: 'UBC', label: 'UnitBuffComponent', sub: 'Buff 接线组件', role: 'Buff 转发' },
+        description: 'CUC 调用 UBC.AddBuff(buffId, source, target)。UBC 内部转发到 BuffSystemPooled，进入零 GC 的 Buff 创建/叠加流程。',
+        techPoints: [
+          '同一 BuffId 默认刷新时长而非叠加',
+          'UBC 屏蔽 BuffSystem 实现细节',
+          '返回 Buff 句柄用于后续查询'
+        ]
+      }
+    ]
+  },
+  buff: {
+    name: '🔥 Buff DoT 结算',
+    desc: 'UBC → BSP → COP/BF ← BFD ← MGR',
+    steps: [
+      {
+        desc: '① AddBuff 请求触发',
+        title: 'AddBuff 请求触发',
+        nodes: ['UBC'], edges: [],
+        cur: { id: 'UBC', label: 'UnitBuffComponent', sub: 'Buff 接线组件', role: 'Buff 入口' },
+        description: 'UnitBuffComponent.AddBuff(buffId, source) 被调用，参数包括 BuffId（从 SkillData 中读取）、来源 CombatUnit 引用、Buff 等级等元数据。',
+        techPoints: [
+          'AddBuff 是公开 API',
+          '内部委托给 BuffSystemPooled',
+          '同一帧多次 AddBuff 自动合并'
+        ]
+      },
+      {
+        desc: '② UBC 转发到 BuffSystemPooled',
+        title: 'UBC 转发到 BuffSystemPooled',
+        nodes: ['UBC', 'BSP'], edges: ['e11'],
+        from: { id: 'UBC', label: 'UnitBuffComponent', sub: 'Buff 接线组件', role: 'API 层' },
+        to:   { id: 'BSP', label: 'BuffSystemPooled', sub: 'Buff 管理器', role: '逻辑层' },
+        description: 'UBC 将请求透传到 BuffSystemPooled 单例。BuffSystemPooled 负责查询目标身上的同 Id Buff，决定是新建、叠加还是刷新。',
+        techPoints: [
+          'BSP 是静态单例（零 GC 关键）',
+          '内部维护 Dictionary<int, Buff>',
+          '不支持的 BuffId 静默丢弃'
+        ]
+      },
+      {
+        desc: '③ BSP 从 ClassObjectPool 取对象',
+        title: 'BSP 从 ClassObjectPool 取对象',
+        nodes: ['BSP', 'COP'], edges: ['e13'],
+        from: { id: 'BSP', label: 'BuffSystemPooled', sub: 'Buff 管理器', role: '池消费者' },
+        to:   { id: 'COP', label: 'ClassObjectPool', sub: '通用对象池', role: '对象池' },
+        description: '为了避免每次 AddBuff 都 new Buff 造成 GC，BuffSystemPooled 从 ClassObjectPool 中取出空闲的 Buff 实例。这是零 GC 的关键路径。',
+        techPoints: [
+          'ClassObjectPool 是通用类型对象池',
+          '缓存 32 个 Buff 对象（可配置）',
+          '对象回收时调用 OnReset() 清理状态'
+        ]
+      },
+      {
+        desc: '④ BSP 创建 Buff 运行时载体',
+        title: 'BSP 创建 Buff 运行时载体',
+        nodes: ['BSP', 'BF'], edges: ['e12'],
+        from: { id: 'BSP', label: 'BuffSystemPooled', sub: 'Buff 管理器', role: '创建者' },
+        to:   { id: 'BF', label: 'Buff', sub: '运行时载体', role: 'Buff 实例' },
+        description: 'BuffSystemPooled 拿到 Buff 实例后调用 buff.Bind(buffData, source, target) 完成初始化，并将其加入 activeBuffs 字典。',
+        techPoints: [
+          'Bind 设置 BuffData 引用、剩余时间、层数',
+          'activeBuffs 字典 key = BuffId',
+          '同一 Id 第二次 AddBuff 走叠加/刷新分支'
+        ]
+      },
+      {
+        desc: '⑤ Buff 引用 BuffData / BuffMsg',
+        title: 'Buff 引用 BuffData / BuffMsg',
+        nodes: ['BF', 'BFD'], edges: ['e14'],
+        from: { id: 'BF', label: 'Buff', sub: '运行时载体', role: '运行时' },
+        to:   { id: 'BFD', label: 'BuffData / BuffMsg', sub: '配置 / 消息', role: '配置' },
+        description: 'Buff 持有 BuffData 引用（静态配置）和 BuffMsg 引用（动态消息队列）。BuffMsg 用于在 Buff 触发时向 UI / AI 系统广播事件。',
+        techPoints: [
+          'BuffData：伤害类型、Tick 间隔、视觉效果',
+          'BuffMsg：OnAdd / OnTick / OnRemove 三个事件',
+          '运行时只读 BuffData，写操作只走 BuffMsg'
+        ]
+      },
+      {
+        desc: '⑥ BuffData 从 MGR (CSV) 加载',
+        title: 'BuffData 从 MGR (CSV) 加载',
+        nodes: ['BFD', 'MGR'], edges: ['e23'],
+        from: { id: 'BFD', label: 'BuffData / BuffMsg', sub: '配置 / 消息', role: '数据消费者' },
+        to:   { id: 'MGR', label: 'DataManager 集群', sub: '数据管理集群', role: '数据源' },
+        description: 'BuffData 在首次访问时从 BuffDataManager（CSV 解析后）加载。CSV 字段包括 id、name、duration、tickInterval、damageType、effectPath 等。',
+        techPoints: [
+          'CSV 启动时全量加载到内存',
+          'BuffData 是不可变快照',
+          '热更新需要重启（除非开启 AB 热更）'
+        ]
+      },
+      {
+        desc: '⑦ DoT 结算，结果反馈到 CUC',
+        title: 'DoT 结算，结果反馈到 CUC',
+        nodes: ['BSP', 'BF', 'BFD', 'CUC'], edges: ['e11'],
+        from: { id: 'BSP', label: 'BuffSystemPooled', sub: 'Buff 管理器', role: 'Tick 调度' },
+        to:   { id: 'CUC', label: 'CombatUnitController', sub: '战斗控制器', role: '结算反馈' },
+        description: 'BSP.Tick(deltaTime) 每帧调用，遍历 activeBuffs 中的 Buff，对到达 tickInterval 的 Buff 执行 OnTick（DoT 伤害）。结果通过回调写入 CUC 的 CombatUnit 数据。',
+        techPoints: [
+          'BSP.Tick 在 CUC.Update() 中统一驱动',
+          'DoT 伤害 = BuffData.Damage * 层数',
+          '生命值低于 0 时触发 CUC.OnDeath()'
+        ]
+      }
+    ]
+  },
+  data: {
+    name: '📦 数据加载流程',
+    desc: 'CM → MGR → CSV → SKD / BFD',
+    steps: [
+      {
+        desc: '① ConfigManager 启动加载',
+        title: 'ConfigManager 启动加载',
+        nodes: ['CM'], edges: [],
+        cur: { id: 'CM', label: 'ConfigManager', sub: '配置门面', role: '配置入口' },
+        description: 'ConfigManager 在 GameStart 中通过 Initialize() 触发。它按优先级依次加载各类 DataManager，并等待所有 CSV 解析完成后才允许后续业务查询。',
+        techPoints: [
+          'CM 是 MonoBehaviour 单例',
+          'Initialize 异步加载所有 CSV',
+          '提供 IsReady 属性供其他模块查询'
+        ]
+      },
+      {
+        desc: '② CM 加载 DataManager 集群',
+        title: 'CM 加载 DataManager 集群',
+        nodes: ['CM', 'MGR'], edges: ['e18'],
+        from: { id: 'CM', label: 'ConfigManager', sub: '配置门面', role: '调用方' },
+        to:   { id: 'MGR', label: 'DataManager 集群', sub: '数据管理集群', role: '被调用方' },
+        description: 'ConfigManager 创建并初始化 SkillDataManager、WarriorDataManager、AttackNpcDataManager、EffectMsg 四个子管理器。每个管理器独立解析自己的 CSV 文件。',
+        techPoints: [
+          '子管理器继承 BaseDataManager',
+          '每个管理器持有 Dictionary<int, T> 缓存',
+          'CM 按顺序 await 它们的 InitAsync()'
+        ]
+      },
+      {
+        desc: '③ CM 加载 EffectManager',
+        title: 'CM 加载 EffectManager',
+        nodes: ['CM', 'FXM'], edges: ['e19'],
+        from: { id: 'CM', label: 'ConfigManager', sub: '配置门面', role: '调用方' },
+        to:   { id: 'FXM', label: 'EffectManager', sub: '特效管理器', role: '被调用方' },
+        description: 'ConfigManager 同时初始化 EffectManager。它预加载特效 prefab（通过 Addressables / Resources），建立 EffectId → GameObject 的索引，加速后续战斗中的特效播放。',
+        techPoints: [
+          'FXM 是 MonoBehaviour 单例',
+          '预加载避免战斗中卡顿',
+          '通过 EffectDot 绑点名称定位播放位置'
+        ]
+      },
+      {
+        desc: '④ MGR 解析 CSV 文件',
+        title: 'MGR 解析 CSV 文件',
+        nodes: ['MGR', 'SKD', 'BFD'], edges: ['e22', 'e23'],
+        from: { id: 'MGR', label: 'DataManager 集群', sub: '数据管理集群', role: '解析' },
+        to:   { id: 'SKD', label: 'SkillData', sub: '技能配置数据', role: '数据快照' },
+        description: '每个 DataManager 通过 CsvHelper 解析自己的 CSV 文件，按主键（id）建立字典索引。SkillData 和 BuffData 在解析后驻留内存，供运行时 O(1) 查询。',
+        techPoints: [
+          'CSV 列名映射到数据类字段',
+          '解析失败时记录日志并跳过该行',
+          '解析完成后 IsReady = true'
+        ]
+      },
+      {
+        desc: '⑤ 数据就绪，供上层查询',
+        title: '数据就绪，供上层查询',
+        nodes: ['MGR', 'SKD', 'BFD', 'SK', 'BF'], edges: ['e22', 'e23'],
+        from: { id: 'MGR', label: 'DataManager 集群', sub: '数据管理集群', role: '数据源' },
+        to:   { id: 'SK', label: 'Skill', sub: '技能运行时', role: '查询方' },
+        description: '所有 DataManager 准备就绪后，Skill / Buff 等运行时对象可以通过 DataManager.Get(id) 查询配置数据。整个过程是同步的，延迟为 0。',
+        techPoints: [
+          'Get(id) 命中后返回数据快照',
+          '未命中返回 null（务必判空）',
+          '热更新需要在 Update 中重新加载'
+        ]
+      },
+      {
+        desc: '⑥ EffectManager 通过 EDOT 播放特效',
+        title: 'EffectManager 通过 EDOT 播放特效',
+        nodes: ['FXM', 'EDOT'], edges: ['e25'],
+        from: { id: 'FXM', label: 'EffectManager', sub: '特效管理器', role: '特效源' },
+        to:   { id: 'EDOT', label: 'EffectDot', sub: '特效绑点', role: '播放位置' },
+        description: 'Skill 命中后调用 FXM.PlayEffect(effectId, target)。FXM 通过 GameObject.Find 找到目标身上同名的 EffectDot 子物体，Instantiate 特效 prefab 并设置父节点。',
+        techPoints: [
+          'EffectDot 是空物体，名字 = 绑点名',
+          'FXM 缓存 5 个特效实例用于对象池',
+          '特效播完自动回收'
+        ]
+      }
+    ]
+  }
+};
+
+// ============================================
+// RENDER
+// ============================================
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
+function createSvg(tag, attrs = {}) {
+  const el = document.createElementNS(SVG_NS, tag);
+  Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+  return el;
+}
+
+function renderLayerBands() {
+  const g = document.getElementById('layer-bands');
+  LAYER_INFO.forEach((L, i) => {
+    const rect = createSvg('rect', {
+      class: 'layer-band',
+      x: 10, y: L.y - 30, width: 1680, height: 100, rx: 8
+    });
+    g.appendChild(rect);
+
+    // Layer label (left side)
+    const lbl = createSvg('text', {
+      class: 'layer-label',
+      x: 30, y: L.y + 10
+    });
+    lbl.textContent = L.name;
+    g.appendChild(lbl);
+
+    const sublbl = createSvg('text', {
+      class: 'layer-sublabel',
+      x: 30, y: L.y + 26
+    });
+    sublbl.textContent = L.sub;
+    g.appendChild(sublbl);
+  });
+}
+
+function renderNodes() {
+  const g = document.getElementById('nodes-group');
+  Object.entries(nodes).forEach(([id, n]) => {
+    const node = createSvg('g', {
+      class: `node node-type-${n.type}`,
+      'data-id': id,
+      transform: `translate(${n.x - NODE_W/2}, ${n.y - NODE_H/2})`
+    });
+
+    const rect = createSvg('rect', {
+      class: 'node-rect',
+      width: NODE_W, height: NODE_H, rx: 8
+    });
+    node.appendChild(rect);
+
+    // ID badge top-right
+    const idBadge = createSvg('text', {
+      class: 'node-id',
+      x: NODE_W - 14, y: 16
+    });
+    idBadge.textContent = n.id;
+    node.appendChild(idBadge);
+
+    const label = createSvg('text', {
+      class: 'node-label',
+      x: NODE_W / 2, y: 30
+    });
+    label.textContent = n.label;
+    node.appendChild(label);
+
+    const sublabel = createSvg('text', {
+      class: 'node-sublabel',
+      x: NODE_W / 2, y: 48
+    });
+    sublabel.textContent = n.sub;
+    node.appendChild(sublabel);
+
+    node.addEventListener('click', () => selectNode(id));
+    node.addEventListener('mouseenter', e => showTooltip(e, n));
+    node.addEventListener('mouseleave', hideTooltip);
+
+    g.appendChild(node);
+  });
+}
+
+// Connection point selection
+function getEndpoints(from, to) {
+  const f = nodes[from];
+  const t = nodes[to];
+  const dx = t.x - f.x;
+  const dy = t.y - f.y;
+  const absDx = Math.abs(dx);
+  const absDy = Math.abs(dy);
+
+  let sx, sy, tx, ty;
+  if (absDx > absDy * 1.5) {
+    // Mostly horizontal
+    sx = dx > 0 ? f.x + NODE_W/2 : f.x - NODE_W/2;
+    sy = f.y;
+    tx = dx > 0 ? t.x - NODE_W/2 : t.x + NODE_W/2;
+    ty = t.y;
+  } else if (absDy > absDx * 1.5) {
+    // Mostly vertical
+    sx = f.x;
+    sy = dy > 0 ? f.y + NODE_H/2 : f.y - NODE_H/2;
+    tx = t.x;
+    ty = dy > 0 ? t.y - NODE_H/2 : t.y + NODE_H/2;
+  } else {
+    // Diagonal — exit toward target's side
+    sx = f.x + Math.sign(dx) * NODE_W/2;
+    sy = f.y + Math.sign(dy) * NODE_H/2;
+    tx = t.x - Math.sign(dx) * NODE_W/2;
+    ty = t.y - Math.sign(dy) * NODE_H/2;
+  }
+  return { sx, sy, tx, ty };
+}
+
+// Path building with smart routing
+function buildPath(from, to, type) {
+  const { sx, sy, tx, ty } = getEndpoints(from, to);
+  const dx = tx - sx;
+  const dy = ty - sy;
+
+  let path;
+  if (Math.abs(dx) < 5) {
+    // Pure vertical
+    path = `M ${sx} ${sy} L ${tx} ${ty}`;
+  } else if (Math.abs(dy) < 5) {
+    // Pure horizontal — bow to avoid intermediate nodes
+    const bow = (dy === 0) ? (sx < tx ? -30 : 30) : 0;
+    const bowSign = (dy === 0) ? (sx < tx ? -1 : 1) : 0;
+    // Simple horizontal S-curve
+    path = `M ${sx} ${sy} C ${sx + dx*0.4} ${sy + bow}, ${tx - dx*0.4} ${ty + bow}, ${tx} ${ty}`;
+  } else {
+    // S-curve for diagonal
+    path = `M ${sx} ${sy} C ${sx + dx*0.5} ${sy}, ${sx + dx*0.5} ${ty}, ${tx} ${ty}`;
+  }
+
+  return { path, sx, sy, tx, ty };
+}
+
+function renderEdges() {
+  const g = document.getElementById('edges-group');
+  edges.forEach(e => {
+    const { path, sx, sy, tx, ty } = buildPath(e.from, e.to, e.type);
+
+    const group = createSvg('g', {
+      class: 'edge-group',
+      'data-edge-id': e.id
+    });
+
+    // Base edge
+    const base = createSvg('path', {
+      class: `edge ${e.type === 'dashed' ? 'dashed' : ''}`,
+      d: path,
+      'marker-end': 'url(#arrow-default)'
+    });
+    group.appendChild(base);
+
+    // Flow overlay (shown when active)
+    const flow = createSvg('path', {
+      class: 'edge-flow',
+      d: path,
+      'marker-end': 'url(#arrow-active)'
+    });
+    group.appendChild(flow);
+
+    // Label
+    if (e.label) {
+      const lx = (sx + tx) / 2;
+      const ly = (sy + ty) / 2;
+      const tw = e.label.length * 8 + 12;
+      const th = 16;
+
+      const bg = createSvg('rect', {
+        class: 'edge-label-bg',
+        x: lx - tw/2, y: ly - th/2,
+        width: tw, height: th, rx: 3
+      });
+      group.appendChild(bg);
+
+      const text = createSvg('text', {
+        class: 'edge-label',
+        x: lx, y: ly + 4
+      });
+      text.textContent = e.label;
+      group.appendChild(text);
+    }
+
+    g.appendChild(group);
+  });
+}
+
+// ============================================
+// STATE & INTERACTION
+// ============================================
+let currentScenario = 'all';
+let currentStep = 0;
+let isPlaying = false;
+let playTimer = null;
+let selectedNode = null;
+let dimOthers = false;
+
+// Dim non-active nodes for scenario focus
+function applyDim() {
+  document.querySelectorAll('.node').forEach(n => n.classList.remove('dim'));
+  if (currentScenario === 'all' && !selectedNode) return;
+  if (selectedNode) {
+    document.querySelectorAll('.node').forEach(n => {
+      if (n.dataset.id !== selectedNode) n.classList.add('dim');
+    });
+    return;
+  }
+}
+
+function applyState(activeNodes, activeEdges) {
+  document.querySelectorAll('.node').forEach(n => n.classList.remove('active', 'dim'));
+  document.querySelectorAll('.edge').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.edge-group .edge').forEach(e => {
+    e.setAttribute('marker-end', 'url(#arrow-default)');
+  });
+
+  if (activeNodes) {
+    activeNodes.forEach(id => {
+      const el = document.querySelector(`.node[data-id="${id}"]`);
+      if (el) el.classList.add('active');
+    });
+  }
+
+  if (activeEdges) {
+    activeEdges.forEach(eid => {
+      const grp = document.querySelector(`.edge-group[data-edge-id="${eid}"]`);
+      if (grp) {
+        const base = grp.querySelector('.edge');
+        base.classList.add('active');
+        base.setAttribute('marker-end', 'url(#arrow-active)');
+      }
+    });
+  }
+
+  applyDim();
+}
+
+function showNodeDetail(id) {
+  const n = nodes[id];
+  const desc = descriptions[id] || '（暂无描述）';
+  const typeLabels = { controller: '控制器', fsm: '状态机', skill: '技能', buff: 'Buff', data: '数据', config: '配置', util: '工具' };
+  const layerNames = ['L0 启动层', 'L1 控制层', 'L2 状态机', 'L3 技能系统', 'L4 Buff系统', 'L5 数据层', 'L6 配置层', 'L7 工具与常量'];
+
+  const incoming = edges.filter(e => e.to === id);
+  const outgoing = edges.filter(e => e.from === id);
+
+  const renderConn = (list, direction) => {
+    if (list.length === 0) return '<div style="color: var(--text-3); font-size: 11px; padding: 8px 12px;">（无）</div>';
+    return `<ul class="conn-list">${list.map(e => {
+      const otherId = direction === 'in' ? e.from : e.to;
+      const other = nodes[otherId];
+      const isConfig = e.type === 'dashed';
+      return `<li class="conn-item" data-target="${otherId}">
+        <span class="conn-icon">${direction === 'in' ? '←' : '→'}</span>
+        <span class="conn-name">${other.label}</span>
+        <span class="conn-tag ${isConfig ? 'config' : 'direct'}">${e.label}${isConfig ? ' · 配置' : ' · 调用'}</span>
+      </li>`;
+    }).join('')}</ul>`;
+  };
+
+  document.getElementById('detailContent').innerHTML = `
+    <div class="step-detail">
+      <div class="step-header">
+        <div class="step-num">🔍</div>
+        <div class="step-title">${n.label}</div>
+      </div>
+
+      <div class="flow-card cur">
+        <div class="flow-card-label">◎ 当前节点</div>
+        <span class="flow-card-id">${n.id}</span>
+        <div class="flow-card-name">${n.label}</div>
+        <div class="flow-card-sub">${n.sub}</div>
+        <div class="flow-card-role">${desc}</div>
+      </div>
+
+      <div class="conn-section" style="margin-top: 14px;">
+        <h4 style="font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.10em; margin-bottom: 8px; font-weight: 600;">↓ 入站 (${incoming.length})</h4>
+        ${renderConn(incoming, 'in')}
+      </div>
+
+      <div class="conn-section" style="margin-top: 14px;">
+        <h4 style="font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.10em; margin-bottom: 8px; font-weight: 600;">→ 出站 (${outgoing.length})</h4>
+        ${renderConn(outgoing, 'out')}
+      </div>
+
+      <div class="step-section">
+        <h4>💡 节点信息</h4>
+        <p>
+          <span class="tag tag-${n.type}">${typeLabels[n.type]}</span>
+          <span class="tag" style="background: var(--bg-3); color: var(--text-2); border: 1px solid var(--border); margin-left: 4px;">${layerNames[n.layer]}</span>
+        </p>
+      </div>
+    </div>
+  `;
+
+  document.querySelectorAll('.conn-item').forEach(item => {
+    item.addEventListener('click', () => selectNode(item.dataset.target));
+  });
+}
+
+function selectNode(id) {
+  selectedNode = id;
+  showNodeDetail(id);
+
+  const incoming = edges.filter(e => e.to === id);
+  const outgoing = edges.filter(e => e.from === id);
+  const related = new Set([id, ...incoming.map(e => e.from), ...outgoing.map(e => e.to)]);
+  const relatedEdges = new Set([...incoming, ...outgoing].map(e => e.id));
+
+  // Show node highlight but don't disturb step data packets
+  document.querySelectorAll('.node').forEach(nd => {
+    nd.classList.remove('dim');
+    if (selectedNode && nd.dataset.id !== selectedNode) nd.classList.add('dim');
+  });
+  document.querySelectorAll('.edge').forEach(e => e.classList.remove('active'));
+  document.querySelectorAll('.edge-group .edge').forEach(e => e.setAttribute('marker-end', 'url(#arrow-default)'));
+  related.forEach(rid => {
+    const el = document.querySelector(`.node[data-id="${rid}"]`);
+    if (el) el.classList.remove('dim');
+  });
+  relatedEdges.forEach(eid => {
+    const grp = document.querySelector(`.edge-group[data-edge-id="${eid}"]`);
+    if (grp) {
+      const base = grp.querySelector('.edge');
+      base.classList.add('active');
+      base.setAttribute('marker-end', 'url(#arrow-active)');
+    }
+  });
+}
+
+function clearSelection() {
+  selectedNode = null;
+  // Restore current step or default
+  if (currentScenario && scenarios[currentScenario] && scenarios[currentScenario].steps) {
+    applyStep();
+  } else {
+    loadScenario('all');
+  }
+}
+
+// ============================================
+// SCENARIOS / PLAYBACK
+// ============================================
+function loadScenario(id) {
+  currentScenario = id;
+  currentStep = 0;
+  const s = scenarios[id];
+
+  document.getElementById('scenarioSelect').value = id;
+  document.getElementById('scenarioName').textContent = s.name;
+  document.getElementById('stepDesc').textContent = s.desc || '';
+  updateStepButtons();
+
+  if (id === 'all') {
+    applyState(new Set(s.nodes), new Set(s.edges));
+    document.getElementById('stepCounter').textContent = '— / —';
+    document.getElementById('progressFill').style.width = '100%';
+  } else {
+    applyStep();
+  }
+}
+
+function applyStep() {
+  const s = scenarios[currentScenario];
+  if (!s || !s.steps) return;
+  const step = s.steps[currentStep];
+  if (!step) return;
+
+  applyState(new Set(step.nodes), new Set(step.edges));
+
+  // Clear previous data packets, then add new for active edges
+  clearDataPackets();
+  if (step.edges && step.edges.length > 0) {
+    step.edges.forEach(eid => addDataPackets(eid));
+  }
+
+  // Mark source/target nodes for visual emphasis
+  document.querySelectorAll('.node').forEach(n => {
+    n.classList.remove('source', 'target', 'source.target');
+  });
+  const stepNodes = new Set(step.nodes);
+  if (step.from && stepNodes.has(step.from.id)) {
+    const el = document.querySelector(`.node[data-id="${step.from.id}"]`);
+    if (el) el.classList.add('source');
+  }
+  if (step.to && stepNodes.has(step.to.id)) {
+    const el = document.querySelector(`.node[data-id="${step.to.id}"]`);
+    if (el) el.classList.add('target');
+  }
+  if (step.cur && stepNodes.has(step.cur.id)) {
+    const el = document.querySelector(`.node[data-id="${step.cur.id}"]`);
+    if (el) {
+      if (el.classList.contains('source')) {
+        el.classList.add('source.target');
+      } else {
+        el.classList.add('source');
+      }
+    }
+  }
+
+  document.getElementById('stepDesc').textContent = step.desc;
+  document.getElementById('stepCounter').textContent = `${currentStep + 1} / ${s.steps.length}`;
+  document.getElementById('progressFill').style.width = `${((currentStep + 1) / s.steps.length) * 100}%`;
+
+  // Render step detail in the right panel
+  showStepDetail(step);
+
+  updateStepButtons();
+}
+
+// ============================================
+// DATA PACKETS (animated circles along SVG paths)
+// ============================================
+function clearDataPackets() {
+  document.querySelectorAll('.data-packet, .data-packet-trail').forEach(p => p.remove());
+}
+
+function addDataPackets(edgeId) {
+  const grp = document.querySelector(`.edge-group[data-edge-id="${edgeId}"]`);
+  if (!grp) return;
+  const baseEdge = grp.querySelector('.edge');
+  if (!baseEdge) return;
+  const pathData = baseEdge.getAttribute('d');
+  if (!pathData) return;
+
+  // Trail circle (slightly larger, dimmer, behind)
+  const trail = document.createElementNS(SVG_NS, 'circle');
+  trail.setAttribute('class', 'data-packet-trail');
+  trail.setAttribute('r', 7);
+  grp.appendChild(trail);
+  const trailMotion = document.createElementNS(SVG_NS, 'animateMotion');
+  trailMotion.setAttribute('dur', '1.6s');
+  trailMotion.setAttribute('repeatCount', 'indefinite');
+  trailMotion.setAttribute('path', pathData);
+  trailMotion.setAttribute('rotate', 'auto');
+  trail.appendChild(trailMotion);
+
+  // Main packet
+  const packet = document.createElementNS(SVG_NS, 'circle');
+  packet.setAttribute('class', 'data-packet');
+  packet.setAttribute('r', 5);
+  grp.appendChild(packet);
+  const motion = document.createElementNS(SVG_NS, 'animateMotion');
+  motion.setAttribute('dur', '1.6s');
+  motion.setAttribute('repeatCount', 'indefinite');
+  motion.setAttribute('path', pathData);
+  motion.setAttribute('rotate', 'auto');
+  packet.appendChild(motion);
+
+  // Second packet with offset start (creates the illusion of continuous flow)
+  const packet2 = document.createElementNS(SVG_NS, 'circle');
+  packet2.setAttribute('class', 'data-packet');
+  packet2.setAttribute('r', 4);
+  packet2.setAttribute('opacity', 0.7);
+  grp.appendChild(packet2);
+  const motion2 = document.createElementNS(SVG_NS, 'animateMotion');
+  motion2.setAttribute('dur', '1.6s');
+  motion2.setAttribute('begin', '-0.8s');
+  motion2.setAttribute('repeatCount', 'indefinite');
+  motion2.setAttribute('path', pathData);
+  motion2.setAttribute('rotate', 'auto');
+  packet2.appendChild(motion2);
+}
+
+// ============================================
+// STEP DETAIL (right panel for current step)
+// ============================================
+function showStepDetail(step) {
+  const renderCard = (card, type) => {
+    if (!card) return '';
+    return `
+      <div class="flow-card ${type}">
+        <div class="flow-card-label">${
+          type === 'from' ? '⬅ 数据来源' :
+          type === 'to'   ? '➡ 调用目标' :
+          '◎ 当前模块'
+        }</div>
+        <span class="flow-card-id">${card.id}</span>
+        <div class="flow-card-name">${card.label}</div>
+        <div class="flow-card-sub">${card.sub}</div>
+        ${card.role ? `<div class="flow-card-role">${card.role}</div>` : ''}
+      </div>
+    `;
+  };
+
+  let flowHtml = '';
+  if (step.from) flowHtml += renderCard(step.from, 'from');
+  if (step.from && (step.to || step.cur)) flowHtml += '<div class="flow-arrow-down">▼ 调用 ▼</div>';
+  if (step.cur && !step.from) flowHtml += renderCard(step.cur, 'cur');
+  if (step.to) flowHtml += renderCard(step.to, 'to');
+
+  const techPointsHtml = (step.techPoints || []).map(t => `<li>${t}</li>`).join('');
+
+  document.getElementById('detailContent').innerHTML = `
+    <div class="step-detail">
+      <div class="step-header">
+        <div class="step-num">${currentStep + 1}</div>
+        <div class="step-title">${step.title || step.desc}</div>
+      </div>
+
+      ${flowHtml}
+
+      <div class="step-section">
+        <h4>📋 这一步干了什么</h4>
+        <p>${step.description || '（暂无说明）'}</p>
+      </div>
+
+      ${techPointsHtml ? `
+        <div class="step-section">
+          <h4>💡 技术要点</h4>
+          <ul class="step-techpoints">${techPointsHtml}</ul>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function updateStepButtons() {
+  const s = scenarios[currentScenario];
+  const hasSteps = s && s.steps;
+  document.getElementById('prevBtn').disabled = !hasSteps || currentStep === 0;
+  document.getElementById('nextBtn').disabled = !hasSteps || currentStep >= s.steps.length - 1;
+}
+
+function startPlay() {
+  if (currentScenario === 'all') {
+    loadScenario('boot');
+    document.getElementById('scenarioSelect').value = 'boot';
+  }
+  isPlaying = true;
+  document.getElementById('playBtn').textContent = '⏸  暂停';
+  document.getElementById('playBtn').classList.remove('btn-primary');
+
+  playTimer = setInterval(() => {
+    const s = scenarios[currentScenario];
+    if (currentStep < s.steps.length - 1) {
+      currentStep++;
+      applyStep();
+    } else {
+      stopPlay();
+    }
+  }, 2000);
+}
+
+function stopPlay() {
+  isPlaying = false;
+  document.getElementById('playBtn').textContent = '▶  自动播放';
+  document.getElementById('playBtn').classList.add('btn-primary');
+  if (playTimer) {
+    clearInterval(playTimer);
+    playTimer = null;
+  }
+}
+
+// ============================================
+// TOOLTIP
+// ============================================
+const tooltip = document.getElementById('tooltip');
+function showTooltip(e, n) {
+  tooltip.innerHTML = `<strong style="color: var(--orange);">${n.label}</strong><br><span style="color: var(--text-3); font-size: 11px;">${n.sub} · ${n.id}</span>`;
+  tooltip.classList.add('show');
+  positionTooltip(e);
+  document.addEventListener('mousemove', positionTooltip);
+}
+function hideTooltip() {
+  tooltip.classList.remove('show');
+  document.removeEventListener('mousemove', positionTooltip);
+}
+function positionTooltip(e) {
+  tooltip.style.left = (e.pageX + 12) + 'px';
+  tooltip.style.top = (e.pageY + 12) + 'px';
+}
+
+// ============================================
+// EVENT LISTENERS
+// ============================================
+document.getElementById('scenarioSelect').addEventListener('change', e => {
+  stopPlay();
+  selectedNode = null;
+  clearDataPackets();
+  document.querySelectorAll('.node').forEach(n => n.classList.remove('source', 'target', 'source.target'));
+  loadScenario(e.target.value);
+});
+
+document.getElementById('playBtn').addEventListener('click', () => {
+  if (isPlaying) stopPlay();
+  else startPlay();
+});
+
+document.getElementById('prevBtn').addEventListener('click', () => {
+  stopPlay();
+  if (currentStep > 0) { currentStep--; applyStep(); }
+});
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  stopPlay();
+  const s = scenarios[currentScenario];
+  if (currentStep < s.steps.length - 1) { currentStep++; applyStep(); }
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  stopPlay();
+  selectedNode = null;
+  clearDataPackets();
+  document.getElementById('detailContent').innerHTML = `
+    <div class="empty-detail">
+      <div class="icon">🎬</div>
+      <strong style="color: var(--orange); font-size: 14px;">已重置</strong><br><br>
+      选择场景 + ▶ 自动播放<br>观看每个模块的逐次调用过程
+    </div>`;
+  document.getElementById('scenarioName').textContent = '全局视图';
+  document.getElementById('stepDesc').textContent = '';
+  document.getElementById('stepCounter').textContent = '— / —';
+  document.getElementById('progressFill').style.width = '0%';
+  applyState(null, null);
+  document.querySelectorAll('.node').forEach(n => n.classList.remove('dim', 'source', 'target', 'source.target'));
+  document.getElementById('scenarioSelect').value = 'all';
+  currentScenario = 'all';
+  updateStepButtons();
+});
+
+document.getElementById('clearBtn').addEventListener('click', clearSelection);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (e.code === 'Space') {
+    e.preventDefault();
+    document.getElementById('playBtn').click();
+  } else if (e.code === 'ArrowRight') {
+    document.getElementById('nextBtn').click();
+  } else if (e.code === 'ArrowLeft') {
+    document.getElementById('prevBtn').click();
+  } else if (e.key === 'r' || e.key === 'R') {
+    document.getElementById('resetBtn').click();
+  }
+});
+
+// ============================================
+// INIT
+// ============================================
+renderLayerBands();
+renderNodes();
+renderEdges();
+loadScenario('all');
+</script>
+</body>
+</html>

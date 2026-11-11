@@ -1,0 +1,8 @@
+[ OK ] FIX-1 第04节 evo 收尾 : 命中 1 处，已替换
+[ OK ] FIX-2 第07节 code 闭合 : 命中 1 处，已替换
+[ OK ] FIX-3 第12节 strong 闭合 : 命中 1 处，已替换
+[WRITE] 已写回磁盘
+[VERIFY] FIX-1 已在磁盘中
+[VERIFY] FIX-2 已在磁盘中
+[VERIFY] FIX-3 已在磁盘中
+[CHECK ] <div> = 519, </div> = 520, 差 = -1

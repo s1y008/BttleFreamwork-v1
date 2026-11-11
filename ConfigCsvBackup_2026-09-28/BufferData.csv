@@ -1,0 +1,7 @@
+ID,BuffType,Name,BuffCategory,Duration,MaxStack,EffectValue,EffectPercent,TickInterval,Dispellable,Stackable,IconName,EffectName,Des,Tags
+1001,AttackBoost,增加攻击,Positive,10,1,50,0,0,0,0,dsaf,dflkafhgjlkdja,333,
+1002,SpeedBoost,增加速度,Positive,5,1,1,0,0,0,0,wqeewr,kjdhfjkf,sra,
+1003,Bleeding,流血,Negative,5,1,10,0,1,0,0,diosfahjlk,gfgarer,rerw,DoT
+1004,Poisoned,中毒,Negative,8,3,5,0,2,1,1,poison_icon,poison_effect,每2秒扣5血·可叠3层,DoT
+1005,Stunned,眩晕,Control,2,1,0,0,0,1,0,stun_icon,stun_effect,眩晕2秒·不可行动,Control;HardControl;MovementImpair
+1006,Silenced,沉默,Control,3,1,0,0,0,1,0,silence_icon,silence_effect,沉默3秒·不可施法,Control;Silence

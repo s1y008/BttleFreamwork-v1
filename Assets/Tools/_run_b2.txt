@@ -1,0 +1,9 @@
+OK  : CombatTransitionTable.cs     missing-msg
+OK  : CombatTransitionMatrixWindow.cs hint
+OK  : CombatTransitionMatrixWindow.cs lamp
+WRITE OK
+VERIFY OK (1)
+OK  : TABLE #if 鍒嗘敮
+OK  : WIN 鎻愮ず鏂囨
+OK  : WIN 鎸囩ず鐏?
+VERIFY OK (2, 寤惰繜 3 绉?

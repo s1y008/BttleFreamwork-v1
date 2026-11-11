@@ -1,0 +1,3 @@
+[ OK ] 已回退行内多余的 </div>
+[CHECK ] <div> = 519, </div> = 519, 差 = 0
+[VERIFY] div 配平 OK

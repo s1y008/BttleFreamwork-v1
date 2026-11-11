@@ -1,0 +1,75 @@
+# ============================================================
+# Unity 生成物 —— 可由编辑器从 Assets/ 与 ProjectSettings/ 重建
+# ============================================================
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+
+# Unity / IDE 自动生成的项目文件
+*.csproj
+*.sln
+*.unityproj
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+.vs/
+.idea/
+.vscode/
+
+# ============================================================
+# 付费商业插件 —— 授权协议禁止公开分发（本仓库为 Public）
+# ⚠ 克隆后必须自行购买并放回下列目录，否则编译不通过
+#   Assets/Plugins/Sirenix/     Odin Inspector
+#   Assets/Plugins/Animancer/   Animancer Pro
+# ============================================================
+/Assets/Plugins/Sirenix/
+/Assets/Plugins/Animancer/
+# 目录自身的 .meta 一并排除，避免克隆后出现「有 meta 无资源」的孤立文件
+/Assets/Plugins/Sirenix.meta
+/Assets/Plugins/Animancer.meta
+
+# ============================================================
+# 无 git 时代的物理备份链（已被版本控制取代，保留在本地磁盘即可）
+# ============================================================
+*.bak
+*.bak.*
+**/*.bak
+**/*.bak.*
+
+# ============================================================
+# AI 工具缓存与本地配置（非工程产物）
+# ============================================================
+.codely-cli/
+.codely.packages/
+.agents/
+.claude/
+.omc/
+.codelyignore
+
+# ============================================================
+# 工作记忆 / 个人工作日志（不属于工程交付面）
+# 如需公开演化过程日志，删除下面这行即可
+# ============================================================
+/Assets/.workbuddy/
+
+# ============================================================
+# 系统与编辑器杂项
+# ============================================================
+sysinfo.txt
+crashlytics-build.properties
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta

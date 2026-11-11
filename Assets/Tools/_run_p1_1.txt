@@ -1,0 +1,7 @@
+   璇诲彇 23059 瀛楃 BOM=False CRLF=False
+   澶囦唤 鈫?CombatStates.cs.bak.2026-09-29-castinterrupt
+   宸插啓鍥烇紝绔嬪嵆澶嶉獙锛?
+   澶嶉獙 marker=1 new=1 old=0 -> OK
+   寤惰繜 3 绉掑悗鍐嶅楠屼竴娆★紙闃查潤榛樺洖閫€锛夛細
+   澶嶉獙 marker=1 new=1 old=0 -> OK
+   DONE

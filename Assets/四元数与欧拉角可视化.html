@@ -1,0 +1,1502 @@
+<!doctype html>
+<html lang="zh-CN" data-page-node-id="qBAFC6tzvXUExIdWNubHpW">
+<head data-page-node-id="J1I9jpqW0QNydTBFrYzzPc">
+<meta charset="utf-8" data-page-node-id="z8b3IieBhzcTO6GjBq8Vn7">
+<meta name="viewport" content="width=device-width,initial-scale=1" data-page-node-id="J4X5C3DwsG3zX4BoyJ2kDX">
+<title>四元数与欧拉角 · 给小白的可视化教学</title>
+<style>
+/* ==========================================================
+   1. 基础变量 (Stripe 深色风)
+   ========================================================== */
+:root{
+  --bg-0:#06091a;
+  --bg-1:#0a0f24;
+  --bg-2:#10172e;
+  --bg-3:#161e3b;
+  --border:#1f2a4d;
+  --border-soft:#1a2240;
+  --text:#e7ecf5;
+  --text-dim:#9aa6c4;
+  --text-mute:#6a7898;
+  --blue:#395b8f;          /* Stripe 蓝 */
+  --blue-2:#5b80b8;
+  --orange:#feb67e;        /* 强调 */
+  --orange-2:#ffd4a8;
+  --green:#3ddc97;
+  --green-soft:rgba(61,220,151,.18);
+  --red:#ff6b80;
+  --red-soft:rgba(255,107,128,.18);
+  --yellow:#ffd966;
+  --shadow:0 16px 48px -16px rgba(0,0,0,.55);
+  --mono:'JetBrains Mono','Fira Code','Cascadia Code',Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'SF Pro Display','Microsoft YaHei','PingFang SC',sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg-0);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;padding:0 0 80px}
+a{color:var(--blue-2);text-decoration:none}
+code{font-family:var(--mono);background:rgba(57,91,143,.16);color:var(--orange-2);padding:1px 7px;border-radius:5px;font-size:13px}
+
+/* ==========================================================
+   2. 顶部 & 导航
+   ========================================================== */
+.hero{
+  position:relative;
+  padding:88px 24px 80px;
+  background:
+    radial-gradient(1200px 600px at 80% -10%,rgba(57,91,143,.30),transparent 60%),
+    radial-gradient(900px 500px at 10% 20%,rgba(254,182,126,.10),transparent 65%),
+    linear-gradient(180deg,var(--bg-1) 0%,var(--bg-0) 100%);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;
+}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.hero-inner{max-width:1200px;margin:0 auto;position:relative;z-index:2}
+.tag{display:inline-flex;align-items:center;gap:6px;background:rgba(57,91,143,.18);color:var(--blue-2);border:1px solid rgba(91,128,184,.35);padding:5px 12px;border-radius:999px;font-size:12px;letter-spacing:.5px;margin-bottom:18px}
+.tag::before{content:'';width:5px;height:5px;background:var(--orange);border-radius:50%}
+.hero h1{font-size:clamp(40px,6vw,68px);font-weight:800;letter-spacing:-1px;line-height:1.08;margin-bottom:14px;background:linear-gradient(180deg,#fff 30%,#a3b3d4 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero .sub{font-size:18px;color:var(--text-dim);max-width:680px;line-height:1.7}
+.hero .meta{display:flex;gap:24px;margin-top:24px;color:var(--text-mute);font-size:13px}
+.hero .meta span{display:flex;align-items:center;gap:6px}
+
+/* 章节导航 */
+.toc{
+  position:sticky;top:0;z-index:50;
+  background:rgba(6,9,26,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  padding:14px 24px;
+}
+.toc-inner{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.toc-inner .lbl{color:var(--text-mute);font-size:13px;margin-right:4px}
+.toc-inner a{color:var(--text-dim);font-size:13.5px;padding:6px 12px;border-radius:6px;border:1px solid transparent;transition:.2s}
+.toc-inner a:hover{color:var(--text);background:rgba(57,91,143,.18);border-color:var(--border)}
+
+/* ==========================================================
+   3. 主体容器 & 章节
+   ========================================================== */
+main{max-width:1200px;margin:0 auto;padding:32px 24px 0}
+.chapter{margin:72px 0 48px;scroll-margin-top:80px}
+.chapter-head{display:flex;align-items:baseline;gap:14px;margin-bottom:32px;padding-bottom:18px;border-bottom:1px dashed var(--border)}
+.chapter-head .num{font-family:var(--mono);color:var(--orange);font-size:22px;font-weight:600;background:rgba(254,182,126,.10);padding:4px 12px;border-radius:8px;border:1px solid rgba(254,182,126,.25)}
+.chapter-head h2{font-size:clamp(26px,3.4vw,34px);font-weight:700;letter-spacing:-.5px;line-height:1.3}
+.chapter-head .desc{color:var(--text-mute);font-size:14px;margin-top:6px}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:flex-start}
+@media (max-width:920px){.split{grid-template-columns:1fr;gap:24px}}
+
+.prose{color:var(--text);font-size:16px;line-height:1.85}
+.prose h3{font-size:21px;font-weight:600;color:var(--text);margin:28px 0 12px;letter-spacing:-.2px}
+.prose h3::before{content:'';display:inline-block;width:6px;height:18px;background:linear-gradient(180deg,var(--orange),var(--blue));border-radius:3px;margin-right:10px;vertical-align:middle}
+.prose h4{font-size:17px;font-weight:600;color:var(--orange-2);margin:24px 0 10px}
+.prose p{margin-bottom:16px;color:var(--text)}
+.prose p.lead{font-size:17px;color:var(--text);line-height:1.9}
+.prose ul,.prose ol{margin:8px 0 18px 24px;color:var(--text)}
+.prose ul li,.prose ol li{margin-bottom:8px}
+.prose em{color:var(--orange-2);font-style:normal;font-weight:500}
+.prose strong{color:var(--text);font-weight:700}
+.prose .hl{background:linear-gradient(180deg,transparent 70%,rgba(254,182,126,.35) 70%);padding:0 4px;color:inherit}
+.prose blockquote{margin:16px 0;padding:14px 18px;background:var(--bg-2);border-left:3px solid var(--orange);border-radius:6px;color:var(--text-dim);font-size:15px}
+.prose blockquote b{color:var(--orange-2)}
+
+/* 卡片容器 */
+.card{background:var(--bg-1);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:var(--shadow)}
+.card.lite{background:var(--bg-1);border:1px solid var(--border-soft);border-radius:12px;padding:18px}
+
+/* ==========================================================
+   4. 关键概念条
+   ========================================================== */
+.concepts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0}
+.concept{padding:14px 16px;background:var(--bg-2);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-dim);position:relative;overflow:hidden}
+.concept .lbl{font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;font-weight:600}
+.concept b{color:var(--text)}
+.concept::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(57,91,143,.06) 0%,transparent 60%);pointer-events:none}
+
+.callout{display:flex;gap:14px;padding:14px 18px;border:1px solid rgba(255,107,128,.35);background:var(--red-soft);border-radius:10px;color:var(--text);font-size:14.5px;margin:16px 0}
+.callout .ic{font-size:20px;flex-shrink:0;line-height:1}
+.callout b{color:var(--red)}
+.callout.ok{border-color:rgba(61,220,151,.35);background:var(--green-soft)}
+.callout.ok b{color:var(--green)}
+.callout.info{border-color:rgba(57,91,143,.35);background:rgba(57,91,143,.10)}
+.callout.info b{color:var(--blue-2)}
+
+/* ==========================================================
+   5. 动图容器
+   ========================================================== */
+.demo{border:1px solid var(--border);border-radius:14px;background:linear-gradient(180deg,#0c1428 0%,#0a1124 100%);overflow:hidden;position:relative}
+.demo .head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.18)}
+.demo .head .name{font-size:14px;color:var(--text);font-weight:600}
+.demo .head .name::before{content:'●';color:var(--orange);margin-right:8px;font-size:10px}
+.demo .head .meta{font-family:var(--mono);font-size:12px;color:var(--text-mute)}
+
+.stage{position:relative;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:24px}
+.stage.tall{min-height:420px}
+.stage .bg-line{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:40px 40px}
+
+.controls{padding:16px 18px;border-top:1px solid var(--border);background:rgba(0,0,0,.25);display:grid;gap:12px}
+.controls .row{display:grid;grid-template-columns:64px 1fr 70px;gap:12px;align-items:center}
+.controls .axis{font-family:var(--mono);font-size:12px;color:var(--text-dim);background:var(--bg-2);border:1px solid var(--border);border-radius:6px;padding:5px 8px;text-align:center;font-weight:600}
+.controls .axis.x{color:#ff8ea3}
+.controls .axis.y{color:#82e3a3}
+.controls .axis.z{color:#8eb6ff}
+.controls input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:linear-gradient(90deg,var(--blue) 0%,var(--blue) var(--p,50%),rgba(255,255,255,.08) var(--p,50%));border-radius:3px;outline:none}
+.controls input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--orange);cursor:pointer;border:3px solid var(--bg-0);box-shadow:0 0 0 2px var(--blue-2)}
+.controls input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--orange);cursor:pointer;border:3px solid var(--bg-0)}
+.controls .val{font-family:var(--mono);font-size:13px;color:var(--orange-2);text-align:right}
+
+/* 按钮组 */
+.btn-group{display:flex;gap:6px;flex-wrap:wrap}
+.btn{padding:6px 14px;background:rgba(57,91,143,.20);border:1px solid var(--border);color:var(--text-dim);border-radius:6px;cursor:pointer;font-size:13px;transition:.15s}
+.btn:hover{background:rgba(57,91,143,.40);color:var(--text)}
+.btn.active{background:var(--orange);color:var(--bg-0);border-color:var(--orange);font-weight:600}
+.btn.danger{background:rgba(255,107,128,.18);border-color:rgba(255,107,128,.45);color:var(--red)}
+.btn.danger.active{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* ==========================================================
+   6. 欧拉角 3D 立方体
+   ========================================================== */
+.cube-stage{perspective:900px;width:100%;height:300px;display:flex;align-items:center;justify-content:center;position:relative}
+.world-axes{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:.55}
+.cube{position:relative;width:140px;height:140px;transform-style:preserve-3d;transition:transform .15s cubic-bezier(.2,.7,.2,1)}
+.cube.flying{animation:autoRotate 6s linear infinite}
+@keyframes autoRotate{0%{transform:rotateZ(0) rotateY(0) rotateX(0)}100%{transform:rotateZ(40deg) rotateY(60deg) rotateX(45deg)}}
+.cube .face{position:absolute;width:140px;height:140px;border:1.5px solid rgba(91,128,184,.55);background:rgba(57,91,143,.18);backdrop-filter:blur(0);display:flex;align-items:center;justify-content:center;font-family:var(--mono);color:var(--text-dim);font-size:11px}
+.cube .face.front{transform:translateZ(70px);background:rgba(57,91,143,.30)}
+.cube .face.back{transform:rotateY(180deg) translateZ(70px);background:rgba(57,91,143,.18)}
+.cube .face.right{transform:rotateY(90deg) translateZ(70px);background:rgba(57,91,143,.22)}
+.cube .face.left{transform:rotateY(-90deg) translateZ(70px);background:rgba(57,91,143,.22)}
+.cube .face.top{transform:rotateX(90deg) translateZ(70px);background:rgba(57,91,143,.34)}
+.cube .face.bottom{transform:rotateX(-90deg) translateZ(70px);background:rgba(57,91,143,.16)}
+.cube .face b{font-size:18px;color:var(--orange)}
+.cube .face.x-mark{color:var(--red)}
+
+/* 万向锁警示 */
+.gimbal-warning{display:none;margin-top:12px;padding:10px 14px;background:var(--red-soft);border:1px solid rgba(255,107,128,.45);border-radius:8px;color:var(--red);font-size:13.5px;animation:pulse 1.5s ease-in-out infinite}
+.gimbal-warning.show{display:block}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,128,.4)}50%{box-shadow:0 0 0 8px rgba(255,107,128,0)}}
+
+/* ==========================================================
+   7. 飞机比喻 (SVG)
+   ========================================================== */
+.plane-svg{width:100%;max-width:520px;height:auto;display:block;margin:0 auto}
+
+/* ==========================================================
+   8. 四元数 Canvas
+   ========================================================== */
+.canvas-box{position:relative;width:100%;display:flex;flex-direction:column;align-items:center;gap:14px}
+.q-canvas{width:100%;max-width:540px;height:340px;background:radial-gradient(ellipse at center,#0e1830 0%,#06091a 100%);border-radius:12px;border:1px solid var(--border)}
+.q-readout{font-family:var(--mono);font-size:13.5px;color:var(--orange-2);background:var(--bg-2);padding:10px 16px;border-radius:8px;border:1px solid var(--border);width:100%;text-align:center;line-height:1.7}
+
+/* ==========================================================
+   9. SLERP 对比
+   ========================================================== */
+.slerp-stage{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:760px){.slerp-stage{grid-template-columns:1fr}}
+.slerp-pane{background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:10px;padding:14px}
+.slerp-pane h5{font-size:14px;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.slerp-pane h5 .pill{font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(57,91,143,.25);color:var(--blue-2)}
+.slerp-canvas{width:100%;height:280px;display:block;border-radius:6px;background:var(--bg-0)}
+.slerp-pane.wrong h5 .pill{background:var(--red-soft);color:var(--red)}
+.slerp-pane.ok h5 .pill{background:var(--green-soft);color:var(--green)}
+
+/* ==========================================================
+   10. Unity 代码块
+   ========================================================== */
+.code-block{background:#04081a;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:14px 0}
+.code-head{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:rgba(0,0,0,.4);border-bottom:1px solid var(--border);font-size:12px;color:var(--text-mute);font-family:var(--mono)}
+.code-head .lang{color:var(--orange)}
+.code-body{padding:16px;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.75;color:#cad4e6;white-space:pre}
+.code-body .k{color:#ff8ea3}
+.code-body .s{color:#82e3a3}
+.code-body .c{color:#5d6b8a;font-style:italic}
+.code-body .v{color:#feb67e}
+.code-body .t{color:#8eb6ff}
+
+/* ==========================================================
+   11. 总结
+   ========================================================== */
+.summary{background:linear-gradient(135deg,rgba(57,91,143,.10) 0%,rgba(254,182,126,.06) 100%);border:1px solid var(--border);border-radius:16px;padding:32px;margin:48px 0}
+.summary h3{font-size:22px;margin-bottom:16px;color:var(--text)}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px}
+@media (max-width:760px){.summary-grid{grid-template-columns:1fr}}
+.summary-grid .col{padding:18px;background:var(--bg-1);border:1px solid var(--border);border-radius:10px}
+.summary-grid h4{font-size:15px;color:var(--orange);margin-bottom:10px;letter-spacing:.5px}
+
+/* ==========================================================
+   12. 杂项
+   ========================================================== */
+.kbd{font-family:var(--mono);background:var(--bg-2);border:1px solid var(--border);padding:2px 8px;border-radius:4px;font-size:12px;color:var(--text-dim)}
+.tag-soft{display:inline-block;padding:2px 10px;background:rgba(57,91,143,.18);color:var(--blue-2);border-radius:4px;font-size:12.5px;margin-right:4px}
+.arrow-line{display:flex;align-items:center;gap:6px;color:var(--text-mute);font-size:13px;margin:8px 0}
+.arrow-line::before{content:'';display:inline-block;width:24px;height:1px;background:linear-gradient(90deg,var(--orange),transparent)}
+.q-vec{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:14px;color:var(--orange-2);margin:6px 0}
+.q-vec .lbl{width:24px;color:var(--orange)}
+
+footer{text-align:center;color:var(--text-mute);font-size:13px;padding:32px;border-top:1px solid var(--border);margin-top:60px}
+footer b{color:var(--orange)}
+
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--text-dim);margin-top:10px}
+.legend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+
+</style>
+</head>
+<body data-page-node-id="HNXeCwKsBbw9Ri3eMSSJUE">
+
+<!-- ==========================================================
+     顶部
+     ========================================================== -->
+<header class="hero" data-page-node-id="63PCrV3ISjD9FJgLysFXRJ">
+  <div class="hero-inner" data-page-node-id="7DH5PIerrelNXFHNJesAC5">
+    <span class="tag" data-page-node-id="BYoFD2larQxmZV3TvSlNXP">3D数学 · 可视化教学</span>
+    <h1 data-page-node-id="YDAZ7nG0cWUig2qRympKzN">四元数与欧拉角</h1>
+    <p class="sub" data-page-node-id="0vqxSDlsLpQT3hT2VKHpcG">给小白的可视化教学：把抽象的"旋转"画给你看。读完你会明白为什么游戏里的旋转用 4 个数字、不是 3 个。</p>
+    <div class="meta" data-page-node-id="Exsw1KId7dYs9VYaiXKNpk">
+      <span data-page-node-id="IojV0vfORuuLoXuHVZJHT7">📐 8 个章节</span>
+      <span data-page-node-id="uleLLZ4LKvknOE6btk4EEb">🎬 6 个动图</span>
+      <span data-page-node-id="Lmuv5jKaNlBJyqI6YS1iB6">🎮 Unity 实战</span>
+      <span data-page-node-id="UdG8dBYf4KfJ031K761lnC">✍ 蔡振立 · 2026</span>
+    </div>
+  </div>
+</header>
+
+<!-- 章节跳转 -->
+<nav class="toc" data-page-node-id="BxKFJx4oRwNkgcNXXpaoX2">
+  <div class="toc-inner" data-page-node-id="8GPq2bMOyWzZfaSdHKgq4x">
+    <span class="lbl" data-page-node-id="TJ89iUAu3fUMB6kEmO6VXz">跳转 →</span>
+    <a href="#ch1" data-page-node-id="Gt32yYcbXfZgIWCJUF7ROC">1. 旋转怎么描述</a>
+    <a href="#ch2" data-page-node-id="CQHYgLTJzWZOvSbPsyfGqF">2. 欧拉角</a>
+    <a href="#ch3" data-page-node-id="wwDMH4ukKbVSaQrxm8m7TP">3. 万向锁</a>
+    <a href="#ch4" data-page-node-id="MY75AuFsrEaG7EjDviikhJ">4. 四元数</a>
+    <a href="#ch5" data-page-node-id="53a4KMSBjwARuPS7uQvUli">5. 几何含义</a>
+    <a href="#ch6" data-page-node-id="FTT47IVoqj1s9CZH3Ci37E">6. SLERP</a>
+    <a href="#ch7" data-page-node-id="CszuCTHrSdR2x1Gy87Teya">7. 对比</a>
+    <a href="#ch8" data-page-node-id="VdHuOBl3LibaqJ9CLZWWGX">8. Unity实战</a>
+  </div>
+</nav>
+
+<main data-page-node-id="YMIfhnDudJflBH6iGDCFzD">
+
+<!-- ==========================================================
+     第一章：旋转这件事
+     ========================================================== -->
+<section class="chapter" id="ch1" data-page-node-id="EMdkPDJmEVo3iSJZ5B8G1Z">
+  <div class="chapter-head" data-page-node-id="LdojrMElNrDCPDxDi7DvPg">
+    <div data-page-node-id="N2OKvZqzi1T97OpdjHqT6I">
+      <div class="num" data-page-node-id="gDUg7BXcT8Rb0Dx2LCQnSO">CH · 0</div>
+      <h2 data-page-node-id="50Z0NEAUt1BvtkT1E7lzcR">为什么旋转需要"4 个数字"？</h2>
+      <div class="desc" data-page-node-id="dnmQUi6zUyt8VHDRpCi9CU">先聊个本质问题</div>
+    </div>
+  </div>
+
+  <div class="split" data-page-node-id="CKxGsGRBaGwGUte12L0YVc">
+    <div class="prose" data-page-node-id="FXSURAV1yvzeooEY8y6YAO">
+      <p class="lead" data-page-node-id="kgGkCMEggAnqXKrYHoBK1Z">你肯定转过东西：拧瓶盖、转方向盘、点头摇头。</p>
+      <p data-page-node-id="BCrnuYP3EPuLWtITD6FQuh">这些动作背后都是"<em data-page-node-id="DlFz8LIK3CYSTuSpkus7Bo">我绕着一根看不见的轴转了多少度</em>"。</p>
+      <p data-page-node-id="Nl9IkN0N7atGFNH45vCn32">但让计算机懂这件事就麻烦了——机器没有"直觉"，它只认数字。</p>
+      <p data-page-node-id="z9ZhP6hLQ7xY7tMVw5fYkp">所以有人发明了<strong data-page-node-id="DHnwTb224hLXUSKTRzqA8e">欧拉角</strong>：3 个数字，分别告诉它在 X、Y、Z 三根轴上各转多少（这章讲）。</p>
+      <p data-page-node-id="lyiJINjr3Xr0Gmk2iHzX6N">但欧拉角有个<strong data-page-node-id="aFW9AXzU3lhEGsnxTu2NuN">致命的坑</strong>叫<em data-page-node-id="AbLqI48vASdStzSuFbXn4l">万向锁</em>（第三章讲）。</p>
+      <p data-page-node-id="N4x5C0DvWTBPgkB1QWSb4t">于是 1843 年，一个叫<strong data-page-node-id="lGp9mEP5rAbffYw558strH">威廉·哈密顿</strong>的爱尔兰数学家，把"复数"扩展出了四元数。<strong data-page-node-id="lxQUdXDzV64XMKXH5LffmK">用 4 个数字描述旋转</strong>，绕开了那个坑。这就成了今天 Unity、Unreal、Three.js 等所有 3D 引擎的共同选择。</p>
+
+      <blockquote data-page-node-id="PoF3NcVVBWl5eMhBNe15sO">
+        <b data-page-node-id="rZMtQuVECulMdDjMom9qMK">一个直觉类比：</b><br data-page-node-id="wxK4tiLNpwxCnVOWtPRTBd">
+        欧拉角就像让你"前后走→左右转→上抬腿"三步描述朝向——好懂，但遇到特定姿势会卡。<br data-page-node-id="2t5v5Yg4ASeVK0GTxDBIGn">
+        四元数就像让你"绕着某根棍子转一圈"——不那么直观，但<strong data-page-node-id="ro6DPd2eWwhUzFgNgVtLuv">什么姿势都不会卡</strong>。
+      </blockquote>
+    </div>
+
+    <div class="card" data-page-node-id="gTuggKdu6RrHN05VmuCAMC">
+      <div class="prose" style="font-size:14.5px" data-page-node-id="eF2HuTUKUYi5VUAdJO2QkQ">
+        <div class="concepts" data-page-node-id="et8wdAmuhXt56F1VXSA7Xh">
+          <div class="concept" data-page-node-id="zYKjyWaejoQxWCwC7nauwJ">
+            <div class="lbl" data-page-node-id="oUag2hhatqcZTDGQVdGMjP">会用到的词</div>
+            <b data-page-node-id="lfISV5pyOGn9SXdGmWdsUd">轴</b>—— 旋转围绕的那根看不见的"棍子"<br data-page-node-id="meZ23r4xEkjAt5y5du0YFW">
+            <b data-page-node-id="hbOAJ8G4yHFtiQ4FZ5bim4">角度</b>—— 绕那根棍子转了多少
+          </div>
+          <div class="concept" data-page-node-id="vfiz3CuIDqkYHAIWACqfrD">
+            <div class="lbl" data-page-node-id="6fXaHWdY7YZkAvJBNjiOjA">Pitch/Yaw/Roll</div>
+            飞机 / 物体的三个旋转维度
+          </div>
+          <div class="concept" data-page-node-id="gagPtBnaslpxZpjigDGQxU">
+            <div class="lbl" data-page-node-id="Lhmool9HJR3CLUc99XYiHs">万向锁</div>
+            两个旋转"撞"到同一个方向，导致自由度丢失
+          </div>
+          <div class="concept" data-page-node-id="dJLbRUIT6gjrQBt1YkzEUA">
+            <div class="lbl" data-page-node-id="oHTINasrJKlsSMn3tpGZKS">四元数</div>
+            4 个数字编码：1 个"转多少" + 3 个"绕哪根轴"
+          </div>
+        </div>
+
+        <h4 style="margin-top:18px" data-page-node-id="eLjsCAkpjej0DsT8XDrJAX">⚡ 核心一句话</h4>
+        <p data-page-node-id="jqm53BDQM0NFxkxRmxFH4E">欧拉角对人类友好、对机器坑；四元数对机器友好、对人类反直觉。所以游戏里底层用四元数，给你看时才转回欧拉角。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     第二章：欧拉角
+     ========================================================== -->
+<section class="chapter" id="ch2" data-page-node-id="bg6xkp3UklY9iyatNCyGqM">
+  <div class="chapter-head" data-page-node-id="cbA5fhrS3kReQOaQaaCArc">
+    <div data-page-node-id="0nVk7oZBcF0YRG4xaqtXdB">
+      <div class="num" data-page-node-id="mzB7jDshipiAQp9Wfb4taH">CH · 1</div>
+      <h2 data-page-node-id="LmnnA9C7yaxwofFbeVkVXl">欧拉角 — 最直观的答案</h2>
+      <div class="desc" data-page-node-id="5JvtBeN1AARY0pI8V1hlve">用 3 个数字描述一个旋转</div>
+    </div>
+  </div>
+
+  <div class="split" data-page-node-id="QjDSXoUvtbzO702pQcwVW5">
+    <div class="prose" data-page-node-id="ZRM5mqLuCeRmfj3hMEcaGE">
+      <h3 data-page-node-id="KHrjgtfGoulBFR6ecqHYUa">三个轴各转多少度</h3>
+      <p data-page-node-id="7zcJfKgTx6VjAEpH42s1T7">欧拉角的思路太简单了：</p>
+      <p data-page-node-id="rpOIwX8QuDkcocgU6QC1Dt">给一个立方体（或飞机、或人偶），告诉它：</p>
+      <ul data-page-node-id="g3rcaGLzNAwcs96KwjPLhN">
+        <li data-page-node-id="N3dnqTn40JdqA9fGCclxuZ"><span style="color:#ff8ea3" data-page-node-id="w39ceDPpVuUONBKu3Frhy2"><b data-page-node-id="NmK10CIiABGTXK8Zp5Z8sI">Pitch</b>（俯仰）</span> = 绕 <strong data-page-node-id="3XWMpdp6McYGQS21vcIxlM">X 轴</strong> 转多少度。点头、抬头。</li>
+        <li data-page-node-id="WJrnNuUgNg4yu8uKobOYjF"><span style="color:#82e3a3" data-page-node-id="EeA4Ep31JCGFIelXZFwCnT"><b data-page-node-id="ArU6R4L7MaamKmSG8pqUaz">Yaw</b>（偏航）</span> = 绕 <strong data-page-node-id="qpIGDb0EjDuRAKzY9F0DQA">Y 轴</strong> 转多少度。左看、右看。</li>
+        <li data-page-node-id="y7N2TRBBcT31F94nSMmRHf"><span style="color:#8eb6ff" data-page-node-id="ak4OWIwxuGUNdYQMq4Bp3a"><b data-page-node-id="AFOz1lzRFPRZrWEobyCTzu">Roll</b>（翻滚）</span> = 绕 <strong data-page-node-id="XLCACkqO1SoMJsZ8mxGZ93">Z 轴</strong> 转多少度。歪头、向左肩翻。</li>
+      </ul>
+
+      <blockquote data-page-node-id="DbuFWQgTcJitxmC8UM90XU">
+        在 Unity 里叫 <code data-page-node-id="2ow7ytrNBSakO2tPzBYBQm">rotation.x</code> / <code data-page-node-id="gsMEqCmzNB7W8B8M6LJ1dK">y</code> / <code data-page-node-id="XoCAfkmLT3EWp3pl0LTyww">z</code>，或更直观的名字 <code data-page-node-id="uNzIBD073gcCFBujeApc8W">eulerAngles</code>。<br data-page-node-id="UrsIHCZ6Q0sZIyJHMr4o3u">
+        三个 0~360° 的小数，看起来就一句话：<b data-page-node-id="svba9tN0VbqFIe7kzB1tuF">"在 X 上转 45°，在 Y 上转 30°，在 Z 上转 0°"</b>。很自然，对吧？
+      </blockquote>
+
+      <h4 style="margin-top:18px" data-page-node-id="NEAd0mE4cbv2DfaRe9YhU5">✋ 自己拖一下试试：</h4>
+      <p data-page-node-id="YGFKPPB3uRi7q81cALuj7P">右边那个立方体，拖三个滑块，它会按你给的欧拉角转。这是 <code data-page-node-id="xdKbbUKkO9jgY235UxJvmW">transform.rotation = Quaternion.Euler(pitch, yaw, roll)</code> 在浏览器里的样子（CSS 底层其实也是四元数在算，但我们用欧拉角驱动它）。</p>
+    </div>
+
+    <!-- 3D 立方体动图 -->
+    <div class="demo" data-page-node-id="NeKXc4C52xZFntT9brWHPn">
+      <div class="head" data-page-node-id="M3TcpiGxzMUF7E6NJ4uPlt">
+        <div class="name" data-page-node-id="11p3WeJTBLErZurfs9EQYf">欧拉角 3D 演示</div>
+        <div class="meta" id="eulerOut" data-page-node-id="MoHXNdrmPilwNk1gPTkJnj">euler = (0°, 0°, 0°)</div>
+      </div>
+      <div class="stage" style="min-height:300px" data-page-node-id="DYLeV2DMxDwsC6Yrm4H2dn">
+        <div class="bg-line" data-page-node-id="UnseIrqFHeBCgYr7xzvp2I"></div>
+        <div class="cube-stage" style="height:240px" data-page-node-id="GRbmxyeKVcdJvVBBjirJwg">
+          <div class="cube" id="cube1" data-page-node-id="T0mshq0b7lmS7Y36IygKYm">
+            <div class="face front" data-page-node-id="YLC95TeXqaWSIXM12ibkuq"><span data-page-node-id="IWdgh54lSCOGfpCAMdl4H9">前</span></div>
+            <div class="face back" data-page-node-id="BR49mIdRYH2P6AMjXvUNYA"><span data-page-node-id="G5wACoHN7u07I1XkjgFc6o">后</span></div>
+            <div class="face right" data-page-node-id="CD93TPd0jtgHAX9t4zFXKH"><span data-page-node-id="PFunHWr1CkrfH6WrvgS1RH">右</span></div>
+            <div class="face left" data-page-node-id="ycG23NTuI4GS7d6BIGCE5A"><span data-page-node-id="dbicMNS5qfGcPgRononH9I">左</span></div>
+            <div class="face top" data-page-node-id="64fYX56h9Hcvgfeu9yaUMH"><span data-page-node-id="mvrX8SDITAGsQ5cT7EhaEe">顶</span></div>
+            <div class="face bottom" data-page-node-id="HL2d79zjb9HADIzOFYUuML"><span data-page-node-id="adJ625f77LDBu3AK12JZCe">底</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="controls" data-page-node-id="Vn4x7XEPoAqYIkk7FHPjnh">
+        <div class="row" data-page-node-id="bAIMivvDuzKLVIYlWBx7VS">
+          <div class="axis x" data-page-node-id="kEiItfn2SA5c7C9uG9SbOl">Pitch X</div>
+          <input id="pitchS" type="range" min="-180" max="180" value="30" data-page-node-id="0OlLn8olX24Lf3GHxsASBs">
+          <div class="val" id="pitchV" data-page-node-id="NMJIoHhNDxTjegFVAq84zi">30°</div>
+        </div>
+        <div class="row" data-page-node-id="IuaxcHLHlKOGhyEdpm9TVZ">
+          <div class="axis y" data-page-node-id="4rxfFuCuSBQY6FLqMphSGu">Yaw Y</div>
+          <input id="yawS" type="range" min="-180" max="180" value="40" data-page-node-id="Sr6rbHEMHM5o1J1rVWpEgB">
+          <div class="val" id="yawV" data-page-node-id="0vUo4BBekHVsQ47hjAIVWX">40°</div>
+        </div>
+        <div class="row" data-page-node-id="1R8BH6H04QnpHX6giwSYP9">
+          <div class="axis z" data-page-node-id="e65mpdkH9RJjAPI8mKDlxE">Roll Z</div>
+          <input id="rollS" type="range" min="-180" max="180" value="20" data-page-node-id="WzPuqRmG20W0p1cmG6GvX2">
+          <div class="val" id="rollV" data-page-node-id="VwWMM2bSyMLo67RnhCSJ3W">20°</div>
+        </div>
+        <div class="btn-group" style="margin-top:4px" data-page-node-id="3upVTbdC8GdALIdsR7g4gv">
+          <button class="btn" data-preset="front" data-page-node-id="18NAo8eNcQYoQ0QAJwoS39">正视</button>
+          <button class="btn" data-preset="top" data-page-node-id="1pnlmB7yGVFG4Vyp5xEB8s">顶视</button>
+          <button class="btn" data-preset="corner" data-page-node-id="IuUnpsebQg9B3clH0zlm9N">3/4 角</button>
+          <button class="btn" data-preset="lock" data-page-node-id="HD8vtzghSnFeJxTKaBa68P">演示万向锁</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout info" style="margin-top:24px" data-page-node-id="z7Gz1uIoqj0mAEHVXx0OFZ">
+    <div class="ic" data-page-node-id="D57OZWdLCM4seUMaS1Cd6x">💡</div>
+    <div data-page-node-id="zxp7tiIMcYIWApAt10cQkJ">
+      <b data-page-node-id="7Dmj64KfsSTZi6uA7JWBhR">顺序很重要：</b>Unity 默认按 <code data-page-node-id="xg9PC5dRxFVoImlub9oKEq">Z → X → Y</code> 顺序应用（Z 是最先、Y 是最后）。不同引擎顺序不同，这正是"欧拉角不唯一"的开始——同一个姿态可能有<strong data-page-node-id="gfnTkGZJW8u8C96W83Ips0">很多组欧拉角</strong>都能算出来。
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     第三章：万向锁
+     ========================================================== -->
+<section class="chapter" id="ch3" data-page-node-id="GeFJ3JiSz9keTAFF5AMHUN">
+  <div class="chapter-head" data-page-node-id="Uvjliko061DlydLb8zORXE">
+    <div data-page-node-id="afFHZGYE7GIQr5uGTfcTYk">
+      <div class="num" data-page-node-id="eDRwotqxMkJ7wgXx0qlzb6">CH · 2</div>
+      <h2 data-page-node-id="3FQ6vbbnePquvOa1pMAYZI">万向锁 — 欧拉角的致命陷阱</h2>
+      <div class="desc" data-page-node-id="Mq9zwwOslmFWz1Hzj9YEH5">当两个轴"撞"到同一个方向</div>
+    </div>
+  </div>
+
+  <div class="split" data-page-node-id="pSM8ROWV6rPTqDpT8qlGoh">
+    <div class="prose" data-page-node-id="FowbAbXhGGMwmaw9O1ZTuS">
+      <h3 data-page-node-id="Ly1tKrtNBCSCbN3jEho2D0">先听个故事</h3>
+      <p data-page-node-id="6Dx1BndilyvLPinjeFrlr3">想象你在驾驶一架飞机：</p>
+      <p data-page-node-id="onVqKmPs9oHOKaY6shBsik">你把机头<strong data-page-node-id="a6eTpp8fuAkHukqqbrBBEz">向上抬了 90°</strong>（Pitch=90°），机鼻现在朝向天空。</p>
+      <p data-page-node-id="HoHGqiEXkU8EUSzLxDwhUN">这时你再 "<em data-page-node-id="dGloANuLwGwkxCQelT7VAN">左右摆头</em>"（Yaw）和 "<em data-page-node-id="eZwQ5mahq9G4aHuhriBbyj">歪脖子</em>"（Roll），会发生什么？</p>
+      <p data-page-node-id="1WThYCBH3DsEklKtFgL5g8"><strong data-page-node-id="w2uMfNT7RsW2E53eAlWEg4">它们变成了一回事。</strong>因为你的"头顶上方"方向已经转到"原前后方向"，原本 Y 轴做的动作、Z 轴也能做。反过来也一样。</p>
+      <blockquote data-page-node-id="QJW6CCsVk6M6WHRGDmUINL">
+        就像地球仪：你看，从北极方向看下去，转动它只能让球绕<strong data-page-node-id="T3spK1iaGq4MdGta4v1V88">一根</strong>轴转。不管你怎么转、都少了一个维度。
+      </blockquote>
+
+      <h4 data-page-node-id="IZtaFVaSr6Ps2xWtcqxXBz">数字上是什么样子？</h4>
+      <p data-page-node-id="FDP2y5LGttJrk0LcVVOHEn">如果当前欧拉角是 <code data-page-node-id="PbI8raiDFoHzyPrJ3CxHHr">(Pitch=90°, Yaw=任意, Roll=0)</code>，那么</p>
+      <ul data-page-node-id="BhBI8YDCUrXqtTLHvFHjxG">
+        <li data-page-node-id="H5ANBj00XgoHbCpxOgLmsl"><code data-page-node-id="qnshFDCLyywH0lhodCzVAq">(90°, 30°, 0)</code> 和 <code data-page-node-id="BIUFoWWdNax9SIVOTtkZzv">(90°, 0°, -30°)</code> 表示<b data-page-node-id="8zDIPFAQCagW2bEywcqqEu">同一个朝向</b>！</li>
+        <li data-page-node-id="F02oNJFUe0tZvf9PNEmri8">你想"绕 Y 转 30° 加绕 Z 转 30°"，结果只会变成"绕一根合并的轴转 60°" —</li>
+        <li data-page-node-id="HLiHD7aLmLB4abVDdyIT2C"><strong data-page-node-id="ZJPdhoUG7emAcs11QPJzVq">丢失了一个旋转自由度</strong>，物体的姿态会发生"凭空抽搐"。</li>
+      </ul>
+
+      <div class="callout" style="margin-top:18px" data-page-node-id="mbdK0wakF9XxELEtEQiYE8">
+        <div class="ic" data-page-node-id="lI1JXxMDYZ0flQ4EJmgpCA">🚨</div>
+        <div data-page-node-id="n1H9Wq0smGJYKKg3PK3fjf">
+          <b data-page-node-id="ERANJ6vqxaaneG7CYQEcDp">历史教训：</b>1961 年 NASA 发射水手号探测器时，工程师忘了一个地方用四元数改用欧拉角，飞船<strong data-page-node-id="aMX3O1B08zoqwKJ5GaK4z0">在太空中不受控翻滚</strong>，任务失败。这是工程史上关于欧拉角最著名的惨案。
+        </div>
+      </div>
+    </div>
+
+    <!-- 万向锁演示 -->
+    <div class="demo" data-page-node-id="C0umnoRNynLy5BFsINtqym">
+      <div class="head" data-page-node-id="GhmU0zWWacZA0FCvpjlnjC">
+        <div class="name" data-page-node-id="Rj95vVgm3s828YyO0Ocldc">万向锁现场重现</div>
+        <div class="meta" data-page-node-id="Ko25vpp1UthIX3EhsrNraX">把 pitch 调到 90° 后观察</div>
+      </div>
+      <div class="stage" style="min-height:300px" data-page-node-id="ZQ48mkKilcRBHhJCCIgC4u">
+        <div class="bg-line" data-page-node-id="tKrzGyhQPjWjAzNdb9ahPw"></div>
+        <div class="cube-stage" style="height:240px" data-page-node-id="iDA7yVOzQbEKwQBtAYzEsj">
+          <div class="cube" id="cube2" data-page-node-id="cEPu20nDHTpiJ0SRduRULd">
+            <div class="face front" data-page-node-id="zQUrIsKMWYTyz4L2qKAmSS"><span data-page-node-id="LHKBM4pveG8pDL4gNWz6cs">前</span></div>
+            <div class="face back" data-page-node-id="ynXzkwdZdsUT9nQHCHggTo"><span data-page-node-id="UWLmdFChBlWaRV4EELIaIi">后</span></div>
+            <div class="face right" data-page-node-id="a0Hq7lxpxeC53jOcJL5lIy"><span data-page-node-id="MgIXzDJ3WB4vdeSXZ7UHYT">右</span></div>
+            <div class="face left" data-page-node-id="7RvO1ru9tzTEwCqOwqp1Bg"><span data-page-node-id="qwnDFE8dk8MBLPZlHmGKoD">左</span></div>
+            <div class="face top" data-page-node-id="beNWE4u1vi8ax8YCLCOL2Z"><span data-page-node-id="fCGkvKVA9q6DZhPH1VbBPI">顶</span></div>
+            <div class="face bottom" data-page-node-id="xySKnF64MG7qMptPTBYviZ"><span data-page-node-id="rcLGkK6yHFTDY8jkWjsJqk">底</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="controls" data-page-node-id="Nz28OE5YkVKBMFv0Ipp57k">
+        <div class="row" data-page-node-id="CBWPIwv8qBvnspICyHpqrs">
+          <div class="axis x" data-page-node-id="i4nSdDKrGDw0jyOtltDbxf">Pitch X</div>
+          <input id="pitchS2" type="range" min="-180" max="180" value="20" data-page-node-id="zwgtM8C6VTnImHYCSAnP2H">
+          <div class="val" id="pitchV2" data-page-node-id="vVfZUsXYXfD8QjAnNHG2zI">20°</div>
+        </div>
+        <div class="row" data-page-node-id="87uaiI7EVG5pmcDuu2DF0x">
+          <div class="axis y" data-page-node-id="zGUIHJcdgM7xAK96IiGUQD">Yaw Y</div>
+          <input id="yawS2" type="range" min="-180" max="180" value="0" data-page-node-id="NAUlNXYcf7nCidb5ifwlHs">
+          <div class="val" id="yawV2" data-page-node-id="v9Byk3RHeSphAKFqYKwdF0">0°</div>
+        </div>
+        <div class="row" data-page-node-id="toCKeA8J1UPNZ2dPWeQRDR">
+          <div class="axis z" data-page-node-id="LJgAWsgrS5dyNjfkRdjzu8">Roll Z</div>
+          <input id="rollS2" type="range" min="-180" max="180" value="0" data-page-node-id="wZuvyLSqUUamtPfu30jyXy">
+          <div class="val" id="rollV2" data-page-node-id="WDnwAqaNrI4YOiUfyB3OxD">0°</div>
+        </div>
+        <div class="btn-group" style="margin-top:4px" data-page-node-id="trIepCqLFfskPuLCVXFSsl">
+          <button class="btn" data-pitch="0" data-page-node-id="OFFbhx5NyAjEGFhbczu9oe">正常 1</button>
+          <button class="btn" data-pitch="90" data-page-node-id="HvO8acPZWqLPfkmset83Dn">⚠ 抬 90° 触发万向锁</button>
+          <button class="btn danger" id="lockYaw" data-page-node-id="86T6FQVgOxsndKElaR1Yz1">撞轴演示</button>
+        </div>
+        <div class="gimbal-warning" id="gimbalWarn" data-page-node-id="f9Krg2XTZF0Vt44NzzEeQW">
+          🚨 <strong data-page-node-id="jF4sgFFZuDxF3VrlfHfqc9">万向锁！</strong> 当前 Pitch=90°，Yaw 和 Roll 在同一个自由度上，等价且不可区分
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 飞机示意图 -->
+  <div style="margin-top:32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center" data-page-node-id="tnTedv6kr9xoBP9v5CDSyS">
+    <svg class="plane-svg" viewBox="0 0 520 200" data-page-node-id="oONnFOukeSc67fmm0xbLmj">
+      <defs data-page-node-id="2XNzJcZVy7amXwVLu8mNiD">
+        <linearGradient id="planeBody" x1="0" x2="1" data-page-node-id="wNAkXxKGFnkQDeciWn5Lu5">
+          <stop offset="0" stop-color="#5b80b8" data-page-node-id="odC8OyaJu6GOrWHLqaCDYM"/>
+          <stop offset="1" stop-color="#395b8f" data-page-node-id="KHRF5DoHH571hAkiHtrNvv"/>
+        </linearGradient>
+      </defs>
+      <!-- 飞机器 -->
+      <g transform="translate(80,100)" data-page-node-id="yO4NipPGZc9UFS0KPtRfgX">
+        <ellipse cx="0" cy="0" rx="50" ry="11" fill="url(#planeBody)" stroke="#8eb6ff" stroke-width="1.5" data-page-node-id="CA6VgbH22FKKFZSbTA5YGe"/>
+        <polygon points="40,-2 60,0 40,2" fill="#8eb6ff" data-page-node-id="pvCRLlcpRSNfzHPbU8k81i"/>
+        <polygon points="-30,-8 5,-2 -30,-12" fill="#5b80b8" opacity=".7" data-page-node-id="V4MEVIDt1XSyNAHR9iCv5l"/>
+        <polygon points="-30,8 5,2 -30,12" fill="#5b80b8" opacity=".7" data-page-node-id="p7jBefLjF8c6icK3iOlVnD"/>
+        <!-- 坐标轴 -->
+        <line x1="0" y1="0" x2="80" y2="0" stroke="#8eb6ff" stroke-width="2" data-page-node-id="kZFN9S8QHYg2S3zAJzLN71"/>
+        <text x="86" y="4" fill="#8eb6ff" font-size="11" font-family="monospace" data-page-node-id="Otu7Y0sonPkx3VlbBDiFca">X (前)</text>
+        <line x1="0" y1="0" x2="0" y2="-40" stroke="#82e3a3" stroke-width="2" data-page-node-id="kdPqFRqdFYtj85590KbF2u"/>
+        <text x="6" y="-36" fill="#82e3a3" font-size="11" font-family="monospace" data-page-node-id="PpOP5Zyyu2AyFxG9GlVkGg">Y (上)</text>
+        <line x1="0" y1="0" x2="0" y2="40" stroke="#ff8ea3" stroke-width="2" data-page-node-id="CGuweKWmdkMzJvVwv8PpKY"/>
+        <text x="6" y="50" fill="#ff8ea3" font-size="11" font-family="monospace" data-page-node-id="QC6vBkITeDNm6kqvrFFE03">Z (右)</text>
+      </g>
+
+      <text x="170" y="30" fill="#e7ecf5" font-size="14" font-weight="600" data-page-node-id="B699BwG3sH3x9dUxbLsQdI">✈ 正常飞行姿态</text>
+      <text x="170" y="52" fill="#9aa6c4" font-size="12" data-page-node-id="qVAj2b8Bbq7zNADYFD17pV">可以分别控制俯仰(Yaw)、</text>
+      <text x="170" y="68" fill="#9aa6c4" font-size="12" data-page-node-id="txWSBhAwbwDol7AfrG1cov">偏航(Pitch)、翻滚(Roll)，</text>
+      <text x="170" y="84" fill="#9aa6c4" font-size="12" data-page-node-id="bUkUC6oYdHALPsE8PBz8KK">三者互不打架</text>
+
+      <g transform="translate(380,100) rotate(90)" data-page-node-id="fXpolNEmfgBFCj0fQYKPxD">
+        <ellipse cx="0" cy="0" rx="50" ry="11" fill="url(#planeBody)" stroke="#feb67e" stroke-width="1.5" data-page-node-id="sYBAuJbLmfrxGDZviuUDGO"/>
+        <polygon points="40,-2 60,0 40,2" fill="#feb67e" data-page-node-id="iUiPSNQfNuPrxHcYwWJkZ9"/>
+        <polygon points="-30,-8 5,-2 -30,-12" fill="#feb67e" opacity=".7" data-page-node-id="5T5gJG8o32ZUQInbwNmlte"/>
+        <polygon points="-30,8 5,2 -30,12" fill="#feb67e" opacity=".7" data-page-node-id="aT6OxohdbmEDYnDhuHNXFh"/>
+        <line x1="0" y1="0" x2="80" y2="0" stroke="#8eb6ff" stroke-width="2" data-page-node-id="BoBxAPnNXBXIi1n6FXBPsT"/>
+        <line x1="0" y1="0" x2="0" y2="-40" stroke="#82e3a3" stroke-width="2" data-page-node-id="qfMT9aE4yS46klNzu9Uhiu"/>
+        <line x1="0" y1="0" x2="0" y2="40" stroke="#ff8ea3" stroke-width="2" data-page-node-id="4KUJe5U3Ee10QS3U9RWHtJ"/>
+      </g>
+      <text x="370" y="160" fill="#ff6b80" font-size="14" font-weight="600" data-page-node-id="3AXmCtwgcd17MfMaiJHhXD">🚨 机头朝天(Pitch=90°)</text>
+      <text x="370" y="178" fill="#9aa6c4" font-size="11" data-page-node-id="J4AH4qGBW5WXvEJdOjGILd">Y 和 Z 撞到同一根轴方向 → 1 个自由度丢失</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ==========================================================
+     第四章：四元数登场
+     ========================================================== -->
+<section class="chapter" id="ch4" data-page-node-id="pApqaQAl1rWN6Gvfxag0gt">
+  <div class="chapter-head" data-page-node-id="fPAQPetLtstCZfpdtRdd9I">
+    <div data-page-node-id="LBoxKyHOVZV6vJX51qNcKI">
+      <div class="num" data-page-node-id="uFBHoXf6xQL9oAxAPDiiBX">CH · 3</div>
+      <h2 data-page-node-id="5Au8pABm7VELC8mzuWz298">四元数 — 数学家的解药</h2>
+      <div class="desc" data-page-node-id="lcRD8IJzn8Qt0vcnY8VZr8">1883 年哈密顿的"复数扩展"</div>
+    </div>
+  </div>
+
+  <div class="split" data-page-node-id="J8HOKeKwPXL4vdUPSMzq2e">
+    <div class="prose" data-page-node-id="ri2HcoJ33jZygWNyCm4TWI">
+      <h3 data-page-node-id="sWfcHi7L4TFwxrcmbygqSg">"复数扩展"？别被名字吓到</h3>
+      <p data-page-node-id="RbHA0OgDqFQa4VyQPVIkVG">普通复数是 <code data-page-node-id="4QrNbKGIIyx1k1BIdCrTbi">a + b·i</code>（2 部分）；</p>
+      <p data-page-node-id="emWtaS05iUqliuh2pBfw0c">四元数是 <code data-page-node-id="b9eZi8Me0wx77pzzOHBBBR">a + b·i + c·j + d·k</code>（4 部分）。</p>
+      <p data-page-node-id="zMRSrO1ZZL8RNV9fZZ0h0k">为了描述一个旋转，Hamilton 弄出了 3 个"虚部" i、j、k，让它们的乘法具有某些特殊性质（<code data-page-node-id="GqGO0CWJkvKCh0DT5YRvaK">i²=j²=k²=ijk=−1</code>）。</p>
+
+      <blockquote data-page-node-id="He2PxOdH5iKLph9l69Ed9p">
+        <b data-page-node-id="iJGb9y0Y3Y3iiQUFadNUGM">但你完全不用记这些规则。</b><br data-page-node-id="StZrvEruj6mQKBF1rq5HKY">
+        游戏开发者眼里，四元数只有一个意思：<strong data-page-node-id="wWue1HS4DZwQNvxNgYa9f4">一根轴 + 一个角度。</strong>
+      </blockquote>
+
+      <h3 style="margin-top:20px" data-page-node-id="wNDBgQh0qfL0W9S8XaYzhB">公式登场（极简版）</h3>
+      <p data-page-node-id="2kGfzpf1rwZpc9KYS4YQN5">假设你想"绕轴 <code data-page-node-id="km0hRUhJEsEzWUgVstNVQh">(x,y,z)</code> 转 θ 度"，那么对应的四元数是：</p>
+
+      <div class="card lite" style="font-family:var(--mono);text-align:center;font-size:18px;padding:18px;margin:12px 0" data-page-node-id="AJf8CGavxgwHZDYA1faVdh">
+        <span style="color:var(--orange-2)" data-page-node-id="IoZWzx9FQCqhmV5Nnpx78Z">q</span> = <span style="color:var(--text)" data-page-node-id="BUZ0JH8FM0ClGCXhA5Hkqk">cos(θ/2)</span> + <span style="color:var(--text)" data-page-node-id="7uag7uw5d7G16yMONXyUJt">sin(θ/2)</span>·<span style="color:var(--orange)" data-page-node-id="Vx9N5YbickSG0XQAnGCtD5">(x·i + y·j + z·k)</span>
+      </div>
+
+      <p data-page-node-id="AjGGBDQyVQRaE8efdpn0vD">把两边拆开，就是 4 个数字：</p>
+      <div class="q-vec" data-page-node-id="qLDbDWZ6m65ATw344W5CSe"><span class="lbl" data-page-node-id="Sr5Cgwm4Ut3BLmxNWSBsj6">w</span><span data-page-node-id="FOmHjJe4LA2yptqUAN61nE">= <b data-page-node-id="FpHfTvm8DDPcz6Mz0JmhCM">cos(θ/2)</b> &nbsp;&nbsp; // "转了多少"的余弦</span></div>
+      <div class="q-vec" data-page-node-id="mbDNnLoWGTH6ld8WyzXnuW"><span class="lbl" data-page-node-id="67Fkd4he6Nf8HME2mwSoRD">x</span><span data-page-node-id="LsSKB4nJLRgbGmy6GkqVGH">= <b data-page-node-id="gPzvmaABmof3inCMcxI9ob">axisX · sin(θ/2)</b> // 旋转轴 X 分量</span></div>
+      <div class="q-vec" data-page-node-id="iZitopvTZ7ucsezaqbUJSt"><span class="lbl" data-page-node-id="o4PU3oniJQjvMiZaMxGjWh">y</span><span data-page-node-id="VChpziYlW84HUQ30wgMQOc">= <b data-page-node-id="sNRbGghH7Q22CYwcsfCTnp">axisY · sin(θ/2)</b> // 旋转轴 Y 分量</span></div>
+      <div class="q-vec" data-page-node-id="PZABAm0G8JQLaI6M6dL49p"><span class="lbl" data-page-node-id="8Wkt7gFnJFbt6uThHxnlIt">z</span><span data-page-node-id="TJnKKYIPjzaSfgcHBjqTg1">= <b data-page-node-id="rfRDIlnG3TFoCBhnCyCssg">axisZ · sin(θ/2)</b> // 旋转轴 Z 分量</span></div>
+
+      <div class="callout ok" style="margin-top:14px" data-page-node-id="E6heVoiA8NlmwMBaziLJ2X">
+        <div class="ic" data-page-node-id="CniH12LfpXJkqJbTwBYnyX">✨</div>
+        <div data-page-node-id="AdBRUVK3mLEzaMmiD6HWqB"><b data-page-node-id="gvyEsErbf4KIfEpvirMci8">几何核心：</b>"θ 旋转"被悄悄"减半"成 <code data-page-node-id="trvCDuLp2C66U7Jo9gCGLL">θ/2</code>。为什么？因为四元数里有<strong data-page-node-id="UreUjtLKEPtWVCnmnMhsA9">一半存"角度"</strong>、<strong data-page-node-id="8KfW97RDkAXCmRGjxtTkCz">一半存"轴"</strong>。下面动图里看更明白。</div>
+      </div>
+    </div>
+
+    <!-- 四元数轴角演示（canvas） -->
+    <div class="demo" data-page-node-id="K8IHmUKDE4kPXzfxMVa9L6">
+      <div class="head" data-page-node-id="NC80mf0PtmDDA3clsoAfCQ">
+        <div class="name" data-page-node-id="5si3pDJ9x38AhyvLASobTq">四元数轴角可视化</div>
+        <div class="meta" data-page-node-id="NY0HH4JALlSes7qDfie9Kz">滑块改变轴方向和角度</div>
+      </div>
+      <div class="stage" style="min-height:380px" data-page-node-id="Ew0zjTxDwmIRPnoRjWTGxU">
+        <div class="bg-line" data-page-node-id="8xbDC9WLRs1TcSRB0wWk8D"></div>
+        <div class="canvas-box" data-page-node-id="akMh1kmiIlEoMKyaALo3F2">
+          <canvas id="qCanvas" width="540" height="320" data-page-node-id="TDzzm6MtX4IuJltgI4KfnA"></canvas>
+          <div class="q-readout" id="qReadout" data-page-node-id="dx35Xby69ymcDMOz4luSMW">q = (0, 0, 0, 1) &nbsp; · &nbsp; 转 0°</div>
+          <div class="legend" data-page-node-id="svHiy0kGixtMuSh1GkPbBx">
+            <span data-page-node-id="PlVrbT8sVqDt6vmHbM4HdK"><i class="dot" style="background:#feb67e" data-page-node-id="FPs6dLeiFTToJz2HgiZoB6"></i>旋转轴</span>
+            <span data-page-node-id="q4cQKsi5hb7aaDW0WoV9E8"><i class="dot" style="background:#82e3a3" data-page-node-id="xPCd1s1b3hJR0Cub5iYLYx"></i>出发点</span>
+            <span data-page-node-id="iBHn2irX4m3CrJEBygM8OJ"><i class="dot" style="background:#8eb6ff" data-page-node-id="dNRp0PJKVurckJdnHGZ0bd"></i>绕轴旋转后的点</span>
+            <span data-page-node-id="2nRtbMcOj3Oz1FrUY8jcod"><i class="dot" style="background:#ff8ea3" data-page-node-id="apEJBg3OJihCQKA44CnBhD"></i>半个角度圆 (θ/2)</span>
+          </div>
+        </div>
+      </div>
+      <div class="controls" data-page-node-id="wzn7Fadpai6k3Tp3qTLJI0">
+        <div class="row" data-page-node-id="GbXbldhv2coLpFt3xo5ex5">
+          <div class="axis x" data-page-node-id="PWpI17DF7YTWXIVSsCY404">axis X</div>
+          <input id="ax" type="range" min="-100" max="100" value="100" data-page-node-id="7WydM5a9tw5iugboueateG">
+          <div class="val" id="axV" data-page-node-id="6kzYzdIEwSom0fPFIGIw7b">1.00</div>
+        </div>
+        <div class="row" data-page-node-id="tvxulbEHWvwGy0sJWzQmSF">
+          <div class="axis y" data-page-node-id="sfMkzAfEljvm3wqR3fBr9s">axis Y</div>
+          <input id="ay" type="range" min="-100" max="100" value="30" data-page-node-id="Jm2gVBFeAJ2CAZc8eBu4lx">
+          <div class="val" id="ayV" data-page-node-id="KIDkFahB0wgqaVbkDPji1E">0.30</div>
+        </div>
+        <div class="row" data-page-node-id="zzRp7wH7FoA8d9tHgpeBd8">
+          <div class="axis z" data-page-node-id="sICHVpf43hrvoQX67eagpX">axis Z</div>
+          <input id="az" type="range" min="-100" max="100" value="20" data-page-node-id="TwEC3iMnAPEFnZtum0SM0n">
+          <div class="val" id="azV" data-page-node-id="PaCFkqKbKBDWS5cI7YwE7O">0.20</div>
+        </div>
+        <div class="row" data-page-node-id="fcxMM4JTXfRElv2OsHEVrS">
+          <div class="axis" style="color:var(--orange)" data-page-node-id="2vWOrhrggYmLACuxN6ZxGW">angle θ</div>
+          <input id="ath" type="range" min="0" max="360" value="120" data-page-node-id="qKYINxF5ArRmCUK63pw0Ak">
+          <div class="val" id="athV" data-page-node-id="1gMAnaCjyOHi7gpgkFRYMj">120°</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     第五章：几何含义
+     ========================================================== -->
+<section class="chapter" id="ch5" data-page-node-id="dLMbp6fPTHmdmstFxFYu04">
+  <div class="chapter-head" data-page-node-id="xpmpcLT4gJTEBIStPFVWhp">
+    <div data-page-node-id="j9SMjUI5m35SFHbTqru9zG">
+      <div class="num" data-page-node-id="k8MqBv6PF8nfYumHMtrtDP">CH · 4</div>
+      <h2 data-page-node-id="goxYdRaITtLcFnAEUq2ZhP">四元数的"几何大脑"</h2>
+      <div class="desc" data-page-node-id="nxptag8PwAjYALyjAPjDGm">为什么 w 一定要 cos(θ/2)？</div>
+    </div>
+  </div>
+
+  <div class="split" data-page-node-id="RUOjeSOBeyyTb1jT2oWiUx">
+    <div class="prose" data-page-node-id="9gJGeT2EKocBZ1tVuVuLSf">
+      <h3 data-page-node-id="QLOUAdZXLnnqWmy03Rlzih">把 4 个数字拼成几何形状</h3>
+      <p data-page-node-id="ahcWYsdal908JDk4cgLoTN">四元数有 4 个数字，描述的是<strong data-page-node-id="l00VBEtVQZAHsDAybjVAsv">4 维空间里单位球面上的一个点</strong>。</p>
+      <p data-page-node-id="AkdmfuAq43UMkbpVuokBbK">听起来吓人。换个角度：</p>
+      <ul data-page-node-id="GudlMAnvZi2tCuwoHGYsjd">
+        <li data-page-node-id="Xo5vrOfWYaw1eYReshsZrK">先看 <b data-page-node-id="5C8nGd4g75nVyN5zE6TrPw">3 维</b>里的<b data-page-node-id="ixDoyEv1kJij6NnmLKSX81">复数（2 个数字）</b>：<code data-page-node-id="e6sUuFXswBflq2LK1BYTaq">a + b·i</code> 就是平面上一个点，<strong data-page-node-id="ZTs6Z9FQvDAnkv4HsrGu0Q">模长 = √(a²+b²)</strong>。把模长归一化（= 1），所有"单位复数"画出来就是个<strong data-page-node-id="54q9sG7paj3YVGHArjd6SV">单位圆</strong>。</li>
+        <li data-page-node-id="felNadjdU8LclqbZZCaHib">把"复数"再加 2 个虚部（j、k），就升到 4 维，单位四元数 = <strong data-page-node-id="nGch8nwVPn3T8A8ShMnMxq">4 维单位球面</strong>。这叫 S³。</li>
+      </ul>
+
+      <blockquote data-page-node-id="hpDvQjnDIga5NohI60CJJz">
+        <b data-page-node-id="MRyelsYiOGeS7DWX5cSzAJ">关键 Trick：</b>S³ 球面 + 一个特殊乘法规则 → 能精确表示"任意旋转"且<strong data-page-node-id="W82fa2hexyTJcE3Mq7oWZI">不会出现万向锁</strong>。<br data-page-node-id="Cb7Gnqzl1lvpKO9sPrFYKJ">
+        球面没有"退化成直线"的问题，所以旋转也很优雅。
+      </blockquote>
+
+      <h3 style="margin-top:18px" data-page-node-id="oemEV6YQOHfoGMQAr5Ha0K">为什么是 θ/2 而不是 θ？</h3>
+      <p data-page-node-id="7HnTMhHq3PrzFnFJalfMoj">因为四元数乘法有个特性：把"绕某轴转 θ 度的四元数"<strong data-page-node-id="XfWvlAihsRHPuzUlN7K5uF">自己连乘两次</strong>，得到的就是"绕同一轴转 2θ 度的四元数"。</p>
+      <p data-page-node-id="XW9CZrGcW59BuWvDYODc7z">也就是说"<em data-page-node-id="08vO3OE6UCDnlcAgWJGgBO">一个 q</em>"对应"<em data-page-node-id="ofT91EozWYHcEhdrqACpMM">旋转的一半</em>"——用 sin/cos 时自然就要除以 2。</p>
+
+      <h3 style="margin-top:18px" data-page-node-id="Xd6FDLgIbSWH3mfALooIbW">再次直观：从"3 维"角度看</h3>
+      <p data-page-node-id="VeFs99XDHJcRfLhO1tuLas">如果我们只看 <code data-page-node-id="jEHbRNRwHI3jwGNOmz5H3o">(x, y, z)</code> 这 3 个数字（单位球的 3D 投影），就能像看"空间方向"一样看旋转轴：</p>
+      <div class="concepts" style="margin-top:12px" data-page-node-id="SedFCc4NaC0BqkGc5VMQFS">
+        <div class="concept" data-page-node-id="ds6jqssN6hxwB0SZn1q5TG">
+          <div class="lbl" data-page-node-id="jSswr7PdwQ2XYWReIOMItE">w 接近 1</div>
+          <b data-page-node-id="NusOc3yaNkapIdHTxrC0L1">几乎没转</b>（θ ≈ 0°，sin 接近 0）
+        </div>
+        <div class="concept" data-page-node-id="etzTj7C8EHcGDO3LZM8wjB">
+          <div class="lbl" data-page-node-id="QAz9img2vi694WK7IfXLXW">w 接近 0</div>
+          <b data-page-node-id="zW8FTU2ymuO8UCe645RSvR">转了近 180°</b>（cos 接近 0）
+        </div>
+        <div class="concept" data-page-node-id="ZG1FQqfOUqvCM2HGySn53S">
+          <div class="lbl" data-page-node-id="Eh0zWBIuOLhYkUeoRtJ3nf">w = -1</div>
+          <b data-page-node-id="zSjZypnANRFvGBRIVi97If">转了 360°，没变</b>（和 q=1 等价！）
+        </div>
+        <div class="concept" data-page-node-id="bTHHLNNEpG0yNdOYBzS7DJ">
+          <div class="lbl" data-page-node-id="WHw9Zz2bSYDG7DhA7iwLev">xyz 单位长</div>
+          <b data-page-node-id="1gvofCWbNUsF5pBDaF2LMB">轴向</b>（在 sin(θ/2)=1 时轴是单位向量）
+        </div>
+      </div>
+    </div>
+
+    <!-- 球面投影 Canvas -->
+    <div class="demo" data-page-node-id="v0xEb3hgW0KlHSodE9dikv">
+      <div class="head" data-page-node-id="TC5sHmZJzamjyijDo4MofB">
+        <div class="name" data-page-node-id="ibPGtSi5Ib5CeUAVEYe6jJ">单位球面上的 q</div>
+        <div class="meta" data-page-node-id="Rx4rWhfn7YR5h2vb5YZYIC">把 4D 单位球"压"到 3D 看</div>
+      </div>
+      <div class="stage" style="min-height:380px" data-page-node-id="cXTufOKmSG1RmMg6ruk3yz">
+        <div class="bg-line" data-page-node-id="o8LLqASc3srpn87tmworT2"></div>
+        <div class="canvas-box" data-page-node-id="Uz0bmTlVBvyV9xWEKDC7hD">
+          <canvas id="sphereCanvas" width="540" height="340" data-page-node-id="yA8goMfCpwNXG7Kj0Q53eY"></canvas>
+          <div class="q-readout" id="sphereReadout" data-page-node-id="dEls0ZvGypE2Zo1LrTbHlh">q (轴投影) · 转 θ</div>
+        </div>
+      </div>
+      <div class="controls" style="grid-template-columns:1fr" data-page-node-id="2DIDPG3MuXLTmpmzUj4BZJ">
+        <div class="btn-group" data-page-node-id="gOjLNpwIz7ifyvnFkgX5xv">
+          <button class="btn active" data-q="0" data-page-node-id="z9ImNwGmBpR6qUBDG4GwvX">0°</button>
+          <button class="btn" data-q="45" data-page-node-id="2xpOaNakuAIaAH3ZJcFZlE">45°</button>
+          <button class="btn" data-q="90" data-page-node-id="SAvakjtmVRdVktV2vmslgk">90°</button>
+          <button class="btn" data-q="135" data-page-node-id="xwaPAD68tKAiUmZsZINz0p">135°</button>
+          <button class="btn" data-q="180" data-page-node-id="ClwfRh7MDIYxp2j2lVsBzG">180°</button>
+          <button class="btn" data-q="270" data-page-node-id="6zTq9jIw6pgFZEuro8zX5b">270°</button>
+          <button class="btn" data-q="360" data-page-node-id="v2u4sQr1Fmlk7fnMAl31dY">360°</button>
+        </div>
+        <div class="legend" data-page-node-id="Ydnmeqd7V6Q1LlCdyqV9Xg">
+          <span data-page-node-id="VO6CGOPOvBNaSsaX3pR7jF">📌 注意：<code data-page-node-id="NraEL4mTwKa6KrBXBVEvHE">q</code> 和 <code data-page-node-id="mEeFO7ZqMZYLcU81bZJyqK">-q</code> 表示<strong data-page-node-id="qzxcrQCrxbIB2y3g06eoOk">同一个旋转</strong>！这是四元数的"双重覆盖"</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     第六章：SLERP
+     ========================================================== -->
+<section class="chapter" id="ch6" data-page-node-id="P7CyLQs3qRpd8PYzJZBO7n">
+  <div class="chapter-head" data-page-node-id="YMXFHzJbGYCwrREmFS5nt7">
+    <div data-page-node-id="ymFcUDEE6uoh2VvW3FuO0S">
+      <div class="num" data-page-node-id="fwUdMUr20hToaXkRAW7G98">CH · 5</div>
+      <h2 data-page-node-id="qmZY0r3fNVFFojKPeMOFTN">SLERP — 球面插值的优雅</h2>
+      <div class="desc" data-page-node-id="ziq2tw0AIrURmZbkIYU5PB">从 A 姿态到 B 姿态，最自然的走法</div>
+    </div>
+  </div>
+
+  <div class="split" data-page-node-id="p9S4R7jW0AyZyROPiinjuU">
+    <div class="prose" data-page-node-id="RQFGiio2DGLqXEZlzHOBwE">
+      <h3 data-page-node-id="DSBoLlJ2jXvo5B26SGLJiX">最常见的实际问题</h3>
+      <p data-page-node-id="JIHZ64FRcBaw5BJvZRsnKT">游戏里几乎每帧都要做："让我从姿态 A <em data-page-node-id="2XqBg1SxT92c2uurUSJCjC">平滑</em>过渡到姿态 B"。</p>
+      <p data-page-node-id="yUFIxsgJMb6UL141QHUsma">看起来直接做：</p>
+      <div class="code-block" data-page-node-id="Yy06avEFwOf69AO2yih4D4">
+        <div class="code-head" data-page-node-id="kadZ2Mw8SnFx2qNgjPPbLX"><span data-page-node-id="XwVkqMTsFCAHoifhVXNVyG">Naïve approach</span><span class="lang" data-page-node-id="La6OnQTp8rAX7dvDeBjjJj">csharp</span></div>
+        <div class="code-body" data-page-node-id="dSlhkMJhKf8iQSY6bGA02I"><span class="c" data-page-node-id="11KA6KIiOo14UXe4ojgDyd">// 千万别这样写</span>
+<span class="t" data-page-node-id="B970b4HL81yXissy8XMpsl">transform</span>.rotation = <span class="t" data-page-node-id="yP9mY9yUSKmCQQOVewKNxy">Quaternion</span>.<span class="v" data-page-node-id="lhxsVQzlpmpPiL4ZGsBhtH">Lerp</span>(A, B, t);</div>
+      </div>
+      <p data-page-node-id="nmZHijy70J6mMbcNxbOGa1">Lerp 就是"线性插值"，把欧拉角当普通数字简单加权平均。问题来了——</p>
+
+      <h3 style="margin-top:18px" data-page-node-id="BJRUK4GHDcYrwVpSYs4yEv">Lerp vs SLERP 的几何</h3>
+      <p data-page-node-id="74HsztcaESaPNYVJlzSBhp">把"旋转"画在球面上：</p>
+      <ul data-page-node-id="NAz51y9h73E8zxPsqualiP">
+        <li data-page-node-id="xl6KWQPTM8tEGshje3Hnry"><strong data-page-node-id="nlYYFQBHMYoA9YjQNK7Xjr">Lerp</strong>：四元数/欧拉角直接做线性插值，等价于把 A、B 当笛卡尔空间两点，<strong data-page-node-id="3dkHd8ClCYbUaHGBlrPTmQ">在球内部走直线</strong>。这直线穿到外面时，会产生奇怪的"加速—减速—翻转"，且<strong data-page-node-id="4UQYJFP2AjGsztdlOlw0f5">中间姿态会乱跳</strong>。</li>
+        <li data-page-node-id="Bjs8WHR5mPpwpNl4ONlMZu"><strong data-page-node-id="2DT8czWHaOqwmiNFtKQrZY">SLERP</strong>：真正的"球面大圆插值"，沿球面最短弧线走，<strong data-page-node-id="4XeLVGl6SbDlUTZcdzyVdG">速度恒定、最自然</strong>。</li>
+      </ul>
+
+      <div class="code-block" data-page-node-id="q5DhsjdpXUuWESPVu8Eb4G">
+        <div class="code-head" data-page-node-id="F1EZXG9dIWC2jjUXKGkV6M"><span data-page-node-id="zzG3cqRmWtFjAO4Hc8GdGz">推荐写法</span><span class="lang" data-page-node-id="y7DR6gHFXuEiS6c4BT38Eh">csharp</span></div>
+        <div class="code-body" data-page-node-id="DXGG5OxHzoNRW7vkB8o3vd"><span class="c" data-page-node-id="j6431uzqSKVJJt44198bxc">// 球面插值</span>
+<span class="t" data-page-node-id="EOdZn11Ro2Gb4vuZ5Xmn1u">transform</span>.rotation = <span class="t" data-page-node-id="ZXxdf2sauAvAZ4GHOiNy30">Quaternion</span>.<span class="v" data-page-node-id="6wcMF42JxmNUAJHEEfg3FU">Slerp</span>(A, B, t);
+
+<span class="c" data-page-node-id="oMSxOwtGwBd5rSCqhuoS27">// 速度由角频率控制（更像动画曲线）</span>
+<span class="t" data-page-node-id="VVyaF4xCRbHX28Ei2LNNEL">transform</span>.rotation = <span class="t" data-page-node-id="WiZOBUXyCdgTaZUZFczzDZ">Quaternion</span>.<span class="v" data-page-node-id="8Jo1sfNUcIuArEbNLAm2GE">Slerp</span>(A, B, <span class="k" data-page-node-id="EKYbKMS1eea3KlsGgreF6R">1f</span> - <span class="t" data-page-node-id="L0VWSHXtIpnS9QfTOrnodv">Mathf</span>.<span class="v" data-page-node-id="13W24EAuLiirxzvxsPsBeB">Exp</span>(-<span class="v" data-page-node-id="WZJpwFalYB3IuUkc2ImaFC">angularSpeed</span> * <span class="t" data-page-node-id="XgtIvnpodnwpkqPGFW9QxY">Time</span>.deltaTime));</div>
+      </div>
+
+      <div class="callout info" style="margin-top:14px" data-page-node-id="1CUoMKgm1tjAKbb3Gnr2Mq">
+        <div class="ic" data-page-node-id="B74j3EAyrA5VNDTVWmOxkp">🛠️</div>
+        <div data-page-node-id="Fg1S0MYuszhF2EluviCPHp"><b data-page-node-id="N4pUSbZg3fNrdZVWNKPRne">SLERP 公式（极简版）：</b><br data-page-node-id="l6jRvwluyKu5AROsEUm5T0">
+        <code data-page-node-id="zKhAphRzOKCuCArPMLRbcZ">q(t) = sin((1-t)·ω)·A + sin(t·ω)·B</code>，再归一化。其中 ω = A 与 B 的夹角。看着复杂，图里看就很清晰。</div>
+      </div>
+    </div>
+
+    <!-- SLERP vs LERP 演示 -->
+    <div class="demo" data-page-node-id="iBhldZH9sWs1ic5EhrFHyI">
+      <div class="head" data-page-node-id="bcq2ueFGR3EOvXvYqG3CiN">
+        <div class="name" data-page-node-id="Mqc2aFdFIiTx6Vs7tpoWjK">插值路径对比</div>
+        <div class="meta" data-page-node-id="z9N5tyeg9UuodCEYOm4w7E">拖动"起点姿态"和"终点姿态"</div>
+      </div>
+      <div class="stage" style="min-height:auto;padding:14px" data-page-node-id="HLNtKiu6EL1SIfXYFabPQY">
+        <div class="slerp-stage" data-page-node-id="H8i6G4s1uqtTEZcSrZpcsO">
+          <div class="slerp-pane wrong" data-page-node-id="MLnwSlRA7d26guHeAiRhWy">
+            <h5 data-page-node-id="jZnODi2gQYU3GLj6qRqkGp">Lerp（直线） <span class="pill" data-page-node-id="tpHKcwZiRxnILC578ue6QU">有卡顿/偏向</span></h5>
+            <canvas id="lerpCanvas" class="slerp-canvas" width="280" height="280" data-page-node-id="jcbGFNezqcRAnHR38OQj4F"></canvas>
+            <div class="q-readout" id="lerpReadout" style="font-size:12px" data-page-node-id="s06ODmx9TchwCTIc9L6E2i">直线穿过球体内部</div>
+          </div>
+          <div class="slerp-pane ok" data-page-node-id="indSwrHaxdjhGSKbyeCR9e">
+            <h5 data-page-node-id="pDjEBmJSo4zYxcvE5oqsxg">Slerp（球面大圆） <span class="pill" data-page-node-id="QbDqA6Qi4hR20RZU9BjNZ7">推荐</span></h5>
+            <canvas id="slerpCanvas" class="slerp-canvas" width="280" height="280" data-page-node-id="FBUIQLhyNXB31xbS7O7pdh"></canvas>
+            <div class="q-readout" id="slerpReadout" style="font-size:12px" data-page-node-id="ttwmpdJgMtoCUyONWGUDzu">沿球面走最短弧线</div>
+          </div>
+        </div>
+      </div>
+      <div class="controls" data-page-node-id="rYBmonQxeQ9XVCGg4E70sy">
+        <div class="row" data-page-node-id="3EKRHpB7Df3J58u8G8KfRy">
+          <div class="axis" style="color:var(--green)" data-page-node-id="fo58aNVN9ou9UonU3ZXjZv">起点</div>
+          <input id="aT" type="range" min="0" max="180" value="30" data-page-node-id="Zz9JN972wEIR6YutbXPN7t">
+          <div class="val" id="aTV" data-page-node-id="XcckcsLv6cqcb5BsHN6gl3">30°</div>
+        </div>
+        <div class="row" data-page-node-id="M0h7RlcX8RBYvogoGcYDuF">
+          <div class="axis" style="color:var(--orange)" data-page-node-id="FmRT7reWz4bDMMFdgVDKg4">终点</div>
+          <input id="bT" type="range" min="0" max="180" value="120" data-page-node-id="Lrje2APhpuR2dvqNELWL9v">
+          <div class="val" id="bTV" data-page-node-id="tHh2vwk92G6ypPafQgu7Id">120°</div>
+        </div>
+        <div class="row" data-page-node-id="vUKnE0CFHzo7qmKTjnNDq2">
+          <div class="axis" style="color:var(--blue-2)" data-page-node-id="ur0vt6AmdM5DwkyOfz3u8N">进度 t</div>
+          <input id="progT" type="range" min="0" max="100" value="50" data-page-node-id="B2Bfx5pJZXveYSnX24VMzf">
+          <div class="val" id="progTV" data-page-node-id="SE511xvwFCcUDASQ7PnWqV">0.50</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     第七章：对比
+     ========================================================== -->
+<section class="chapter" id="ch7" data-page-node-id="On4Uz2DeDpLg9uGYeyX3ln">
+  <div class="chapter-head" data-page-node-id="YXL1rTRzDSZRDXa5G7Th0l">
+    <div data-page-node-id="qpqGHpSLbuVkNfm0EnV6jD">
+      <div class="num" data-page-node-id="WSTJzlyn2YlpkirSH8jcXo">CH · 6</div>
+      <h2 data-page-node-id="smTAmafdEiSKorQHMqrqBZ">四元数 vs 欧拉角</h2>
+      <div class="desc" data-page-node-id="5P7S5CjU47yV4GWwhlXLzs">它们不是替代关系，是分工关系</div>
+    </div>
+  </div>
+
+  <div class="card" style="overflow-x:auto" data-page-node-id="ZxDOviuatovlrmDAIS8JW8">
+    <table style="width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px" data-page-node-id="Eu8T7vHCrPD8L6Hbyb6lR9">
+      <thead data-page-node-id="SXNt7pbqSrVyuPwgOnr7o8">
+        <tr style="text-align:left" data-page-node-id="CwrN3JH3u9X8wToeDZgrA6">
+          <th style="padding:14px 14px;background:var(--bg-2);color:var(--text)" data-page-node-id="hHPbUIM1r0HjKOjlRSuuj3">对比项</th>
+          <th style="padding:14px 14px;background:var(--bg-2);color:var(--red)" data-page-node-id="3y6VlLUYLcRiOByLPzfLGK">欧拉角 (3 个数)</th>
+          <th style="padding:14px 14px;background:var(--bg-2);color:var(--orange-2)" data-page-node-id="qZayWgi0UonyvQJSJrc6CU">四元数 (4 个数)</th>
+        </tr>
+      </thead>
+      <tbody data-page-node-id="VFs0xrnKu3MgNPbcBqC1Vb">
+        <tr data-page-node-id="HsKNPuvYBBogJAvFkz6HWI"><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--text-dim)" data-page-node-id="YWa4kATjy6fE3J5OfaAqM4">可读性</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--green)" data-page-node-id="6CIwNw99iVdPAvE4LHGoeG">✅ 一眼懂</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--red)" data-page-node-id="FC3ooOb9iBO3Sx4Li5nrTV">❌ 4 个数字看不出含义</td></tr>
+        <tr data-page-node-id="BrZFPQjxuZYKNAsqkZYsqv"><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--text-dim)" data-page-node-id="Wd4bKTMcJ6dp0vJj9BX0t3">万向锁</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--red)" data-page-node-id="D3bba9CSXBMfpfgPJQ34nn">❌ 90°/270° 时丢自由度</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--green)" data-page-node-id="WH4DKSqiWUD6hV5nRHjaoy">✅ 任意姿势无锁</td></tr>
+        <tr data-page-node-id="Jn769jHLHKIuFqcliv1oOf"><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--text-dim)" data-page-node-id="SqDWF9syDEi0nMWi5B1m7Y">插值</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--yellow)" data-page-node-id="K1F7FRRDhpSBjR0agnEagg">⚠ Lerp 会抖、不均匀</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--green)" data-page-node-id="Dwl2Im9BSdpHEnHObGMYdJ">✅ Slerp 球面大圆平滑</td></tr>
+        <tr data-page-node-id="KhOFVFT6bTaDUaoA1CN0Rs"><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--text-dim)" data-page-node-id="6VBzs7vU2fg3RMBUUeM4I1">旋转组合</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--yellow)" data-page-node-id="zfkXj86LBOGA49ZhsHHPAB">⚠ 矩阵连乘乱顺序</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--green)" data-page-node-id="EwizGfFCFOptzsUBBEE0iF">✅ q1·q2 直接乘</td></tr>
+        <tr data-page-node-id="9iLpPp7mvvG6nErgUERGvO"><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--text-dim)" data-page-node-id="hsGOw94CajFviRkm8V6d08">存储</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--green)" data-page-node-id="sDaNsfkYpGjo5rkQ1jFUGL">✅ 3 个 float</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--text-dim)" data-page-node-id="4gbdAMDHotrDDQJEE0aTMz">4 个 float</td></tr>
+        <tr data-page-node-id="2v3FuOzNJRtIxyKZkE3ZlU"><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--text-dim)" data-page-node-id="AUYPkwEIrw0jclXfaEaHj0">多重表示</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--red)" data-page-node-id="ylwXS20T3pCcFpbStjHsFr">❌ 一个姿态有无数欧拉角</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--yellow)" data-page-node-id="xne0trcDXSqVPJmBDFz2HO">⚠ q 和 -q 同姿态（双覆盖）</td></tr>
+        <tr data-page-node-id="3Mp5XPEFLPvmJPvoxWwRQn"><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--text-dim)" data-page-node-id="fBgLzGxyI6cqNjGh5dreDl">典型用途</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--text-dim)" data-page-node-id="D0b1DbXUbWCEHDAssWB104">编辑器显示、UI 控制</td><td style="padding:12px 14px;border-top:1px solid var(--border);color:var(--text-dim)" data-page-node-id="Iavk5AqF1AgcACBgADO7MM">底层运算、动画、IK</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout ok" style="margin-top:24px" data-page-node-id="QlXTBxeVra40w3asGUMSWd">
+    <div class="ic" data-page-node-id="7UsTgtbTHPeeWiikG1ecsQ">✅</div>
+    <div data-page-node-id="JvnDG4Qu6n1gHAdx07nJbA">
+      <b data-page-node-id="bD57qN0VFDfLrjZGv7KeIZ">实践法则：</b>让用户改的用欧拉角（直观）、让计算跑的是四元数（不会崩）。两者随时可以互转：
+      <code data-page-node-id="uPoUjw4a9VbT9knwMQmSSe">eulerAngles = q.eulerAngles</code> /
+      <code data-page-node-id="m95rO9HvAigNawYyJCk7VE">q = Quaternion.Euler(x, y, z)</code>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     第八章：Unity 实战
+     ========================================================== -->
+<section class="chapter" id="ch8" data-page-node-id="D83d5MBzYbyLIfDd7OBtMo">
+  <div class="chapter-head" data-page-node-id="l6v4UFhcoUy2ddYiogvAc3">
+    <div data-page-node-id="1uKWSClCI4LOHUSaicASlX">
+      <div class="num" data-page-node-id="ve3R4y5JYV2iqskiyhXbd1">CH · 7</div>
+      <h2 data-page-node-id="gF3ZrKmbyE3REjsVLbqI5Q">Unity 实战代码</h2>
+      <div class="desc" data-page-node-id="wAUeCeHbQ1Tf1ZPZZIIVif">战斗框架里也能直接套</div>
+    </div>
+  </div>
+
+  <div class="prose" data-page-node-id="VIJwHiJcJeFhdGwkBfm1hp">
+    <h3 data-page-node-id="VnhWhMc0Rh8eJ9K7jWRK0B">1. 绕任意轴转</h3>
+    <div class="code-block" data-page-node-id="s53sM3xRGIDw44QFSb8tgJ">
+      <div class="code-head" data-page-node-id="X9hM5ZlI4mMF2V2buOH2Qj"><span data-page-node-id="As2Q5Si1flYdBRpX3JFfGr">绕 Y 轴旋转 90°</span><span class="lang" data-page-node-id="k1s8aPglJVuWToZG1umF8o">csharp</span></div>
+      <div class="code-body" data-page-node-id="djgnOQWlvy8NNbKEnjNV80"><span class="c" data-page-node-id="QMn4Jr7RGgW67f7JmDvVvj">// 创建"绕 Y 轴转 90°"的四元数</span>
+<span class="t" data-page-node-id="cNnBMQ6KAHPqJaQuQk9IFB">Quaternion</span> q = <span class="t" data-page-node-id="rR9B7F2l2sKGIowVm2CfPr">Quaternion</span>.<span class="v" data-page-node-id="uzVUttBK0HkszAYwwbqGyN">AngleAxis</span>(<span class="k" data-page-node-id="Im2wtiehMKVuM8A1kGX0rA">90f</span>, <span class="t" data-page-node-id="i9uqRYmUPKh1h5jwpMIy7a">Vector3</span>.up);
+
+<span class="c" data-page-node-id="E4BpCUiCMGg3BRqE3PmfFh">// 让一个物体绕世界 Y 轴旋转 90°</span>
+<span class="t" data-page-node-id="99sbHbqhzgmzzc0xCqfMGR">transform</span>.rotation = q;</div>
+    </div>
+
+    <h3 data-page-node-id="7SwXEXhfnKq2tZ267KAToR">2. 平滑朝向一个目标</h3>
+    <div class="code-block" data-page-node-id="uyRJ9QsomYOBSEyNNqDCZc">
+      <div class="code-head" data-page-node-id="acEpZDgzQZchN7W3nD9sZ4"><span data-page-node-id="42fSnY41Xrpo6tVoLz0Tn9">SLerp 平滑转向</span><span class="lang" data-page-node-id="GfkFPIIUv96zIdnTvzJu9z">csharp</span></div>
+      <div class="code-body" data-page-node-id="ZhqioC9srBUAyIx1WpQl6K"><span class="k" data-page-node-id="KON3IRBDCi4qQwmfGL4oT9">void</span> <span class="v" data-page-node-id="YbklZxqz50CUNrvNyGGeGl">Update</span>() {
+    <span class="t" data-page-node-id="a5BpJWLfU47aAgpayGqiKp">Quaternion</span> targetRot = <span class="t" data-page-node-id="LeMSUOeB4aHxtzhoYzUHbO">Quaternion</span>.<span class="v" data-page-node-id="RQ0ERber01Axsh7odpW1ok">LookRotation</span>(target.position - <span class="t" data-page-node-id="2SGAgaloEJJxjQ7BJprZCp">transform</span>.position);
+    <span class="t" data-page-node-id="sz9BWHVaMDbKk9OECansVp">transform</span>.rotation = <span class="t" data-page-node-id="IHMcxi1ItEUrdM4twfHHOo">Quaternion</span>.<span class="v" data-page-node-id="tM4kO5BXDYgHM7n76RIBpr">Slerp</span>(
+        <span class="t" data-page-node-id="FokJZDUXCwRwLF7gq8LdEr">transform</span>.rotation,
+        targetRot,
+        <span class="k" data-page-node-id="5unMZIRSS0GfrOMANVUqcv">5f</span> * <span class="t" data-page-node-id="ES4fEpkepXK1X7tELpPe92">Time</span>.deltaTime      <span class="c" data-page-node-id="YpwHcqUGRHiGr0Hnlw7Z6H">// 5 rad/s 的角速度</span>
+    );
+}</div>
+    </div>
+
+    <h3 data-page-node-id="zNALIXpEsgxllUSPmvQyhS">3. 多个旋转叠加</h3>
+    <div class="code-block" data-page-node-id="pqppkcMNgn1oK5Q9c45eDg">
+      <div class="code-head" data-page-node-id="dyhmvkbKVePZfA60MlZUyu"><span data-page-node-id="GvqnBIyQXPxVh0gChjt0I1">先 Yaw 再 Pitch</span><span class="lang" data-page-node-id="Yk0lK08my9pJ3Ffbe3mSAP">csharp</span></div>
+      <div class="code-body" data-page-node-id="lBnSM50TeSdjt17mv3OzV3"><span class="t" data-page-node-id="ujxMc5wR69FUrFIdYQzc05">Quaternion</span> yaw   = <span class="t" data-page-node-id="FMTEopGVUVbJjUcwj9IMvN">Quaternion</span>.<span class="v" data-page-node-id="LngEQVPv5BdYCqv9NCFtcp">AngleAxis</span>(yawDeg,   <span class="t" data-page-node-id="3C7FGfQLyY1KhAmtk4b1wP">Vector3</span>.up);
+<span class="t" data-page-node-id="MTgYvR7OhQZgn0v1xXZlvP">Quaternion</span> pitch = <span class="t" data-page-node-id="2k6O58luoA0bk4IF5ffs7v">Quaternion</span>.<span class="v" data-page-node-id="WZFSe1AFQcjtxUMKf7BqSl">AngleAxis</span>(pitchDeg, <span class="t" data-page-node-id="ljaXfOxvC1zKuaeTHPJvd5">Vector3</span>.right);
+<span class="t" data-page-node-id="lJBOBGCXtSrM0NW3VaOfrf">Quaternion</span> roll  = <span class="t" data-page-node-id="oIGHalyKMtAXqfz964osiS">Quaternion</span>.<span class="v" data-page-node-id="BkkmWw89OSMzkSqnQueTYx">AngleAxis</span>(rollDeg,  <span class="t" data-page-node-id="8k5onu1VQIRgm81cC0INRu">Vector3</span>.forward);
+
+<span class="c" data-page-node-id="qt9WUMlKhEdofPtP1WGKUD">// 注意顺序：右乘 = 应用于自身左乘后续旋转</span>
+<span class="t" data-page-node-id="rNnd7qLEz1DDrxHhwqHuSt">transform</span>.rotation = yaw * pitch * roll;</div>
+    </div>
+
+    <h3 data-page-node-id="3He7kXGMePNqcGGfpUuEzO">4. 反向（回退一帧）</h3>
+    <div class="code-block" data-page-node-id="KGrBhmJngoN73agawRfimA">
+      <div class="code-head" data-page-node-id="gv1w5QCJAJi3BcdINQu1H7"><span data-page-node-id="ldGc0RdOpY4zAK2rBWg2a0">q 的逆 = 共轭 = -xyz, w</span><span class="lang" data-page-node-id="EwXiQ43hTZVx31G3RFYnHw">csharp</span></div>
+      <div class="code-body" data-page-node-id="0Vb3lFzbp4JhzfAXOmHY5i"><span class="t" data-page-node-id="ZQ5JvyaKTyratJx8rlDesM">Quaternion</span> q = <span class="t" data-page-node-id="1T4uHlEQAdfxiUyD0HG3wm">Quaternion</span>.<span class="v" data-page-node-id="UdgBQXKiISInaAGpVsx3NS">Euler</span>(<span class="k" data-page-node-id="laCBhykfwcz3MQOq7SPYH1">30</span>, <span class="k" data-page-node-id="thh6zFj3GvAbPTFyKW2Mr7">45</span>, <span class="k" data-page-node-id="UQ7KG2CaLkBFb6sTrKY54f">0</span>);
+<span class="t" data-page-node-id="KJBu8agKmA1PscXag1CnCs">Quaternion</span> inv = <span class="t" data-page-node-id="6YKYMK6EPi4BaVxaEjavaJ">Quaternion</span>.<span class="v" data-page-node-id="NYW9jIqnNpZPCUsM5b6Yhb">Inverse</span>(q);   <span class="c" data-page-node-id="WC8K5Nl8GXIeu6y4CL6tBg">// 数学上的 q⁻¹</span>
+<span class="t" data-page-node-id="TGc9aaRJilIGwh0gngaxFi">Quaternion</span> ident = q * inv;                       <span class="c" data-page-node-id="IS0MQ5RIVBsFiKpXiYNHLk">// = (0,0,0,1) 单位元</span></div>
+    </div>
+
+    <div class="callout info" style="margin-top:18px" data-page-node-id="liMWFji5oJaV0Sau3xI0ic">
+      <div class="ic" data-page-node-id="K9iR5eSLD0xfPWyMYSmMMZ">🎯</div>
+      <div data-page-node-id="kdGQmH0z7dDjLiB4jTqpFy">
+        <b data-page-node-id="2cYFVwk3jT5v4cNHyvsbHb">应用到本战斗框架：</b>我用四元数搞定"<em data-page-node-id="JViipy4lFXrWeXxTdZGlWM">被击飞时斜向击退 + 砸地翻滚 720°</em>"那种复合动画——<code data-page-node-id="iF9UGjLAiufYUhzEJS8KEE">Quaternion.Slerp(currentHit, fullHit, t)</code> 一行就够；放欧拉角上会瞬间抽搐。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================
+     总结
+     ========================================================== -->
+<section class="chapter" data-page-node-id="ianMSIUr9E8dDiXwImOpBw">
+  <div class="summary" data-page-node-id="i0EBFsO8ED36JE984902xu">
+    <h3 data-page-node-id="8im6W169IUzAIpqTrmYp8b">📌 一张图记住所有</h3>
+    <div class="summary-grid" data-page-node-id="8AH4n22tQWQF8tgprDQShK">
+      <div class="col" data-page-node-id="wPF5Jja35ePCSgTA3zIvPV">
+        <h4 data-page-node-id="lXjEvX0LBetUXCrAUL8st3">📐 欧拉角</h4>
+        <p style="color:var(--text-dim);font-size:14.5px" data-page-node-id="bDwUCBgTzushuDzF4O5s2O"><b style="color:var(--text)" data-page-node-id="zCKNArWiTNbtAsp1t0FdJx">优点：</b>3 个数字、直观、好编辑</p>
+        <p style="color:var(--text-dim);font-size:14.5px;margin-top:6px" data-page-node-id="SfUTlqc7DOcHEW2FD6Uhkr"><b style="color:var(--text)" data-page-node-id="P6cEtnbLbH0PFHsiHTLg9G">缺点：</b>万向锁、插值抖、顺序敏感</p>
+        <p style="color:var(--text-dim);font-size:14.5px;margin-top:6px" data-page-node-id="5EEdTBbsmkTQfpEBq3fJFT"><b style="color:var(--text)" data-page-node-id="iS5uEHyJ0Zz8ydqAC152WC">用在：</b>编辑器面板、用户输入、网络同步</p>
+      </div>
+      <div class="col" data-page-node-id="OGv7FfUxjhQUA3AA4ng0Y0">
+        <h4 data-page-node-id="BBDV9wC9oSEcurvoOH1krR">🌐 四元数</h4>
+        <p style="color:var(--text-dim);font-size:14.5px" data-page-node-id="tA88aicxSFykIKoMcOQOYF"><b style="color:var(--text)" data-page-node-id="Fda78ZOiSsg0LF6RNbipHE">优点：</b>无万向锁、Slerp 平滑、组合优雅</p>
+        <p style="color:var(--text-dim);font-size:14.5px;margin-top:6px" data-page-node-id="qBmAmCfdFg33aVEzHqJ2XR"><b style="color:var(--text)" data-page-node-id="YzivvLBhQSA4J3y7GuDYQp">缺点：</b>不可读、q 和 -q 等价（双覆盖）</p>
+        <p style="color:var(--text-dim);font-size:14.5px;margin-top:6px" data-page-node-id="kXd8oru9dLOpUnHWiTm5TR"><b style="color:var(--text)" data-page-node-id="bNC0U2HhTEy17pQu4J6KnC">用在：</b>动画、IK、物理、骨骼、定时插值</p>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;padding:18px;background:rgba(0,0,0,.25);border-radius:10px;font-size:14.5px;color:var(--text-dim)" data-page-node-id="PugkE5dzktF49KQJn0Xuac">
+      <b style="color:var(--orange)" data-page-node-id="SIyHpXs0J0Bi3fHeQGsSB9">一句话口诀：</b><br data-page-node-id="hVOxFtuuKuIPFbsADrtryT">
+      <span style="font-family:var(--mono);color:var(--orange-2);font-size:15px;display:inline-block;margin-top:8px" data-page-node-id="uoaMePCwfbLsEIkkmM8WiC">
+        "看得见的用欧拉角，跑算式的用四元数，要平滑就 Slerp。"
+      </span>
+    </div>
+  </div>
+</section>
+
+<footer data-page-node-id="mClgTv2ZA5CC6ABKjWm6DN">
+  <div data-page-node-id="8W8AkGMPiaDD7EYmTyeNNN">
+    <b data-page-node-id="g59n4lyv609SDRm8F7kHjG">四元数与欧拉角</b> · 给小白的可视化教学 · 蔡振立 · 2026-09-07
+  </div>
+  <div style="margin-top:6px" data-page-node-id="Cgnf7ewrNwN3GSPvsCsRwO">
+    配套工程：<span class="tag-soft" data-page-node-id="1px5NCHTpVNEk4M4lBdQD1">Unity 战斗框架</span> 物理旋转 · 动画插值 · IK 骨骼都靠它
+  </div>
+</footer>
+
+</main>
+
+<!-- ==========================================================
+     JS — 所有动图逻辑
+     ========================================================== -->
+<script>
+'use strict';
+
+// ---------- 通用工具 ----------
+function setSliderFill(s){
+  const min=+s.min, max=+s.max, v=+s.value;
+  const p=((v-min)/(max-min))*100;
+  s.style.setProperty('--p', p+'%');
+}
+
+// ==========================================================
+// 第一组：欧拉角 3D 立方体（ch2）
+// ==========================================================
+(function(){
+  const cube=document.getElementById('cube1');
+  const els={
+    pitch:document.getElementById('pitchS'),
+    yaw:document.getElementById('yawS'),
+    roll:document.getElementById('rollS'),
+  };
+  const out=document.getElementById('eulerOut');
+  const readouts={
+    pitch:document.getElementById('pitchV'),
+    yaw:document.getElementById('yawV'),
+    roll:document.getElementById('rollV'),
+  };
+
+  function apply(){
+    const p=+els.pitch.value, y=+els.yaw.value, r=+els.roll.value;
+    // CSS 应用的顺序：跟 Unity 一样 Z -> Y -> X (intrinsic)
+    cube.style.transform=`rotateZ(${r}deg) rotateY(${y}deg) rotateX(${p}deg)`;
+    out.textContent=`euler = (${p}°, ${y}°, ${r}°)`;
+    readouts.pitch.textContent=p+'°';
+    readouts.yaw.textContent=y+'°';
+    readouts.roll.textContent=r+'°';
+    [els.pitch,els.yaw,els.roll].forEach(setSliderFill);
+  }
+
+  [els.pitch,els.yaw,els.roll].forEach(s=>s.addEventListener('input',apply));
+
+  // 预设
+  document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{
+    const k=b.dataset.preset;
+    if(k==='front'){els.pitch.value=0;els.yaw.value=0;els.roll.value=0}
+    else if(k==='top'){els.pitch.value=90;els.yaw.value=0;els.roll.value=0}
+    else if(k==='corner'){els.pitch.value=30;els.yaw.value=40;els.roll.value=20}
+    else if(k==='lock'){els.pitch.value=90;els.yaw.value=45;els.roll.value=0}
+    apply();
+  }));
+
+  apply();
+})();
+
+// 万向锁演示（ch3）
+(function(){
+  const cube=document.getElementById('cube2');
+  const els={
+    pitch:document.getElementById('pitchS2'),
+    yaw:document.getElementById('yawS2'),
+    roll:document.getElementById('rollS2'),
+  };
+  const out={pitch:document.getElementById('pitchV2'),yaw:document.getElementById('yawV2'),roll:document.getElementById('rollV2')};
+  const warn=document.getElementById('gimbalWarn');
+
+  function apply(){
+    const p=+els.pitch.value, y=+els.yaw.value, r=+els.roll.value;
+    cube.style.transform=`rotateZ(${r}deg) rotateY(${y}deg) rotateX(${p}deg)`;
+    out.pitch.textContent=p+'°'; out.yaw.textContent=y+'°'; out.roll.textContent=r+'°';
+    [els.pitch,els.yaw,els.roll].forEach(setSliderFill);
+    // 万向锁判定
+    const lock=Math.abs(((p+180)%360)-180)===90 || Math.abs(((p+180)%360)-180)===270;
+    // 接近 90 或 -90 即触发 (容差 5°)
+    const pp=((p%360)+360)%360;
+    const isLock=(pp>=85 && pp<=95) || (pp>=265 && pp<=275);
+    warn.classList.toggle('show', isLock);
+  }
+  [els.pitch,els.yaw,els.roll].forEach(s=>s.addEventListener('input',apply));
+
+  document.querySelectorAll('[data-pitch]').forEach(b=>b.addEventListener('click',()=>{
+    els.pitch.value=b.dataset.pitch; apply();
+  }));
+  document.getElementById('lockYaw').addEventListener('click',()=>{
+    let yaw=+els.yaw.value, roll=+els.roll.value;
+    yaw=yaw+10;
+    if(yaw>180) yaw=-180+(yaw-180);
+    roll=roll+10;
+    els.yaw.value=yaw; els.roll.value=roll; apply();
+  });
+
+  apply();
+})();
+
+// ==========================================================
+// 第二组：四元数轴角可视化（ch4）
+// ==========================================================
+(function(){
+  const cv=document.getElementById('qCanvas');
+  const ctx=cv.getContext('2d');
+  function resizeCanvas(){
+    const dpr=devicePixelRatio||1;
+    const rect=cv.getBoundingClientRect();
+    cv.width=rect.width*dpr;
+    cv.height=rect.height*dpr;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(dpr,dpr);
+    cv.dataset.w=rect.width;
+    cv.dataset.h=rect.height;
+  }
+  resizeCanvas();
+  window.addEventListener('resize',resizeCanvas);
+
+  const C={
+    bg:'#06091a',
+    grid:'rgba(255,255,255,.04)',
+    sphere:'rgba(57,91,143,.18)',
+    axisX:'#ff8ea3',
+    axisY:'#82e3a3',
+    axisZ:'#8eb6ff',
+    rotAxis:'#feb67e',
+    pointFrom:'#82e3a3',
+    pointTo:'#8eb6ff',
+    halfCircle:'#ff8ea3',
+    text:'#e7ecf5',
+    textDim:'#9aa6c4',
+  };
+
+  const els={
+    ax:document.getElementById('ax'),
+    ay:document.getElementById('ay'),
+    az:document.getElementById('az'),
+    ath:document.getElementById('ath'),
+  };
+  const out={
+    ax:document.getElementById('axV'),
+    ay:document.getElementById('ayV'),
+    az:document.getElementById('azV'),
+    ath:document.getElementById('athV'),
+  };
+  const qout=document.getElementById('qReadout');
+
+  function draw(){
+    const w=+cv.dataset.w, h=+cv.dataset.h;
+    ctx.clearRect(0,0,w,h);
+
+    // 球面
+    const cx=w/2, cy=h/2, R=Math.min(w,h)*0.35;
+    ctx.fillStyle=C.bg;
+    ctx.fillRect(0,0,w,h);
+
+    // 网格
+    ctx.strokeStyle=C.grid; ctx.lineWidth=1;
+    for(let i=1;i<8;i++){
+      const x=i*w/8; ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();
+      const y=i*h/8; ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+    }
+
+    // 三轴指引
+    ctx.font='11px monospace';
+    ctx.lineWidth=1.5;
+    ctx.strokeStyle=C.axisX; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+R*1.3,cy); ctx.stroke();
+    ctx.fillStyle=C.axisX; ctx.fillText('X', cx+R*1.35, cy+4);
+    ctx.strokeStyle=C.axisY; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx,cy-R*1.3); ctx.stroke();
+    ctx.fillStyle=C.axisY; ctx.fillText('Y', cx+4, cy-R*1.35);
+    ctx.strokeStyle=C.axisZ; ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+R*1.3,cy+R*1.0); ctx.stroke();
+    ctx.fillStyle=C.axisZ; ctx.fillText('Z', cx+R*1.35, cy+R*1.0);
+
+    // 球面圆
+    ctx.strokeStyle=C.sphere;
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
+    // 赤道
+    ctx.beginPath();
+    ctx.ellipse(cx,cy,R,R*0.3,0,0,Math.PI*2);
+    ctx.stroke();
+
+    // 旋转参数
+    let ax=+els.ax.value/100, ay=+els.ay.value/100, az=+els.az.value/100;
+    const len=Math.sqrt(ax*ax+ay*ay+az*az)||1;
+    ax/=len; ay/=len; az/=len;
+
+    const angle=+els.ath.value * Math.PI/180; // 弧度
+    const half=angle/2;
+    const w_q=Math.cos(half);
+    const x_q=ax*Math.sin(half);
+    const y_q=ay*Math.sin(half);
+    const z_q=az*Math.sin(half);
+
+    // 旋转轴：从球心指出
+    const axisLen=R*1.2;
+    const axEnd={x:cx+ax*axisLen, y:cy-ay*axisLen};
+    const azEnd2={x:cx+az*axisLen*0.85, y:cy+az*axisLen*0.65};
+    // 简化为 x-y 平面投影 + 一点 z 透视
+    const axisEnd={x:cx + (ax+az*0.5)*axisLen, y:cy + (-ay + az*0.5)*axisLen};
+
+    ctx.strokeStyle=C.rotAxis;
+    ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(axisEnd.x,axisEnd.y); ctx.stroke();
+    // 箭头
+    const ang=Math.atan2(axisEnd.y-cy, axisEnd.x-cx);
+    ctx.beginPath();
+    ctx.moveTo(axisEnd.x,axisEnd.y);
+    ctx.lineTo(axisEnd.x-10*Math.cos(ang-0.4), axisEnd.y-10*Math.sin(ang-0.4));
+    ctx.lineTo(axisEnd.x-10*Math.cos(ang+0.4), axisEnd.y-10*Math.sin(ang+0.4));
+    ctx.closePath(); ctx.fillStyle=C.rotAxis; ctx.fill();
+    ctx.fillStyle=C.rotAxis;
+    ctx.fillText('旋转轴 ('+ax.toFixed(2)+','+ay.toFixed(2)+','+az.toFixed(2)+')', axisEnd.x+10, axisEnd.y-4);
+
+    // 起点：球面上一点
+    const from={
+      x: cx + (0.7+0*0.5)*R,
+      y: cy - (0.2-0*0.5)*R,
+    };
+    const fromZ=0.5;
+
+    // 绕轴旋转 from 点：用罗德里格公式（在 3D）
+    // 这里用简化的几何：把 from 当作向量 p，绕 n 轴转 θ：
+    // p' = p·cos(θ) + (n×p)·sin(θ) + n·(n·p)·(1-cos(θ))
+    function rotatePt(px,py,pz, theta, nx,ny,nz){
+      const c=Math.cos(theta), s=Math.sin(theta);
+      const ndp = nx*px+ny*py+nz*pz;
+      const crossX = ny*pz - nz*py;
+      const crossY = nz*px - nx*pz;
+      const crossZ = nx*py - ny*px;
+      return [
+        px*c + crossX*s + nx*ndp*(1-c),
+        py*c + crossY*s + ny*ndp*(1-c),
+        pz*c + crossZ*s + nz*ndp*(1-c),
+      ];
+    }
+    const to3=rotatePt(from.x-cx, -(from.y-cy), fromZ, angle, ax,-ay,-az);
+    // 把 +Y 当向下投影
+    const to={
+      x: cx + to3[0] + to3[2]*0.5,
+      y: cy + to3[1] - to3[2]*0.5,
+    };
+
+    // 弧线（半圆 = θ/2 圆）用 axis 简化到 2D
+    ctx.strokeStyle=C.halfCircle;
+    ctx.lineWidth=1.2;
+    ctx.setLineDash([5,5]);
+    ctx.beginPath();
+    // 0.5 * theta 圆
+    const halfAngle = angle/2;
+    const arcSteps=60;
+    for(let i=0;i<=arcSteps;i++){
+      const t=i/arcSteps;
+      const tt=-halfAngle + halfAngle*2*t; // -half to +half (即 theta 弧线)
+      // 把 from 绕 axis 旋转 (t*θ - half θ/2 = ...)
+      const cur=rotatePt(from.x-cx, -(from.y-cy), fromZ, t*angle - halfAngle, ax,-ay,-az);
+      const px=cx + cur[0] + cur[2]*0.5;
+      const py=cy + cur[1] - cur[2]*0.5;
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 起点 + 终点
+    ctx.fillStyle=C.pointFrom;
+    ctx.beginPath(); ctx.arc(from.x,from.y,7,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle=C.text;
+    ctx.font='bold 12px monospace';
+    ctx.fillText('A', from.x+10, from.y+4);
+
+    ctx.fillStyle=C.pointTo;
+    ctx.beginPath(); ctx.arc(to.x,to.y,7,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle=C.text;
+    ctx.fillText("A'", to.x+10, to.y+4);
+
+    // 终点到球心虚线
+    ctx.strokeStyle='rgba(142,182,255,.4)';
+    ctx.lineWidth=1;
+    ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(to.x,to.y); ctx.stroke();
+    ctx.setLineDash([]);
+
+    qout.innerHTML=
+      `<b style="color:var(--orange-2)">q</b> = (${x_q.toFixed(3)}, ${y_q.toFixed(3)}, ${z_q.toFixed(3)}, <b style="color:var(--green)">${w_q.toFixed(3)}</b>)`
+      + ` &nbsp;·&nbsp; 绕轴转 <b style="color:var(--orange)">${(+els.ath.value).toFixed(0)}°</b> (= 2×${(half*180/Math.PI).toFixed(1)}°)`
+      + `<br><span style="color:var(--text-mute)">w = cos(θ/2) = cos(${(half*180/Math.PI).toFixed(1)}°) ≈ ${w_q.toFixed(3)} &nbsp;|&nbsp; (x,y,z) = sin(θ/2) × axis</span>`;
+
+    out.ax.textContent=ax.toFixed(2);
+    out.ay.textContent=ay.toFixed(2);
+    out.az.textContent=az.toFixed(2);
+    out.ath.textContent=(+els.ath.value)+'°';
+    [els.ax,els.ay,els.az,els.ath].forEach(setSliderFill);
+  }
+
+  [els.ax,els.ay,els.az,els.ath].forEach(s=>s.addEventListener('input',draw));
+  draw();
+})();
+
+// ==========================================================
+// 第三组：球面 4D 单位球投影（ch5）
+// ==========================================================
+(function(){
+  const cv=document.getElementById('sphereCanvas');
+  const ctx=cv.getContext('2d');
+  function resizeCanvas(){
+    const dpr=devicePixelRatio||1;
+    const rect=cv.getBoundingClientRect();
+    cv.width=rect.width*dpr;
+    cv.height=rect.height*dpr;
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.scale(dpr,dpr);
+    cv.dataset.w=rect.width;
+    cv.dataset.h=rect.height;
+  }
+  resizeCanvas();
+  window.addEventListener('resize',resizeCanvas);
+
+  const out=document.getElementById('sphereReadout');
+
+  function draw(deg){
+    deg = deg||0;
+    const w=+cv.dataset.w, h=+cv.dataset.h;
+    ctx.clearRect(0,0,w,h);
+
+    const cx=w/2, cy=h/2, R=Math.min(w,h)*0.4;
+
+    // 网格
+    ctx.fillStyle='#06091a'; ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle='rgba(255,255,255,.04)'; ctx.lineWidth=1;
+    for(let i=1;i<8;i++){
+      ctx.beginPath(); ctx.moveTo(i*w/8,0); ctx.lineTo(i*w/8,h); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,i*h/8); ctx.lineTo(w,i*h/8); ctx.stroke();
+    }
+
+    // 单位球
+    ctx.strokeStyle='rgba(57,91,143,.45)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
+
+    // 球面经纬线
+    ctx.strokeStyle='rgba(57,91,143,.18)'; ctx.lineWidth=1;
+    for(let lat=-75; lat<=75; lat+=15){
+      const r=Math.cos(lat*Math.PI/180)*R;
+      const y=cy-Math.sin(lat*Math.PI/180)*R*0.5; // 压扁视
+      ctx.beginPath(); ctx.ellipse(cx, y, r, r*0.5, 0, 0, Math.PI*2); ctx.stroke();
+    }
+    for(let lon=0; lon<360; lon+=30){
+      ctx.beginPath();
+      ctx.ellipse(cx,cy, R, R*0.5, lon*Math.PI/180, 0, Math.PI*2);
+      ctx.stroke();
+    }
+
+    // (x,y,z,w) 在 4D 单位球上的点；我们画 (x,z) 投影 + y 当仰角，w 用文字表示
+    const t=deg*Math.PI/180;
+    const half=t/2;
+    const W=Math.cos(half);
+    const sinh=Math.sin(half);
+
+    // 选一个固定的"示例轴"(x,y,z)=单位方向
+    const ax=1/Math.sqrt(3), ay=1/Math.sqrt(3), az=1/Math.sqrt(3);
+    const X=ax*sinh, Y=ay*sinh, Z=az*sinh;
+
+    // 投影：把 (X,Y,Z) 当方向绘制，半径 = sinh（4D 球面投影到 R 上）
+    const px = cx + (X + Z*0.4) * R;
+    const py = cy + (-Y*0.5 + Z*0.5) * R;
+
+    // 连接点（虚线表示双重覆盖：q 和 -q 是同一点）
+    ctx.strokeStyle='rgba(254,182,126,.35)';
+    ctx.setLineDash([4,4]); ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(px,py);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.lineTo(cx - (px-cx), cy - (py-cy));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 当前点
+    ctx.fillStyle='#feb67e';
+    ctx.beginPath(); ctx.arc(px,py,9,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke();
+
+    // -q 点
+    ctx.fillStyle='rgba(254,182,126,.4)';
+    ctx.beginPath(); ctx.arc(2*cx-px,2*cy-py,7,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.6)'; ctx.lineWidth=1; ctx.stroke();
+
+    // 标记轴
+    ctx.font='11px monospace';
+    ctx.fillStyle='#e7ecf5';
+    ctx.fillText('q',px+12,py-6);
+    ctx.fillStyle='rgba(255,255,255,.4)';
+    ctx.fillText('-q', 2*cx-px+10, 2*cy-py+12);
+
+    // 中心
+    ctx.fillStyle='rgba(57,91,143,.4)';
+    ctx.beginPath(); ctx.arc(cx,cy,3,0,Math.PI*2); ctx.fill();
+
+    // 公式标注
+    ctx.fillStyle='#9aa6c4';
+    ctx.font='12px monospace';
+    ctx.fillText(`q = (${X.toFixed(3)}, ${Y.toFixed(3)}, ${Z.toFixed(3)}, ${W.toFixed(3)})`, 12, 18);
+    ctx.fillText(`旋转 θ = ${deg}°，w = cos(θ/2) = cos(${(t*180/Math.PI/2).toFixed(1)}°) = ${W.toFixed(3)}`, 12, 36);
+
+    out.innerHTML=`<b style="color:var(--orange-2)">q</b> = (${X.toFixed(3)}, ${Y.toFixed(3)}, ${Z.toFixed(3)}, <b style="color:var(--green)">${W.toFixed(3)}</b>) &nbsp;·&nbsp; 旋转 ${deg}° (w=${W.toFixed(2)})`;
+  }
+
+  document.querySelectorAll('[data-q]').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('[data-q]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    draw(+b.dataset.q);
+  }));
+  draw(0);
+})();
+
+// ==========================================================
+// 第四组：Slerp vs Lerp（ch6）
+// ==========================================================
+(function(){
+  const aT=document.getElementById('aT');
+  const bT=document.getElementById('bT');
+  const prog=document.getElementById('progT');
+  const aTV=document.getElementById('aTV');
+  const bTV=document.getElementById('bTV');
+  const progV=document.getElementById('progTV');
+  const lout=document.getElementById('lerpReadout');
+  const sout=document.getElementById('slerpReadout');
+
+  function drawOne(cv, type){
+    const dpr=devicePixelRatio||1;
+    const rect=cv.getBoundingClientRect();
+    if(cv.width!==Math.floor(rect.width*dpr)){
+      cv.width=rect.width*dpr;
+      cv.height=rect.height*dpr;
+    }
+    const ctx=cv.getContext('2d');
+    ctx.setTransform(1,0,0,1,0,0); ctx.scale(dpr,dpr);
+    const w=rect.width, h=rect.height;
+    const cx=w/2, cy=h/2, R=Math.min(w,h)*0.4;
+
+    ctx.fillStyle='#06091a'; ctx.fillRect(0,0,w,h);
+
+    // 网格
+    ctx.strokeStyle='rgba(255,255,255,.04)'; ctx.lineWidth=1;
+    for(let i=1;i<8;i++){
+      ctx.beginPath(); ctx.moveTo(i*w/8,0); ctx.lineTo(i*w/8,h); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,i*h/8); ctx.lineTo(w,i*h/8); ctx.stroke();
+    }
+
+    // 球面
+    ctx.strokeStyle='rgba(57,91,143,.5)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(cx,cy,R,R*0.45,0,0,Math.PI*2); ctx.stroke();
+    ctx.strokeStyle='rgba(57,91,143,.2)';
+    ctx.beginPath(); ctx.ellipse(cx,cy,R*0.6,R*0.9,0,0,Math.PI*2); ctx.stroke();
+
+    // A,B 两个姿态（在"赤道"上，位于 y=cy，绕 X-Y 平面内的旋转）
+    const aAng=+aT.value*Math.PI/180; // 选 Yaw 维度
+    const bAng=+bT.value*Math.PI/180;
+    const A={x:cx+Math.cos(aAng)*R, y:cy-Math.sin(aAng)*R*0.45, lab:`A(${aT.value}°)`};
+    const B={x:cx+Math.cos(bAng)*R, y:cy-Math.sin(bAng)*R*0.45, lab:`B(${bT.value}°)`};
+
+    // LERP：直线
+    if(type==='lerp'){
+      ctx.strokeStyle='rgba(255,107,128,.4)'; ctx.lineWidth=1;
+      ctx.setLineDash([5,5]);
+      ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke();
+      ctx.setLineDash([]);
+    } else {
+      // SLERP：大圆弧
+      ctx.strokeStyle='rgba(61,220,151,.7)'; ctx.lineWidth=2.5;
+      ctx.beginPath();
+      // 大圆从 A 到 B 走较短路径
+      const steps=80;
+      for(let i=0;i<=steps;i++){
+        const t=i/steps;
+        const ang=aAng + (bAng-aAng)*t;
+        const x=cx+Math.cos(ang)*R;
+        const y=cy-Math.sin(ang)*R*0.45;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+
+      // SLERP 公式提示：路径上的每个点 q(t) = sin((1-t)ω)A + sin(tω)B
+    }
+
+    // 进度点
+    const t=+prog.value/100;
+    let P;
+    if(type==='lerp'){
+      P={
+        x: A.x + (B.x-A.x)*t,
+        y: A.y + (B.y-A.y)*t,
+      };
+    } else {
+      const ang=aAng + (bAng-aAng)*t;
+      P={x:cx+Math.cos(ang)*R, y:cy-Math.sin(ang)*R*0.45};
+    }
+
+    // A、B 点
+    ctx.fillStyle='#82e3a3'; ctx.beginPath(); ctx.arc(A.x,A.y,8,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle='#feb67e'; ctx.beginPath(); ctx.arc(B.x,B.y,8,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke();
+
+    ctx.font='bold 12px monospace';
+    ctx.fillStyle='#82e3a3'; ctx.fillText('A', A.x-22, A.y+4);
+    ctx.fillStyle='#feb67e'; ctx.fillText('B', B.x+12, B.y+4);
+
+    // 进度点
+    ctx.fillStyle='#8eb6ff';
+    ctx.beginPath(); ctx.arc(P.x,P.y,9,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.fillStyle='#e7ecf5';
+    ctx.fillText(`P(${((type==='lerp'? t*Math.abs(bAng-aAng)*180/Math.PI : t)) .toFixed(1)})`, P.x+12, P.y-6);
+
+    // 公式
+    ctx.fillStyle='#9aa6c4';
+    ctx.font='11px monospace';
+    if(type==='lerp'){
+      ctx.fillText('P = A + t·(B-A)', 12, 16);
+      lout.textContent=`Lerp：直线段，t=${t.toFixed(2)} · 等比例加权 · 中间姿态可能"瞬移"`;
+    } else {
+      ctx.fillText('q(t) = sin((1-t)ω)A + sin(tω)B', 12, 16);
+      ctx.fillText('再归一化 · 走球面最短弧', 12, 32);
+      sout.textContent=`Slerp：沿球面大圆，t=${t.toFixed(2)} · 速度均匀 · 姿态连续`;
+    }
+  }
+
+  function drawAll(){
+    drawOne(document.getElementById('lerpCanvas'),'lerp');
+    drawOne(document.getElementById('slerpCanvas'),'slerp');
+    aTV.textContent=aT.value+'°';
+    bTV.textContent=bT.value+'°';
+    progV.textContent=(+prog.value/100).toFixed(2);
+    [aT,bT,prog].forEach(setSliderFill);
+  }
+
+  [aT,bT,prog].forEach(s=>s.addEventListener('input',drawAll));
+  window.addEventListener('resize',drawAll);
+  drawAll();
+})();
+</script>
+
+</body>
+</html>

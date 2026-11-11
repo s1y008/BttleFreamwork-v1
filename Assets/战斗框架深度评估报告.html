@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="OZfUiOL2R4LYNLHlcprJOs">
+<head data-page-node-id="YFDtysGDVHLcA3XTXfGjeY">
+<meta charset="UTF-8" data-page-node-id="JmVxvsCSujD1jKXNIPbfVl">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="2U7TJbewZ21oMJLabd8SNk">
+<title>战斗框架深度评估报告</title>
+<style>
+  :root {
+    --bg: #0a0e17;
+    --bg-2: #0e1424;
+    --card: #141b2e;
+    --card-2: #1a2338;
+    --border: #26314d;
+    --text: #e6ecf7;
+    --text-dim: #8b96b0;
+    --text-mute: #5b6478;
+    --accent: #6c7bff;
+    --accent-2: #9d6cff;
+    --p0: #ff5d6c;
+    --p1: #ffa940;
+    --p2: #ffd666;
+    --ok: #3ddc97;
+    --warn: #ffb020;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    background: radial-gradient(1200px 600px at 80% -10%, #1a2140 0%, transparent 60%),
+                radial-gradient(900px 500px at -10% 10%, #151b36 0%, transparent 55%),
+                var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    line-height: 1.7;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 28px 80px; }
+
+  /* Header */
+  header { padding: 56px 0 34px; border-bottom: 1px solid var(--border); }
+  .eyebrow { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  h1 { font-size: 34px; font-weight: 700; margin: 14px 0 10px; letter-spacing: .5px; }
+  h1 .grad {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .subtitle { color: var(--text-dim); font-size: 15px; max-width: 720px; }
+  .meta { margin-top: 18px; display: flex; gap: 22px; flex-wrap: wrap; font-size: 13px; color: var(--text-mute); }
+  .meta b { color: var(--text-dim); font-weight: 600; }
+
+  /* Score ring header */
+  .hero-score { display: flex; align-items: center; gap: 28px; margin-top: 30px; flex-wrap: wrap; }
+  .ring { position: relative; width: 128px; height: 128px; flex: none; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .val { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ring .val .n { font-size: 34px; font-weight: 800; }
+  .ring .val .l { font-size: 11px; color: var(--text-mute); letter-spacing: 1px; }
+  .verdict { flex:1; min-width: 300px; }
+  .verdict .tag { display:inline-block; padding:3px 12px; border-radius: 20px; font-size:12px; font-weight:600; background:rgba(255,176,32,.14); color:var(--warn); border:1px solid rgba(255,176,32,.35); }
+  .verdict p { color: var(--text-dim); margin-top: 10px; }
+
+  /* Sections */
+  section { margin-top: 46px; }
+  h2 { font-size: 21px; font-weight: 700; margin-bottom: 6px; display:flex; align-items:center; gap:10px; }
+  h2 .no { font-size: 12px; color: var(--accent); background:rgba(108,123,255,.12); border:1px solid rgba(108,123,255,.3); width:26px; height:26px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-weight:700; }
+  .lead { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; }
+
+  .card { background: linear-gradient(180deg, var(--card) 0%, var(--bg-2) 100%); border:1px solid var(--border); border-radius: 14px; padding: 22px; }
+  .grid { display:grid; gap:16px; }
+  .grid.c2 { grid-template-columns: repeat(auto-fit, minmax(340px,1fr)); }
+  .grid.c3 { grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); }
+
+  /* KPI tiles */
+  .kpi { border:1px solid var(--border); border-radius:12px; padding:18px; background:var(--card); }
+  .kpi .k { font-size:12px; color:var(--text-mute); letter-spacing:1px; }
+  .kpi .v { font-size:26px; font-weight:800; margin:6px 0 2px; }
+  .kpi .d { font-size:12.5px; color:var(--text-dim); }
+
+  /* Score bars */
+  .bar-row { display:grid; grid-template-columns: 130px 1fr 46px; align-items:center; gap:14px; padding:9px 0; }
+  .bar-row .name { font-size:13.5px; color:var(--text-dim); white-space:nowrap; }
+  .bar-track { height:10px; background:#0c1120; border-radius:6px; overflow:hidden; }
+  .bar-fill { height:100%; border-radius:6px; width:0; transition:width 1s cubic-bezier(.2,.8,.2,1); }
+  .bar-row .score { font-size:14px; font-weight:700; text-align:right; }
+  .lv { font-size:11px; padding:1px 8px; border-radius:10px; font-weight:600; }
+  .lv-a { background:rgba(255,93,108,.16); color:var(--p0); }
+  .lv-b { background:rgba(255,169,64,.16); color:var(--p1); }
+  .lv-c { background:rgba(255,214,102,.14); color:var(--p2); }
+  .lv-d { background:rgba(61,220,151,.14); color:var(--ok); }
+
+  /* Defect table */
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th, td { text-align:left; padding:11px 12px; border-bottom:1px solid var(--border); vertical-align:top; }
+  th { color:var(--text-mute); font-weight:600; font-size:12px; letter-spacing:.5px; }
+  td.code { font-family:"Consolas","SF Mono",monospace; font-size:12.5px; color:#c9d4f0; }
+  td .f { color:var(--text-mute); font-size:12px; }
+  .pill { display:inline-block; padding:1px 8px; border-radius:8px; font-size:11px; font-weight:700; }
+
+  /* Roadmap */
+  .phase { border:1px solid var(--border); border-radius:12px; padding:16px 18px; background:var(--card); position:relative; }
+  .phase .ph { font-size:12px; font-weight:700; letter-spacing:1px; }
+  .phase h4 { font-size:15.5px; margin:4px 0 8px; }
+  .phase ul { list-style:none; }
+  .phase li { color:var(--text-dim); font-size:13px; padding:3px 0 3px 18px; position:relative; }
+  .phase li::before { content:""; position:absolute; left:2px; top:11px; width:6px; height:6px; border-radius:50%; background:var(--accent); }
+
+  .callout { border-left:3px solid var(--warn); background:rgba(255,176,32,.07); padding:14px 18px; border-radius:0 10px 10px 0; font-size:13.5px; color:var(--text-dim); }
+  .callout b { color:var(--warn); }
+
+  .diagram-box { overflow-x:auto; }
+  .diagram-box svg { display:block; min-width:760px; }
+  .legend { display:flex; gap:18px; flex-wrap:wrap; font-size:12.5px; color:var(--text-dim); margin-top:12px; }
+  .legend span { display:inline-flex; align-items:center; gap:6px; }
+  .dot { width:11px; height:11px; border-radius:3px; display:inline-block; }
+
+  footer { margin-top:60px; padding-top:22px; border-top:1px solid var(--border); color:var(--text-mute); font-size:12.5px; }
+  .note { font-size:12px; color:var(--text-mute); }
+</style>
+</head>
+<body data-page-node-id="oDd8JTvsAmH0RwEf3TL01w">
+<div class="wrap" data-page-node-id="JnMioKB6aRV6OMLF0tHxlG">
+
+  <header data-page-node-id="RUqyQKd56LkO2ic7e0sBBA">
+    <div class="eyebrow" data-page-node-id="ZzJfa2EUWmcqbD3D4fafYR">Battle Framework · Deep Evaluation</div>
+    <h1 data-page-node-id="o3Vw0uh3x3eCJPBARGcfut">战斗框架<span class="grad" data-page-node-id="43mkG93f6KwhgxeN3xQJnQ">深度评估报告</span></h1>
+    <p class="subtitle" data-page-node-id="WpyouZIhsImu8zlLGbAXIw">对 <code data-page-node-id="31xd6Wcyckag7JRW4tir7F">BttleFreamwork-v1</code> 全部 31 个 C# 源文件做的一次整体体检：从架构分层、数据模型、控制链路、FSM、技能、Buff、事件、配置、表现、测试十个维度，输出成熟度评分、缺陷分级与改进路线。</p>
+    <div class="meta" data-page-node-id="URij3dXXbk9Fjefvp7aQcb">
+      <span data-page-node-id="1nn7lhZRei9aQjLMEj1BFg">评估对象：<b data-page-node-id="UD72eSCC9iL2AIEbKaRZ4s">Assets/Scripts/ 31 个 .cs</b></span>
+      <span data-page-node-id="DFNIZ5CVydDq8E3K7ABsN0">评估日期：<b data-page-node-id="j9iAWb2FCQaBjsaNTBKp3M">2026-09-07（Phase C 整合后复核）</b></span>
+      <span data-page-node-id="yFBbEQA494O72EoKvd7mHk">引擎：<b data-page-node-id="FLg24iUL2bUXSfhqIiHHqC">Unity 2022.3.62f2c1</b></span>
+      <span data-page-node-id="mCYCHBbieLMGPj8FbBfMHG">编译状态：<b style="color:var(--ok)" data-page-node-id="ImlefnmO3nDWEVIVWf2OaB">0 Error</b></span>
+    </div>
+    <div class="hero-score" data-page-node-id="El7Ha2DBxtUrpzY71M2kLH">
+      <div class="ring" data-page-node-id="fJ2VUBEJ8AELmDeQiHbzCa">
+        <svg width="128" height="128" data-page-node-id="e3hPGTly5WcqrhEhGWSFCD">
+          <circle cx="64" cy="64" r="56" fill="none" stroke="#1a2338" stroke-width="11" data-page-node-id="O2tETFIOZLSXjdJLhayIQp"/>
+          <circle id="ringArc" cx="64" cy="64" r="56" fill="none" stroke="url(#rg)" stroke-width="11" stroke-linecap="round"
+            stroke-dasharray="351.9" stroke-dashoffset="351.9" data-page-node-id="p95QCeo3z9FhvfGRubuHya"/>
+          <defs data-page-node-id="2h4JNhZxQQM09wahVTUeLJ"><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1" data-page-node-id="uSaTZdUjHFGwEVDRIHXvaH">
+            <stop offset="0" stop-color="#ffa940" data-page-node-id="wT2aisILm4h5O5po51Xdzg"/><stop offset="1" stop-color="#ff5d6c" data-page-node-id="NHJwMNcovmnU6RaIfC8ezL"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="val" data-page-node-id="aAC37SkbQcGtJURdWO5TzP"><div class="n" data-page-node-id="eTgiUJI5GUvpUSy6WY0pNC">5.4</div><div class="l" data-page-node-id="P1LXkePOCrrjUTDimh9eGw">/ 10 成熟度</div></div>
+      </div>
+      <div class="verdict" data-page-node-id="nwF5AvOgMsJAQrS4diHUXq">
+        <span class="tag" data-page-node-id="MDzHo0I1fC7Z8FHTJoaHeb">结论：控制链路已打通 · Buff↔FSM 已整合 · 技能层仍是最大缺口</span>
+        <p data-page-node-id="2IMH6wkrDbveiWw3iFKnOx">这是一个<b data-page-node-id="U1PteCp1AXoOvRbVhAo80x">分层思路正确、控制体系已收敛（Buff 成为控制效果唯一真相源，FSM 控制态为其投影）、但技能层仍大量空桩</b>的战斗框架。上一轮完成的 Phase C 整合已把高质量 Buff 系统接入战斗主循环（Tick 驱动 + DoT 伤害落地 + 控制 Buff 驱动 FSM），并顺手修复了 <code data-page-node-id="8q2pTcM6bXpOYwAAEh8HpL">m_Rage</code> 误设 static 的 P0。当前最大的卡点是技能伤害链仍断裂（<code data-page-node-id="1EfGXnPhVp5OYwAAEh8HpL">Skill.ImmedDamage</code> 为空实现），导致「技能直接伤害」无法扣血。</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- 1. 总体结论 -->
+  <section id="summary" data-page-node-id="NVlhfvXaicLkixHXBbXtG6">
+    <h2 data-page-node-id="8TXusVwTqkwgmWyLZETO73"><span class="no" data-page-node-id="Gbv0222jZrgTX9lecjDT2P">1</span>总体结论</h2>
+    <p class="lead" data-page-node-id="hxWPtcPceVBum1UZIVnKAT">一句话概括 + 三组关键事实。</p>
+    <div class="grid c3" data-page-node-id="5MtnNVPujfzrE22XNX5Xe7">
+      <div class="kpi" data-page-node-id="LaRSGH5U8NaVyjKNNMHbsP"><div class="k" data-page-node-id="T31UOk1OGFir1rm4DScosd">代码文件</div><div class="v" data-page-node-id="uesxKGLhDfgYMZkVLQJnVU">31 <span style="font-size:14px" data-page-node-id="n9dscVwJrl9fQ1zK18tMSF">.cs</span></div><div class="d" data-page-node-id="59VKRqhz7ilCtM3yVzjXBE">含 3 个新 FSM + 5 个新 Buff + 3 个测试脚本</div></div>
+      <div class="kpi" data-page-node-id="jYDhtnHE6Ga0VFw0pEHz0b"><div class="k" data-page-node-id="DPNxUSFHdvPdJvKPuuUtVO">三代体系并存</div><div class="v" style="color:var(--accent)" data-page-node-id="XCmG0VLtllSPHCsOCTfVdD">3</div><div class="d" data-page-node-id="EFDDSUtUXl2SA9gZX2EEGw">Buff↔FSM 已整合，仅剩技能/受击层待打通</div></div>
+      <div class="kpi" data-page-node-id="kS8axfeAGegZsVowNPq3Su"><div class="k" data-page-node-id="nLjvgVjKf2ce5f6tXpyhiG">P0 级缺陷</div><div class="v" style="color:var(--p0)" data-page-node-id="FVQFFiPbFwSm0cImVot5AO">3</div><div class="d" data-page-node-id="IxwpA3eHnDTJnc3AjiNRUd">伤害链断裂、解析崩溃、索引器异常</div></div>
+      <div class="kpi" data-page-node-id="yOpvLebfJ8Du4c38TwzFtj"><div class="k" data-page-node-id="yc3Lboep0ddpj5GfZdM15G">P1 级缺陷</div><div class="v" style="color:var(--p1)" data-page-node-id="BY6V2bYeb4PKR7Vv3DWSKh">6</div><div class="d" data-page-node-id="wUk749wdVkSgr5BM08vxOL">技能空桩、冷却断裂、解析脆弱、性能隐患</div></div>
+      <div class="kpi" data-page-node-id="jjYGpDmMf0JT55v2dy1uOb"><div class="k" data-page-node-id="9SoIKyb0Aa9B3oaPVqAyKw">P2 级缺陷</div><div class="v" style="color:var(--p2)" data-page-node-id="spVzY4D2CSadwuenBNryz2">8</div><div class="d" data-page-node-id="U1r1eIuHMQAj2VpfUJIaGt">目录混乱、GC、死代码、事件订阅缺失</div></div>
+      <div class="kpi" data-page-node-id="7IpAPYHWjppbTbm1BU40Mh"><div class="k" data-page-node-id="kbzHQjNYNhaOUJjj3LC4j2">最高质量模块</div><div class="v" style="color:var(--ok)" data-page-node-id="sQh12iQB5pb6WrxxMijgOA">Buff 系统</div><div class="d" data-page-node-id="q42gPTBOqqFurlIUDQ0ZzU">已接入主循环，成为控制效果唯一真相源</div></div>
+    </div>
+  </section>
+
+  <!-- 2. 三代代码演进 -->
+  <section id="generations" data-page-node-id="5wxQ07fVC6GdN5e6xtEb2i">
+    <h2 data-page-node-id="Xpjc2pTqKcK9ie96Y389zH"><span class="no" data-page-node-id="WTjSQnQQ1kcidvuQeULRi6">2</span>三代代码演进与整合状态</h2>
+    <p class="lead" data-page-node-id="rmmc2FNpDA3jiQrgd0zGqE">框架内部并存三套不同时代的代码，各自质量参差。经 Phase C 整合后，<b style="color:var(--ok)">Buff 系统与 FSM 已打通</b>，当前最核心的结构性缺口收敛为「技能/受击层仍大量空桩」。</p>
+    <div class="card diagram-box" id="archCard" data-page-node-id="LER5Fd19y5F1eFUhyPE9hO">
+      <svg id="archSvg" viewBox="0 0 980 560" xmlns="http://www.w3.org/2000/svg" data-page-node-id="jts7SLcBrxMG7hxC9WiNcG"></svg>
+    </div>
+    <div class="legend" data-page-node-id="Oz7LJ1zNCQEShyCWlIW1aE">
+      <span data-page-node-id="cdgvmIHeXv0PSCtGRbHccf"><i class="dot" style="background:#5b6478" data-page-node-id="vpYmSxnAMhlA9uL4Ix90FP"></i>Legacy 战斗（全局命名空间）</span>
+      <span data-page-node-id="FMMMbv7V7erQjcYpYNo5q4"><i class="dot" style="background:#3ddc97" data-page-node-id="PgOCXxp0PLwXeLPti9YjZM"></i>Buff 系统（BattleFramework.Core）</span>
+      <span data-page-node-id="LCrXO22r8LvQ05FtHAui99"><i class="dot" style="background:#6c7bff" data-page-node-id="EsuD7rnNpRV15PKC8sCPhV"></i>FSM（StateMachine）</span>
+      <span data-page-node-id="OSQLBgJqHpGEDJ7xZWW4b1"><i class="dot" style="background:#ff5d6c" data-page-node-id="WYTKj4VzSB545AK6Ad4ifq"></i>整合缺口 / 断裂点</span>
+    </div>
+    <div class="callout" style="margin-top:16px" data-page-node-id="HfNTvDVhAH6PTQNZoy3nXE">
+      <b data-page-node-id="gAs0ozCbM2XFs3DMpLcPXB">当前剩余的断链（较上次评估已修复 1 条）：</b>① <code data-page-node-id="kygxCbklxhDoZy4W4YB1mS">Skill.ImmedDamage</code> 空桩 → 技能直接伤害不扣血；② <code data-page-node-id="9OsoFJS5aP3JACDRHXJCm5">SetCD</code> 注释掉 TimerManager → 技能冷却永不重置；③ <s style="opacity:.55" data-page-node-id="9OsoFJS5aP3JACDRHXJCm6">Buff 硬控与 FSM 状态两套并行未映射</s> ✅ 已由 Phase C 打通（Buff 成为控制效果唯一真相源，FSM 控制态为其投影）。
+    </div>
+  </section>
+
+  <!-- 3. 十维评分 -->
+  <section id="scores" data-page-node-id="bRHl2LnVhzlpY7UNRn34oS">
+    <h2 data-page-node-id="k83BOoSYBZF76HBjEJCKDA"><span class="no" data-page-node-id="HVLAVOQWV3TGqSxtvMz9NV">3</span>十维成熟度评分</h2>
+    <p class="lead" data-page-node-id="gH0P08sCEGPQDVzG9SfFrg">0–10 分，6 分为「及格可用」，8 分以上为「可作标杆」。</p>
+    <div class="card" id="scoreCard" data-page-node-id="fHHh15yzUDU6qR5qVyLGzc"></div>
+  </section>
+
+  <!-- 4. 架构分层详解 -->
+  <section id="layers" data-page-node-id="8QzocMAX5ViS6eMWELQ6Jt">
+    <h2 data-page-node-id="oHFFBdqXS1mAcizkxNT3Jk"><span class="no" data-page-node-id="muu6o9Mc8WsWNvC7xdRvh7">4</span>架构分层详解</h2>
+    <p class="lead" data-page-node-id="23ltT6lyeNUZS8DeNHaM9A">按「数据 → 控制 → 技能/Buff → 表现」逐层评估。</p>
+    <div class="grid c2" data-page-node-id="AMoRxvmpjieJCOcdHrwDwi">
+      <div class="card" data-page-node-id="FYEocNhKFNZ63jfjY5PpES">
+        <h4 style="margin-bottom:8px" data-page-node-id="A18Atb9bFZ3tFsg396iU27">数据层 <span class="lv lv-b" data-page-node-id="f8LYxF7N7XpnTvznMF99el">5 分</span></h4>
+        <p style="font-size:13.5px;color:var(--text-dim)" data-page-node-id="GqCptBJ4AFu0ee7FfaJqkZ"><code data-page-node-id="uEHQY9cbCMRoNZXnDPKBew">BaseUnit → CombatUnit → Warrior / AttackNpc</code> 继承链合理，属性与事件内聚。但 <code data-page-node-id="9AvDSEzggUuswrncpnGrKx">m_Rage</code> 误设 <code data-page-node-id="maNElIhXQ75QvflCHMdSl9">static</code> 导致全局共享；<code data-page-node-id="YWK63TACDcLQAexLIldQKz">Warrior</code> 的伤害/防御等 getter 无空判（与 Name/Imag 不一致）；死亡链「只 -= 从不 +=」断裂。</p>
+      </div>
+      <div class="card" data-page-node-id="rPJPjEqALdSIle589EHEAQ">
+        <h4 style="margin-bottom:8px" data-page-node-id="xLQtlnO21nFH6Q8EudpUW5">控制层 <span class="lv lv-b" data-page-node-id="GZlDBsvKecT5OVTORIVvDz">6 分</span></h4>
+        <p style="font-size:13.5px;color:var(--text-dim)" data-page-node-id="DYHkjsPDZriO5hGLli652K"><code data-page-node-id="9lvC8gx3oRC0rvZRcQY64a">MoveBase → CombatUnit → Warror/AttackNpc</code> 模板方法模式清晰，<code data-page-node-id="Dp0DR345QeGLfvD1S87bME">AutoFightUpdate</code> 作为扩展点，上轮桥接方法让 FSM 与子类解耦。但 <code data-page-node-id="sP24Sj8ubV0zHSMesQ1uzC">PlayerNeedMove</code> getter 内做物理查询（副作用），索敌每帧 OverlapSphere。</p>
+      </div>
+      <div class="card" data-page-node-id="r1wmKRS4DjNY9VDc50pBrS">
+        <h4 style="margin-bottom:8px" data-page-node-id="3WlrTDk6eUhHs4BeHobekc">FSM 状态机 <span class="lv lv-c" data-page-node-id="9EM5d8GrjM8wKJ6ty2iN8p">8 分</span></h4>
+        <p style="font-size:13.5px;color:var(--text-dim)" data-page-node-id="u13UBCa9ppzGy8g79443AH"><code data-page-node-id="wrpDIe66wkHYCk1WN62USa">ICombatState + CombatStateMachine</code> 结构干净，转换表合法、受控态结束自动回 Idle。Phase C 起 <code data-page-node-id="xoD0PVYjSdTTrgUCibK3ei">Stun/Silence</code> 不再各自倒计时，改为每帧查询 Buff 标志位（控制效果唯一真相源在 Buff），转换表补齐 <code data-page-node-id="xoD0PVYjSdTTrgUCibK3ei2">Stun↔Silence / Knockback→Stun/Silence</code>。但 <code data-page-node-id="xoD0PVYjSdTTrgUCibK3ei3">Idle/Move/Attack</code> 状态行为仍落在空桩上（<code data-page-node-id="xoD0PVYjSdTTrgUCibK3ei4">DoAutoFight</code> 无实义）。</p>
+      </div>
+      <div class="card" data-page-node-id="LdhSpAIFqCl0EdeIFbetez">
+        <h4 style="margin-bottom:8px" data-page-node-id="JShmxu4BltvjPqjkDYYEqd">Buff 系统 <span class="lv lv-d" data-page-node-id="FUGuX3JX1rWtJxIzFLONSp">9 分</span></h4>
+        <p style="font-size:13.5px;color:var(--text-dim)" data-page-node-id="8gM2aHnrlas04RHjdF5Cxe">框架内质量最高的模块：<code data-page-node-id="SVbpbqznZwuuWnyhgIsPUY">ulong</code> 位枚举 + O(1) 查询、对象池零 GC、免疫/驱散/叠加/刷新语义完整、延后移除队列防事件重入、配置同源校验。现已<b data-page-node-id="AiEWWihV3wOSHCVJwt2bP3">完整接入战斗主循环</b>：<code data-page-node-id="7ncSQD33BeEfl1ke4IlliD">Update()</code> 统一驱动 Tick，<code data-page-node-id="7ncSQD33BeEfl1ke4IlliD2">OnBuffTickDamage</code> 落地 DoT 伤害（含施加者反查表 + 施加者销毁降级），控制 Buff 事件驱动 FSM 切入 Stun/Silence。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 缺陷分级清单 -->
+  <section id="defects" data-page-node-id="5QoPqkOZcECFW9lwsboFCN">
+    <h2 data-page-node-id="ZcMGS97EpPXH4rdjHnilDl"><span class="no" data-page-node-id="xG8zQX3xV2ndHdxXYgja18">5</span>缺陷分级清单</h2>
+    <p class="lead" data-page-node-id="WtDLGAuYOJ2S7Veghzyx4F">按「崩溃 / 数据错乱（P0）→ 功能断裂（P1）→ 工程质量（P2）」分级，共 17 项（较上次评估减少 3 项，Phase C 已修复其中 3 项硬伤）。</p>
+
+    <h3 style="font-size:15px;margin:18px 0 8px;color:var(--p0)" data-page-node-id="DsCAhJzBJOty9ncUaDzIrE">🔴 P0 — 必须立即修复（会崩溃或静默出错）</h3>
+    <p class="note" style="margin:-2px 0 10px" data-page-node-id="DsCAhJzBJOty9ncUaDzIrE2">较上次评估减少 1 项：<code>CombatUnit.m_Rage</code> 误设 static 的 P0 已修复（现为实例字段 <code>protected float m_Rage</code>）。</p>
+    <div class="card" style="overflow-x:auto" data-page-node-id="5QLakYu8MrJWcYp5NYNJ8v">
+      <table data-page-node-id="lmUxGUjlhCKR42D32XmKbx">
+        <tr data-page-node-id="Xho5sgl4IC2apTyUyujc3d"><th style="width:60px" data-page-node-id="RvbyOCEoXVkebpF9CIQJ5f">编号</th><th data-page-node-id="cvqbpXjlN6w31CVPkJIBCZ">位置</th><th data-page-node-id="XC5CX8VeHuFGcugPmyzRTa">问题</th><th style="width:180px" data-page-node-id="YHQrxFlchodL8oknTCuNyZ">影响</th></tr>
+        <tr data-page-node-id="8LhCR4UZYS9hn6TznLVTAJ"><td data-page-node-id="7LD3bb3LIWPMWfGC38B39E"><span class="pill" style="background:rgba(255,93,108,.16);color:var(--p0)" data-page-node-id="6Co1N86919APk05FyfIWrU">P0-1</span></td><td class="code" data-page-node-id="RiqZjTmYTsAiFNgPD6KbZz">Skill.cs:491</td><td data-page-node-id="1sDKkBOdNyiFKzevKLvsFE"><code data-page-node-id="nZgPywY9zTsmSNUgRGDeVd">ImmedDamage</code> 为空实现，技能命中后不调用 <code data-page-node-id="kjXC9wY7tRO8Pq7WLjxHv9">OnDamaged</code>。</td><td data-page-node-id="pkdxjaoLHkIW3PPN3kIsph">技能直接伤害无法扣血，伤害链断裂</td></tr>
+        <tr data-page-node-id="dBNHkcn0HzaUcV0YDwOb5q"><td data-page-node-id="Eh0axbXtQXp0dK47TOnJoW"><span class="pill" style="background:rgba(255,93,108,.16);color:var(--p0)" data-page-node-id="3jMPIONmgiSeeMsCJCSAG2">P0-2</span></td><td class="code" data-page-node-id="WUDzmXDt27mC4O1oGyBo4K">SkillData.cs:142</td><td data-page-node-id="7yo0Bohh3ETH1nVsGBh9fn"><code data-page-node-id="kyDUJLzQewxEigovle80Ir">LoadSkillData</code> 用 foreach 从第 0 行开始（未跳表头），且无 try/catch、无列数校验；<code data-page-node-id="u4WBKs8x4oDICB81f2DCAh">Desc = proArray[37]</code> 与 DamaCoe2 列错位。</td><td data-page-node-id="eYqjaT19OdIdRI2nvXxYdP">表头被当数据解析 → 崩溃；Desc 数据错乱</td></tr>
+        <tr data-page-node-id="LG3a91cwDZNn9SNfbxEcqb"><td data-page-node-id="gloUD8CHUBz3ggOMCA4SDs"><span class="pill" style="background:rgba(255,93,108,.16);color:var(--p0)" data-page-node-id="3ivOpeTxFnC14TAuK9s1Cs">P0-3</span></td><td class="code" data-page-node-id="t3knnLcDz3obKJIIh8jhKk">EffectData.cs:40</td><td data-page-node-id="JWIlIvwnq24HLgLYC0J4b4"><code data-page-node-id="7MHUCNMJkiwCrvF4VbrUtn">EffectMsg.GetData</code> 在字典未命中时仍 <code data-page-node-id="JTctAcIw3K05qeUFEBS1Ra">return EffectDataDict[id]</code>（索引器）。</td><td data-page-node-id="XIvJ1zZz2zIAdi4QJbRDns">未配置特效 ID → KeyNotFoundException 崩溃</td></tr>
+      </table>
+    </div>
+
+    <h3 style="font-size:15px;margin:22px 0 8px;color:var(--p1)" data-page-node-id="Vc0cks4QOaoVntijHmd9PW">🟠 P1 — 功能断裂 / 高风险</h3>
+    <p class="note" style="margin:-2px 0 10px" data-page-node-id="Vc0cks4QOaoVntijHmd9PW2">较上次评估减少 3 项：<code>Buff↔FSM 未映射</code> 与 <code>OnAddBuff 空桩</code> 已由 Phase C 修复，<code>死亡链断裂</code> 已降级为 P2（主链路已通，仅事件订阅仍缺）。</p>
+    <div class="card" style="overflow-x:auto" data-page-node-id="nmg79WGcVxN3qlD290rivE">
+      <table data-page-node-id="89fD6PvpbxEs1jXUqJ2ywH">
+        <tr data-page-node-id="BlQICO2K9CEbSCDV61mgrl"><th style="width:60px" data-page-node-id="Bnnih32NXQMHRDtZK3iyVl">编号</th><th data-page-node-id="NpQInLsTAbFkqhXVsqPTdD">位置</th><th data-page-node-id="Pp7Bcwtpun69FKPcrwsEr8">问题</th><th style="width:170px" data-page-node-id="mDuCjhkDg08XTYaSXuYKH5">影响</th></tr>
+        <tr data-page-node-id="ICM0fnYCRtlJPeDCo8fV6N"><td data-page-node-id="0q3u8GVKEnG6tmmF6zyMBj"><span class="pill" style="background:rgba(255,169,64,.16);color:var(--p1)" data-page-node-id="jllGivlLNoLPKZLD00niEk">P1-1</span></td><td class="code" data-page-node-id="UHl6cVX1ruHE8CmzqJGmEE">Skill.cs</td><td data-page-node-id="5oZP4wo0cZkvIkfvEpdBXB">20+ 技能效果（ImmedDamage/Rigor/HitBack/HitOut/OnDizz/OnAirHit/OnUnitMove…）均为空桩，仅 ImmedHeal/AddBuff/Sneer 有实现。</td><td data-page-node-id="UMZHpxqsw4KB1I8JMpucjP">技能表现与受击反馈大面积缺失</td></tr>
+        <tr data-page-node-id="23JiN8Ne2jfLb5KUfGupvm"><td data-page-node-id="ewmNahUmxjVJRmwCmF2MS6"><span class="pill" style="background:rgba(255,169,64,.16);color:var(--p1)" data-page-node-id="qKYfPKVmIdnHjAXNHs8K1U">P1-2</span></td><td class="code" data-page-node-id="q71D4qSAoA0tRMb3G3yhnI">Skill.cs:247</td><td data-page-node-id="CAfZEcKbPprgtEgMDIGt2l"><code data-page-node-id="YebUhMyQMXAX7BGHqvMLAW">SetCD</code> 里 TimerManager 被注释，<code data-page-node-id="fxfDhN1rAm059mqw2bu7Yy">CoolDown=true</code> 后无重置。</td><td data-page-node-id="RFFK8TjiiqULXlquaprdgF">技能进入冷却后永不恢复</td></tr>
+        <tr data-page-node-id="1hXBRA0RBJhdYqTUtSEdJH"><td data-page-node-id="QwSHipIEx4rivUHWJkWQq2"><span class="pill" style="background:rgba(255,169,64,.16);color:var(--p1)" data-page-node-id="dTkITv7IqzDcjr3mzgopY0">P1-3</span></td><td class="code" data-page-node-id="4o52N3cXviRmNPcSoGgabN">Warrior.cs:40</td><td data-page-node-id="siqv2GsFmhQbh9JnjdhVp9"><code data-page-node-id="0zNMfyfl8bKGyxBKAg9FTx">Damage/Defend/Crit/Parry/Penetrate/MaxHP</code> getter 直接解引用 <code data-page-node-id="DfUB2rU1gYFbOzHvrO9Kq1">WarriorBaseData</code> 无空判（与 Name/Imag 不一致）。</td><td data-page-node-id="hLaMwJU9Dy4EP6jAodpEd6">配置缺失时 NullReferenceException</td></tr>
+        <tr data-page-node-id="QZGFhFxp9eNmuszATd42GM"><td data-page-node-id="u9BbRU2RcT1GQInVh8CFqW"><span class="pill" style="background:rgba(255,169,64,.16);color:var(--p1)" data-page-node-id="oHJSNjGqW3Tq3WMAS1PQGS">P1-4</span></td><td class="code" data-page-node-id="1CaJGanCehqxFA2f8NfzE0">BufferData.csv</td><td data-page-node-id="64lwZ5uGCL78zkdXvkGBNi"><code data-page-node-id="FoUOPlylxBB4EZUTlpou0Y">BuffMsg</code> 用 <code data-page-node-id="MtP2qLkIDhaCnMpLg2uOUq">Split('\r')</code>，依赖 CRLF 行尾，工具改 LF 会静默加载 0 行。</td><td data-page-node-id="fbvjFFP8kTmbZn9lzLYQu6">配置加载脆弱（已在 CODELY.md 记录）</td></tr>
+        <tr data-page-node-id="T4yQmO8xyKJYUGT0BYU2D6"><td data-page-node-id="HvrQjENKtzGsnsai2odrIG"><span class="pill" style="background:rgba(255,169,64,.16);color:var(--p1)" data-page-node-id="9MzTAnd4Y60C5LQGrr9GgL">P1-5</span></td><td class="code" data-page-node-id="JMElv82BsjiENYCoIB6kTn">CommonHelper.Str2Int</td><td data-page-node-id="DGPVv1Iq7Zq9FGRqhZ1JGj">正则 <code data-page-node-id="EHRCrGFG6tSAfddN9XSc53">^[0-9]+$</code> 拒绝负数，<code data-page-node-id="EiKvIAqrhfIkcN51FzfBfQ">Str2Int("-1")</code> 返回 0；<code data-page-node-id="z0VhIG3u52sVuYHr1xEAy2">Str2Float</code> 却用 <code data-page-node-id="KBHITVrEsiU6DRPxv1wWzC">Convert</code> 抛异常，错误处理不一致。</td><td data-page-node-id="3L5JToy8XMhVPYRMhXsAdd">配置中 -1 哨兵值被静默转 0</td></tr>
+        <tr data-page-node-id="MDw9QcaeVWL0RA6LGHf94j"><td data-page-node-id="Rzg4HYVzAqMVw6l1SIiZt6"><span class="pill" style="background:rgba(255,169,64,.16);color:var(--p1)" data-page-node-id="lTmLjcC3IqYB24g3QIhfXJ">P1-6</span></td><td class="code" data-page-node-id="NGtVirCvxttfCcHMOUTXDB">WarrorController.PlayerNeedMove</td><td data-page-node-id="yvA4IjZKF7quEnh04Vcbe5">getter 内执行 <code data-page-node-id="HKrUMkkQZC2jPsC5bnHPkg">FindTargetForMove_MinDistance</code>（物理查询），属性读取代价高且有副作用。</td><td data-page-node-id="VnKJGmATpBCsck75An9hDu">性能隐患 + 语义混乱</td></tr>
+      </table>
+    </div>
+
+    <h3 style="font-size:15px;margin:22px 0 8px;color:var(--p2)" data-page-node-id="cecePvk9jGAjsXtg8gNbeY">🟡 P2 — 工程质量 / 可维护性</h3>
+    <p class="note" style="margin:-2px 0 10px" data-page-node-id="cecePvk9jGAjsXtg8gNbeY2">较上次评估增加 1 项：死亡事件订阅缺失（原 P1-3 降级，因死亡主链路已由 FSM Dead 状态打通）。</p>
+    <div class="card" style="overflow-x:auto" data-page-node-id="rHSzkxct9JCkQDwvlVK54w">
+      <table data-page-node-id="PqI32wvUYUfWCqjJE4wjnq">
+        <tr data-page-node-id="w24iDCCBAsQQO5dCP5Qw4r"><th style="width:60px" data-page-node-id="WJIfcRGjDEXTY323IRP63k">编号</th><th data-page-node-id="dRMw5RlS6dVVRTVJP4CaWM">位置</th><th data-page-node-id="kkRqSNykiVCQvZLUnzsngu">问题</th></tr>
+        <tr data-page-node-id="sArl1tQAN28MtTpdu3T0iB"><td data-page-node-id="lXXrQ9lO9PriiIHFlEv14P"><span class="pill" style="background:rgba(255,214,102,.14);color:var(--p2)" data-page-node-id="zHdpMDzcBHZnv1C1CuEKUX">P2-1</span></td><td class="code" data-page-node-id="CAZDlkOQNFwmc1mVh2BQys">目录结构</td><td data-page-node-id="mpX2wcu6b3DIVZOyZqxWFS">ConfigData 被拆成两处（<code data-page-node-id="4lqzXSWXWscDCnfl0kpnkZ">Scripts/ConfigData</code> 与 <code data-page-node-id="CixaAPatUWneu5uIfDAO7N">BattleFreamwork/ConfigData</code>），EffectManager/ConfigManager 与 SkillData 分家。</td></tr>
+        <tr data-page-node-id="sZDjWPSvMoT0lQ1IN8f6ht"><td data-page-node-id="WpF9qjZwtqxD0JfNcTcLGv"><span class="pill" style="background:rgba(255,214,102,.14);color:var(--p2)" data-page-node-id="zWB7dckGC8s77wxSke0YkG">P2-2</span></td><td class="code" data-page-node-id="RTwTgD3VRNXE7epcOkHloP">StringConst.cs</td><td data-page-node-id="S1zmpHALSy9xl1tSPlhrJd">MonoBehaviour 却全是 static 常量，混入登录/密码/背包/UI Panel 等非战斗业务常量。</td></tr>
+        <tr data-page-node-id="PKbhzt8RDnRvCabAPtpprm"><td data-page-node-id="36lDJ2VpDUvWlS6hcW7RKR"><span class="pill" style="background:rgba(255,214,102,.14);color:var(--p2)" data-page-node-id="epArbdHLqa7qCOrE690XH4">P2-3</span></td><td class="code" data-page-node-id="zGhsEKpfiy1WpRHZCflTlE">Skill.cs:737 / CommonHelper</td><td data-page-node-id="kuWjsOcSh0u303iNIzkrXW">范围索敌用 foreach 分配；<code data-page-node-id="9X4oNVFf94EmQ37rvFwksg">OnProbability</code> 每次 new RNGCryptoServiceProvider + Random，热路径开销大。</td></tr>
+        <tr data-page-node-id="ygFwY7ak8UqYJVq1AussYT"><td data-page-node-id="DbUBZQYGXFPEF7pmHMR3vv"><span class="pill" style="background:rgba(255,214,102,.14);color:var(--p2)" data-page-node-id="4xilvn4xjmp4JSybgO0kak">P2-4</span></td><td class="code" data-page-node-id="FqiAtkXaN5IcxjpadRMtav">EffectManager.cs</td><td data-page-node-id="RVmnKr1RjSJnLsKgs2dVzn"><code data-page-node-id="pOJ5CF3hY9ccqd05OIZ9EO">ResaveEffect/OndDestroyEffect/OnAttackAudio</code> 等为死代码；<code data-page-node-id="1ajMjyqWVOB4Fbw7JcHEAe">CommonHelper.GetRootParticleParent</code> 存在空引用分支。</td></tr>
+        <tr data-page-node-id="SvRtbdxgKw2NDaCurmEqCn"><td data-page-node-id="VEPsQ4f0VcALqsue7ofusR"><span class="pill" style="background:rgba(255,214,102,.14);color:var(--p2)" data-page-node-id="wzd4NrVDFO5jq2EfFOwdLE">P2-5</span></td><td class="code" data-page-node-id="rHbAGUitU6181LgtRWnoUU">命名</td><td data-page-node-id="edMdhRYNfbnqetedcAQzto">Warror/Warrior 拼写混用、<code data-page-node-id="ufBD4zGFP3VYOWBvl3J2nI">SkillData</code> 大量 <code data-page-node-id="DXeaFIpquwVsBI9QaB3Ggv">Para1..Para16</code> 魔法字段、<code data-page-node-id="EjwcNAFNAV8ckXiIosLbkX">AttackDicNum</code> 等错拼。</td></tr>
+        <tr data-page-node-id="ayEH67qqm2NXVmmI59BYU7"><td data-page-node-id="jvVm2ncR7YV0NQ1QLbYhar"><span class="pill" style="background:rgba(255,214,102,.14);color:var(--p2)" data-page-node-id="Zk0NucPjsf4DxWIJIZjbgv">P2-6</span></td><td class="code" data-page-node-id="TGwtdHeIfPzUQ9EgMufwW5">TestPlayer/TestEnemy</td><td data-page-node-id="OpE8jmR2Rb5ZDZyxFlugO5">用 <code data-page-node-id="rhPKlwFFGUBfiapF2W4Jaj">Debug.LogError</code> 输出普通调试信息（污染错误日志）；真实战斗 <code data-page-node-id="icH8y1fQl7JLjfbRbVfYjv">CreadHero/CreadNPC</code> 被注释禁用。</td></tr>
+        <tr data-page-node-id="FZ8gKrmC9FgyZB6uulZZd8"><td data-page-node-id="o5UILPkVf50zJXVDHicQBL"><span class="pill" style="background:rgba(255,214,102,.14);color:var(--p2)" data-page-node-id="Ugit1omolBUtFWbMFOSPkg">P2-7</span></td><td class="code" data-page-node-id="pVcDRCWWTa751BFHeZ7qrW">单例</td><td data-page-node-id="4WWhOvtWhOSMawwPLA2QWi"><code data-page-node-id="wle4xBPRtFiuM7Na2TE8In">EffectManager/VirtualJoystick</code> 单例非线程安全，无懒加载保护（EffectManager 有、其余无统一约定）。</td></tr>
+        <tr data-page-node-id="FZ8gKrmC9FgyZB6uulZZd9"><td data-page-node-id="o5UILPkVf50zJXVDHicQBL2"><span class="pill" style="background:rgba(255,214,102,.14);color:var(--p2)" data-page-node-id="Ugit1omolBUtFWbMFOSpk2">P2-8</span></td><td class="code" data-page-node-id="pVcDRCWWTa751BFHeZ7qW2">CombatUnit.cs</td><td data-page-node-id="4WWhOvtWhOSMawwPLA2QW2"><code data-page-node-id="wle4xBPRtFiuM7Na2TE8I2">OnDeadEvent</code> / <code data-page-node-id="wle4xBPRtFiuM7Na2TE8I3">OnDead</code> 死亡事件从未被 <code data-page-node-id="wle4xBPRtFiuM7Na2TE8I4">+=</code> 订阅（死亡主链路已由 FSM Dead 状态打通，此处仅观察者无人响应）。</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 6. 改进路线图 -->
+  <section id="roadmap" data-page-node-id="dlUSCYE4SkgXj2qGIiU6pz">
+    <h2 data-page-node-id="ZMtUwF5dCAChILKOIoJR8K"><span class="no" data-page-node-id="oZxGf6x9bqLsQpyxo6USnN">6</span>改进路线图</h2>
+    <p class="lead" data-page-node-id="aED1BABWhVkFa5tJGwxIn0">建议按「止血 → 打通 → 整合 → 治理」四阶段推进，每阶段都可独立验证。</p>
+    <div class="grid c2" data-page-node-id="0FvPvDTSrbj9DxUYlM8g28">
+      <div class="phase" data-page-node-id="GMT1oUwRhoGXgILRjT6Xml">
+        <div class="ph" style="color:var(--p0)" data-page-node-id="sIGtOL5EMTOFs0YfGbBRdj">PHASE A · 止血 <span style="opacity:.6">（1/4 已就位）</span></div>
+        <h4 data-page-node-id="68uIUq4iZUm0lmnmGbI9E7">修复 P0，让框架「不崩溃、不静默错」</h4>
+        <ul data-page-node-id="le39zrJFx9BrM0ML4XdKpQ">
+          <li data-page-node-id="5xs8ARl0LkGg8kNdGoWPsU">✅ <code data-page-node-id="WlJcg6aLKMdZF22LMxYMc1">m_Rage</code> 去掉 static，改为实例字段（已修复）</li>
+          <li data-page-node-id="rXO2ulOvY4rtnQZwp1WpxD">补全 <code data-page-node-id="PgWo9WQGXcgcw0CCUaGRTa">Skill.ImmedDamage</code>（调用 OnDamaged 落地伤害）</li>
+          <li data-page-node-id="2Ojj64WwCnkQ9iQ7Ea9xYA">修复 <code data-page-node-id="lN0OeSrlQgdj4sMEgbg3Yc">LoadSkillData</code> 表头跳过 + Desc 列错位 + 边界校验</li>
+          <li data-page-node-id="PFG1ZKqLpVYPnKQpVYcKUr"><code data-page-node-id="3f6zc70wZqtHGn4bKRoe0u">EffectMsg.GetData</code> 改 TryGetValue 判空</li>
+        </ul>
+      </div>
+      <div class="phase" data-page-node-id="8FXuUZqHRcxW74SY9SlYwD">
+        <div class="ph" style="color:var(--p1)" data-page-node-id="38Gud8kzmOOWpuE1G5sYKP">PHASE B · 打通</div>
+        <h4 data-page-node-id="fSfhPArIvFRIbRtF3cixVw">修复 P1，让技能与受击链路跑起来</h4>
+        <ul data-page-node-id="Dive7ZWj89h0loeJgoEz6B">
+          <li data-page-node-id="99nns38q4I97B2nDNTbRrq">补全核心技能效果桩（HitBack/HitOut/OnDizz/OnAirHit 等）</li>
+          <li data-page-node-id="ffZ8pkGvYhbEHAA94z1oJl">恢复技能冷却（引入 Timer / 在 Tick 中倒计时重置）</li>
+          <li data-page-node-id="GUZiL5zqM8zMqATj8smdbv">修复死亡链：统一 OnDead 订阅，清理事件</li>
+          <li data-page-node-id="Lkmxtjc1AUdGrmh2ZUeEof"><code data-page-node-id="DyOSWVElqrWZKskatYFqwu">Str2Int</code> 支持负数，统一配置解析错误处理</li>
+        </ul>
+      </div>
+      <div class="phase" data-page-node-id="uBwN7mr3PPTjBAe943VMen">
+        <div class="ph" style="color:var(--ok)" data-page-node-id="DNFfoiRrFyKZ51kUeZtI2Y">PHASE C · 整合 ✅ 已完成</div>
+        <h4 data-page-node-id="7XKDAIfvPjxiDNayWUOnbZ">Buff ↔ FSM 打通，接入战斗主循环</h4>
+        <ul data-page-node-id="WoL6ksPpilXbJuQLyzPB3r">
+          <li data-page-node-id="lnFvxluKfojsphpOmiuujt">✅ <code data-page-node-id="gwGWErVj6HoSi3MAYlgOlc">CombatUnitController.OnAddBuff</code> 接入 BuffSystem</li>
+          <li data-page-node-id="hsGAhsAaAz9sJtCx67rylQ">✅ BuffSystem.Update 由 CombatUnitController.Update 统一驱动</li>
+          <li data-page-node-id="HswVo40EvxVk3fCnkvy5SQ">✅ Buff 硬控映射 FSM：Stunned→Stun、Silenced→Silence 等</li>
+          <li data-page-node-id="Gph8WbcupsEG9apAVwCfVM">✅ Tick 伤害落地到 OnDamaged，走同一伤害入口</li>
+        </ul>
+      </div>
+      <div class="phase" data-page-node-id="6XbNDhAsuQla0oRmqARi7V">
+        <div class="ph" style="color:var(--p2)" data-page-node-id="cseF0rGKKNGjV16ebYthq6">PHASE D · 治理</div>
+        <h4 data-page-node-id="QvBrJot7TiurQVS0aeegNj">工程化：目录、事件总线、测试</h4>
+        <ul data-page-node-id="rBCjyAbvWpZVV41fw1FpSd">
+          <li data-page-node-id="du8LSJgHCqfn5BpThNIHpQ">统一 ConfigData 目录与命名空间（BattleFramework.*）</li>
+          <li data-page-node-id="fcD9Y7cupB4aCLuam2bImr">StringConst 按域拆分（战斗 / UI / 常量）</li>
+          <li data-page-node-id="3nfceUpEWMQbHEurePrIgz">引入统一事件总线，替换散落委托</li>
+          <li data-page-node-id="z1FRIrNbIs1Ae29OXscDIt">真实战斗场景恢复 + 自动化测试（EditMode/PlayMode）</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer data-page-node-id="ibTqvu8SutgVAy16ODhlXd">
+    <p data-page-node-id="yjUkMOA5r8W1LZlsW8FetD">评估基于 <code data-page-node-id="H5ZQsl4MtLupgakhlPgdy6">Assets/Scripts/</code> 全部 31 个 .cs 文件的静态通读（Phase C 整合后复核），编译验证通过 UnitySkills（0 Error / 0 Warning）。评分为主观工程判断，供重构决策参考。</p>
+    <p class="note" style="margin-top:8px" data-page-node-id="KbxQ9GU0GZKJ0lv1FwZSEk">报告更新于 2026-09-07 · 战斗框架深度评估 · 蔡振立</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  // ---------- 评分数据 ----------
+  const dims = [
+    ["架构分层与目录", 4,  "B"],
+    ["数据模型",       5.5,"B"],
+    ["控制链路",       7,  "C"],
+    ["状态机 (FSM)",   8,  "C"],
+    ["技能系统",       3,  "A"],
+    ["Buff 系统",      9,  "D"],
+    ["事件系统",       5,  "B"],
+    ["配置驱动",       4.5,"B"],
+    ["表现层",         5,  "B"],
+    ["测试与验证",     3,  "A"],
+  ];
+  const lvColor = {A:"#ff5d6c", B:"#ffa940", C:"#6c7bff", D:"#3ddc97"};
+  const lvName  = {A:"薄弱", B:"待补", C:"良好", D:"标杆"};
+
+  const scoreCard = document.getElementById('scoreCard');
+  dims.forEach((d,i)=>{
+    const [name, score, lv] = d;
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    row.innerHTML = `
+      <div class="name">${name}</div>
+      <div class="bar-track"><div class="bar-fill" data-w="${score*10}" style="background:linear-gradient(90deg,${lvColor[lv]},${lvColor[lv]}cc)"></div></div>
+      <div class="score" style="color:${lvColor[lv]}">${score}<span style="font-size:11px;color:var(--text-mute)"> /10</span></div>`;
+    scoreCard.appendChild(row);
+  });
+  // animate bars
+  requestAnimationFrame(()=>setTimeout(()=>{
+    document.querySelectorAll('.bar-fill').forEach(el=>{ el.style.width = el.dataset.w + '%'; });
+    const arc = document.getElementById('ringArc');
+    if(arc){ arc.style.transition='stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)'; arc.style.strokeDashoffset = 351.9*(1-0.54); }
+  },80));
+
+  // ---------- SVG 架构图 ----------
+  const svg = document.getElementById('archSvg');
+  const NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent){ const n=document.createElementNS(NS,tag); for(const k in attrs) n.setAttribute(k,attrs[k]); if(parent) parent.appendChild(n); return n; }
+
+  const defs = el('defs',{},svg);
+  const grad1 = el('linearGradient',{id:'gl',x1:'0',y1:'0',x2:'1',y2:'0'},defs);
+  el('stop',{offset:'0',stopColor:'#1a2338'},grad1); el('stop',{offset:'1',stopColor:'#141b2e'},grad1);
+
+  function box(x,y,w,h,fill,stroke,rx){ const r=el('rect',{x,y,width:w,height:h,fill,stroke,rx:rx||10,'stroke-width':1.2,opacity:.96},svg); return r; }
+  function txt(x,y,s,size,color,weight,anchor){ const t=el('text',{x,y,'font-size':size,fill:color,'font-weight':weight||400,'text-anchor':anchor||'middle','font-family':'Segoe UI, Microsoft YaHei, sans-serif'},svg); t.textContent=s; return t; }
+
+  // 三代色
+  const C_legacy='#5b6478', C_buff='#3ddc97', C_fsm='#6c7bff', C_gap='#ff5d6c';
+
+  // 左侧三代列
+  const cols = [
+    {x:40,  w:270, c:C_legacy, title:'GEN 1 · Legacy 战斗', items:['BaseUnit / CombatUnit','Warrior / AttackNpc','MoveBase / CombatUnitController','Warror / AttackNpcController','Skill / EffectManager']},
+    {x:355, w:270, c:C_buff,  title:'GEN 2 · Buff 系统', items:['BuffType (ulong 位枚举)','Buff / ClassObjectPool','BuffSystemPooled','BuffData / BuffMsg','BuffSystemExample']},
+    {x:670, w:270, c:C_fsm,   title:'GEN 3 · FSM', items:['CombatState 枚举','ICombatState 接口','CombatStateMachine','7 个状态类']},
+  ];
+
+  cols.forEach(col=>{
+    txt(col.x+col.w/2, 34, col.title, 14, col.c, 700);
+    box(col.x, 46, col.w, 200, '#0d1322', col.c, 12);
+    col.items.forEach((it,i)=>{
+      const y = 70 + i*32;
+      el('rect',{x:col.x+14,y:y-16,width:col.w-28,height:26,rx:7,fill:'#151d31',stroke:col.c,'stroke-opacity':.28,'stroke-width':1},svg);
+      txt(col.x+24, y+1, it, 12.5, '#cdd7ee', 500, 'start');
+    });
+  });
+
+  // 右侧整合总线（三柱汇聚）
+  const hubX = 480, hubY = 300;
+  box(420, hubY-18, 120, 36, '#0d1322', C_gap, 10);
+  txt(hubX, hubY+4, '战斗主循环', 13, '#e6ecf7', 700);
+  txt(hubX, hubY+44, 'CombatUnitController.Tick', 11, '#8b96b0');
+
+  // 连接线（三柱 → 主循环）
+  const lx=[175, 490, 805];
+  lx.forEach((x,i)=>{
+    const c = [C_legacy,C_buff,C_fsm][i];
+    el('line',{x1:x,y1:246,x2:hubX,y2:hubY-18,stroke:c,'stroke-width':1.6,'stroke-dasharray':i===1?'6 5':'4 4','opacity':.6},svg);
+  });
+
+  // 断链 / 已打通标注
+  const gaps = [
+    {x:30,  y:310, w:300, c:C_gap,  t:'技能伤害链断裂', d:'Skill.ImmedDamage 空桩'},
+    {x:355, y:310, w:300, c:C_buff, t:'Buff 已接主循环 ✅', d:'OnAddBuff · Tick 驱动 · DoT 落地'},
+    {x:670, y:310, w:300, c:C_fsm,  t:'Buff ↔ FSM 已映射 ✅', d:'Buff 为唯一真相源，FSM 投影'},
+  ];
+  gaps.forEach(g=>{
+    const c = g.c || C_gap;
+    const ok = c !== C_gap;
+    box(g.x, g.y-14, g.w, 58, ok ? 'rgba(61,220,151,.05)' : 'rgba(255,93,108,.05)', c, 10);
+    txt(g.x+14, g.y+4, g.t, 12.5, c, 700, 'start');
+    txt(g.x+14, g.y+22, g.d, 11, '#8b96b0', 400, 'start');
+    // 到主循环的箭头：已打通为实线，断裂为红色虚线
+    el('line',{x1:g.x+g.w/2,y1:g.y+44,x2:hubX,y2:hubY+18,stroke:c,'stroke-width':1.4,'stroke-dasharray': ok?'5 0':'3 3',opacity:.5},svg);
+  });
+
+  // 底部分层带
+  const layers = [
+    {y:400, l:'表现层', c:'#6c7bff', items:'Animator (SkillId/Move/Run) · EffectManager · EffectDot · VirtualJoystick'},
+    {y:446, l:'战斗层', c:'#3ddc97', items:'Skill · BuffSystemPooled · CombatStateMachine · 索敌/命中判定'},
+    {y:492, l:'数据层', c:'#5b6478', items:'BaseUnit/CombatUnit · CSV 配置 (SkillData/WarriorData/BufferData…)'},
+  ];
+  layers.forEach(L=>{
+    txt(20, L.y+18, L.l, 12, L.c, 700, 'start');
+    box(90, L.y, 850, 32, '#0d1322', L.c, 8);
+    txt(105, L.y+20, L.items, 12, '#9aa6c0', 400, 'start');
+  });
+
+  // 图例标题
+  txt(480, 540, '▲ 三套体系并存，Buff 与 FSM 已向下收敛到战斗主循环（绿），仅技能伤害链仍断裂（红）', 12, '#5b6478', 400);
+})();
+</script>
+</body>
+</html>

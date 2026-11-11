@@ -1,0 +1,115 @@
+[
+  {
+    "Type": "AttackBoost",
+    "Id": 1001,
+    "Name": "增加攻击",
+    "Description": "333",
+    "Category": "Positive",
+    "Duration": 10.0,
+    "MaxStack": 1,
+    "EffectValue": 50.0,
+    "EffectPercent": 0.0,
+    "TickInterval": 0.0,
+    "Dispellable": false,
+    "Stackable": false,
+    "IconName": "dsaf",
+    "EffectName": "dflkafhgjlkdja",
+    "Tags": []
+  },
+  {
+    "Type": "SpeedBoost",
+    "Id": 1002,
+    "Name": "增加速度",
+    "Description": "sra",
+    "Category": "Positive",
+    "Duration": 5.0,
+    "MaxStack": 1,
+    "EffectValue": 1.0,
+    "EffectPercent": 0.0,
+    "TickInterval": 0.0,
+    "Dispellable": false,
+    "Stackable": false,
+    "IconName": "wqeewr",
+    "EffectName": "kjdhfjkf",
+    "Tags": []
+  },
+  {
+    "Type": "Bleeding",
+    "Id": 1003,
+    "Name": "流血",
+    "Description": "每1秒扣12血·可叠3层（天诛三段各挂1层）",
+    "Category": "Negative",
+    "Duration": 5.0,
+    "MaxStack": 3,
+    "EffectValue": 12.0,
+    "EffectPercent": 0.0,
+    "TickInterval": 1.0,
+    "Dispellable": false,
+    "Stackable": true,
+    "IconName": "diosfahjlk",
+    "EffectName": "gfgarer",
+    "Tags": [
+      "DoT"
+    ]
+  },
+  {
+    "Type": "Poisoned",
+    "Id": 1004,
+    "Name": "中毒",
+    "Description": "每2秒扣5血·可叠3层",
+    "Category": "Negative",
+    "Duration": 8.0,
+    "MaxStack": 3,
+    "EffectValue": 5.0,
+    "EffectPercent": 0.0,
+    "TickInterval": 2.0,
+    "Dispellable": true,
+    "Stackable": true,
+    "IconName": "poison_icon",
+    "EffectName": "poison_effect",
+    "Tags": [
+      "DoT"
+    ]
+  },
+  {
+    "Type": "Stunned",
+    "Id": 1005,
+    "Name": "眩晕",
+    "Description": "眩晕2秒·不可行动",
+    "Category": "Control",
+    "Duration": 2.0,
+    "MaxStack": 1,
+    "EffectValue": 0.0,
+    "EffectPercent": 0.0,
+    "TickInterval": 0.0,
+    "Dispellable": true,
+    "Stackable": false,
+    "IconName": "stun_icon",
+    "EffectName": "stun_effect",
+    "Tags": [
+      "Control",
+      "HardControl",
+      "MovementImpair"
+    ]
+  },
+  {
+    "Type": "Silenced",
+    "Id": 1006,
+    "Name": "沉默",
+    "Description": "沉默3秒·不可施法",
+    "Category": "Control",
+    "Duration": 3.0,
+    "MaxStack": 1,
+    "EffectValue": 0.0,
+    "EffectPercent": 0.0,
+    "TickInterval": 0.0,
+    "Dispellable": true,
+    "Stackable": false,
+    "IconName": "silence_icon",
+    "EffectName": "silence_effect",
+    "Tags": [
+      "Control",
+      "Silence"
+    ]
+  }
+]

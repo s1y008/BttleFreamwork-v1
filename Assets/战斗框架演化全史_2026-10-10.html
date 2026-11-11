@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>战斗框架演化全史 · BttleFreamwork-v1（2026-09-03 → 2026-10-10）</title>
+<style>
+  :root {
+    --bg-primary: #0a0e27;
+    --bg-card: #0f1535;
+    --bg-elevated: #161b40;
+    --border: rgba(99, 102, 241, 0.15);
+    --border-hover: rgba(99, 102, 241, 0.4);
+    --text-primary: #e8eaf6;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --orange: #feb67e;
+    --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    --code-bg: #1a1f3a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 15px;
+    background-image:
+      radial-gradient(at 20% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+      radial-gradient(at 80% 70%, rgba(168, 85, 247, 0.06) 0%, transparent 50%);
+  }
+  .container { max-width: 1240px; margin: 0 auto; padding: 48px 32px; }
+
+  /* Cover */
+  .cover { text-align: center; padding: 72px 0 56px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+  .cover-tag {
+    display: inline-block; padding: 6px 16px; border: 1px solid var(--border-hover);
+    border-radius: 999px; font-size: 12px; color: var(--accent-light);
+    background: rgba(99, 102, 241, 0.05); letter-spacing: 1px; margin-bottom: 24px;
+  }
+  .cover h1 {
+    font-size: 46px; font-weight: 700; background: var(--gradient);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    margin-bottom: 16px; letter-spacing: -1px;
+  }
+  .cover-subtitle { font-size: 17px; color: var(--text-secondary); margin-bottom: 32px; }
+  .cover-meta { display: flex; justify-content: center; gap: 28px; flex-wrap: wrap; color: var(--text-muted); font-size: 14px; }
+  .cover-meta span { display: flex; align-items: center; gap: 8px; }
+  .cover-meta .dot { width: 4px; height: 4px; background: var(--accent); border-radius: 50%; }
+
+  /* TOC */
+  .toc { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 32px; margin-bottom: 48px; }
+  .toc h2 { font-size: 16px; color: var(--accent-light); margin-bottom: 16px; letter-spacing: 0.5px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 32px; }
+  .toc-grid a { color: var(--text-secondary); text-decoration: none; font-size: 14px; padding: 5px 0; transition: color 0.2s; border-left: 2px solid transparent; padding-left: 12px; }
+  .toc-grid a:hover { color: var(--accent-light); border-left-color: var(--accent); }
+  .toc-grid .num { color: var(--text-muted); margin-right: 8px; font-family: 'JetBrains Mono', Consolas, monospace; }
+
+  /* Section */
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+  .section-num { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 13px; color: var(--accent-light); background: rgba(99,102,241,0.1); padding: 4px 12px; border-radius: 6px; white-space: nowrap; }
+  h2.section-title { font-size: 27px; font-weight: 600; letter-spacing: -0.5px; }
+  .section-when { font-size: 13px; color: var(--text-muted); margin-left: auto; white-space: nowrap; }
+  h3 { font-size: 19px; font-weight: 600; margin: 30px 0 14px; color: var(--accent-light); }
+  h4 { font-size: 16px; font-weight: 600; margin: 22px 0 10px; color: var(--text-primary); }
+  p { margin-bottom: 12px; color: var(--text-secondary); }
+  strong { color: var(--text-primary); }
+  ul, ol { margin: 0 0 14px 22px; color: var(--text-secondary); }
+  li { margin-bottom: 6px; }
+
+  /* Card */
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; margin-bottom: 16px; transition: border-color 0.2s; }
+  .card:hover { border-color: var(--border-hover); }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--accent-light); margin-bottom: 10px; letter-spacing: 0.3px; text-transform: uppercase; }
+
+  /* Evolution block: 痛点 / 做法 / 为什么 */
+  .evo { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 20px; background: var(--bg-card); }
+  .evo-head { padding: 14px 22px; background: var(--bg-elevated); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .evo-head .evo-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+  .evo-head .evo-date { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12px; color: var(--text-muted); }
+  .evo-body { padding: 4px 22px 18px; }
+  .evo-row { display: grid; grid-template-columns: 92px 1fr; gap: 18px; padding: 14px 0; border-bottom: 1px dashed rgba(99,102,241,0.12); }
+  .evo-row:last-child { border-bottom: none; }
+  .evo-label { font-size: 13px; font-weight: 700; letter-spacing: 1px; padding-top: 2px; }
+  .evo-label.pain { color: var(--danger); }
+  .evo-label.how { color: var(--accent-light); }
+  .evo-label.why { color: var(--warning); }
+  .evo-label.proof { color: var(--success); }
+  .evo-label.trap { color: var(--orange); }
+  .evo-text { color: var(--text-secondary); font-size: 14.5px; }
+  .evo-text p:last-child { margin-bottom: 0; }
+
+  /* Badge */
+  .badge { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 999px; margin-left: 4px; vertical-align: middle; letter-spacing: 0.3px; }
+  .badge-ok { background: rgba(16,185,129,0.12); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+  .badge-warn { background: rgba(245,158,11,0.12); color: var(--warning); border: 1px solid rgba(245,158,11,0.3); }
+  .badge-bad { background: rgba(239,68,68,0.12); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+  .badge-info { background: rgba(99,102,241,0.12); color: var(--accent-light); border: 1px solid rgba(99,102,241,0.3); }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--bg-card); border-radius: 10px; overflow: hidden; }
+  th { background: var(--bg-elevated); color: var(--accent-light); text-align: left; padding: 12px 14px; font-weight: 600; font-size: 13px; letter-spacing: 0.3px; white-space: nowrap; }
+  td { padding: 11px 14px; border-top: 1px solid var(--border); color: var(--text-secondary); vertical-align: top; }
+  tr:hover td { background: rgba(99,102,241,0.04); }
+  td.num, th.num { font-family: 'JetBrains Mono', Consolas, monospace; color: var(--orange); white-space: nowrap; }
+
+  /* Code */
+  pre { background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; overflow-x: auto; margin: 12px 0 16px; }
+  code { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 13px; color: #c7d2fe; line-height: 1.65; }
+  p code, li code, td code, .evo-text code { background: rgba(99,102,241,0.1); padding: 1px 6px; border-radius: 4px; font-size: 12.5px; color: var(--orange); }
+
+  /* Callout */
+  .callout { border-left: 3px solid var(--accent); background: rgba(99,102,241,0.06); padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; }
+  .callout.danger { border-left-color: var(--danger); background: rgba(239,68,68,0.06); }
+  .callout.warn { border-left-color: var(--warning); background: rgba(245,158,11,0.06); }
+  .callout.ok { border-left-color: var(--success); background: rgba(16,185,129,0.06); }
+  .callout-title { font-size: 13px; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
+  .callout.danger .callout-title { color: var(--danger); }
+  .callout.warn .callout-title { color: var(--warning); }
+  .callout.ok .callout-title { color: var(--success); }
+  .callout .callout-title { color: var(--accent-light); }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* Timeline SVG */
+  .tl-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 12px 8px; margin-bottom: 20px; overflow-x: auto; }
+  .tl-wrap svg { display: block; width: 100%; min-width: 1100px; height: auto; }
+  .tl-node { cursor: pointer; }
+  .tl-node rect { transition: all 0.18s ease; }
+  .tl-node:hover rect { stroke: var(--orange); stroke-width: 2; }
+  .tl-node.active rect { fill: rgba(99,102,241,0.28); stroke: var(--orange); stroke-width: 2; }
+  .tl-hint { text-align: center; color: var(--text-muted); font-size: 12.5px; padding-bottom: 8px; }
+
+  /* Stat grid */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
+  .stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; text-align: center; }
+  .stat .v { font-size: 26px; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: 'JetBrains Mono', Consolas, monospace; }
+  .stat .k { font-size: 12.5px; color: var(--text-muted); margin-top: 4px; }
+
+  /* Principle */
+  .principle { display: grid; grid-template-columns: 56px 1fr; gap: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; margin-bottom: 14px; }
+  .principle .idx { font-family: 'JetBrains Mono', Consolas, monospace; font-size: 22px; font-weight: 700; color: rgba(99,102,241,0.45); }
+  .principle h4 { margin: 0 0 6px; font-size: 16px; color: var(--text-primary); }
+  .principle .born { font-size: 12.5px; color: var(--text-muted); margin-bottom: 6px; }
+  .principle p:last-child { margin-bottom: 0; }
+
+  footer { border-top: 1px solid var(--border); padding-top: 28px; margin-top: 48px; color: var(--text-muted); font-size: 13px; text-align: center; }
+
+  @media (max-width: 720px) {
+    .container { padding: 28px 16px; }
+    .cover h1 { font-size: 30px; }
+    .toc-grid { grid-template-columns: 1fr; }
+    .evo-row { grid-template-columns: 1fr; gap: 4px; }
+    .section-header { flex-wrap: wrap; }
+    .section-when { margin-left: 0; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ============ COVER ============ -->
+<div class="cover">
+  <div class="cover-tag">Evolution Chronicle</div>
+  <h1>战斗框架演化全史</h1>
+  <div class="cover-subtitle">BttleFreamwork-v1 · 从「能跑但处处静默出错」到「分层清晰、契约可校验」的 30+ 次改造</div>
+  <div class="cover-meta">
+    <span><i class="dot"></i>2026-09-03 → 2026-10-10</span>
+    <span><i class="dot"></i>Unity 2023.2.20f1c1</span>
+    <span><i class="dot"></i>48 个运行时脚本</span>
+    <span><i class="dot"></i>蔡振立 · Unity 战斗框架</span>
+  </div>
+</div>
+
+<!-- ============ TOC ============ -->
+<div class="toc">
+  <h2>目录</h2>
+  <div class="toc-grid">
+    <a href="#s1"><span class="num">01</span>全景时间线</a>
+    <a href="#s2"><span class="num">02</span>演化总表（一页看完）</a>
+    <a href="#s3"><span class="num">03</span>起点：基线评估与 FSM 接入</a>
+    <a href="#s4"><span class="num">04</span>段号驱动：四轮返工（v1→v4）</a>
+    <a href="#s5"><span class="num">05</span>性能与特效解耦（v5 P0–P8）</a>
+    <a href="#s6"><span class="num">06</span>拆参数通道（P9–P12）</a>
+    <a href="#s7"><span class="num">07</span>显示层组件化（P13/P14）</a>
+    <a href="#s8"><span class="num">08</span>表现与资产契约（P15–P20）</a>
+    <a href="#s9"><span class="num">09</span>Buff 系统重构（Id 主键 + Tags）</a>
+    <a href="#s10"><span class="num">10</span>抽象层与零 GC（ISkillEffect/F）</a>
+    <a href="#s11"><span class="num">11</span>联网适配与配置层迁移</a>
+    <a href="#s12"><span class="num">12</span>可玩性闭环（流血/收尾契约）</a>
+    <a href="#s13"><span class="num">13</span>当前议题与下一步</a>
+    <a href="#s14"><span class="num">14</span>七条设计原则的诞生</a>
+    <a href="#s15"><span class="num">15</span>工程纪律：每条都对应一次事故</a>
+    <a href="#s16"><span class="num">16</span>现状地图与遗留待办</a>
+  </div>
+</div>
+
+<!-- ============ 01 时间线 ============ -->
+<section id="s1">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">全景时间线</h2>
+    <span class="section-when">点击节点跳转到对应章节</span>
+  </div>
+
+  <div class="tl-wrap">
+    <svg viewBox="0 0 1460 250" role="img" aria-label="战斗框架演化时间线">
+      <defs>
+        <linearGradient id="tlg" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#6366f1" stop-opacity="0.25"/>
+          <stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#a855f7" stop-opacity="0.25"/>
+        </linearGradient>
+      </defs>
+      <line x1="40" y1="118" x2="1420" y2="118" stroke="url(#tlg)" stroke-width="3"/>
+
+      <g class="tl-node" data-target="s3">
+        <rect x="16" y="88" width="112" height="60" rx="10" fill="#161b40" stroke="#6366f1" stroke-width="1.2"/>
+        <text x="72" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-03 / 09-07</text>
+        <text x="72" y="112" text-anchor="middle" font-size="13" fill="#e8eaf6">起点与</text>
+        <text x="72" y="130" text-anchor="middle" font-size="13" fill="#e8eaf6">基线评估</text>
+      </g>
+
+      <g class="tl-node" data-target="s4">
+        <rect x="148" y="88" width="112" height="60" rx="10" fill="#161b40" stroke="#6366f1" stroke-width="1.2"/>
+        <text x="204" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-11 → 09-14</text>
+        <text x="204" y="112" text-anchor="middle" font-size="13" fill="#e8eaf6">段号驱动</text>
+        <text x="204" y="130" text-anchor="middle" font-size="13" fill="#ef4444">v1→v4 四轮</text>
+      </g>
+
+      <g class="tl-node" data-target="s5">
+        <rect x="280" y="88" width="112" height="60" rx="10" fill="#161b40" stroke="#6366f1" stroke-width="1.2"/>
+        <text x="336" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-14 → 09-15</text>
+        <text x="336" y="112" text-anchor="middle" font-size="13" fill="#e8eaf6">性能与</text>
+        <text x="336" y="130" text-anchor="middle" font-size="13" fill="#e8eaf6">特效解耦</text>
+      </g>
+
+      <g class="tl-node" data-target="s6">
+        <rect x="412" y="88" width="112" height="60" rx="10" fill="#161b40" stroke="#6366f1" stroke-width="1.2"/>
+        <text x="468" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-16</text>
+        <text x="468" y="112" text-anchor="middle" font-size="13" fill="#e8eaf6">拆参数</text>
+        <text x="468" y="130" text-anchor="middle" font-size="13" fill="#e8eaf6">通道 P9–P12</text>
+      </g>
+
+      <g class="tl-node" data-target="s7">
+        <rect x="544" y="88" width="112" height="60" rx="10" fill="#161b40" stroke="#6366f1" stroke-width="1.2"/>
+        <text x="600" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-17</text>
+        <text x="600" y="112" text-anchor="middle" font-size="13" fill="#e8eaf6">显示层</text>
+        <text x="600" y="130" text-anchor="middle" font-size="13" fill="#e8eaf6">组件化</text>
+      </g>
+
+      <g class="tl-node" data-target="s8">
+        <rect x="676" y="88" width="112" height="60" rx="10" fill="#161b40" stroke="#ef4444" stroke-width="1.6"/>
+        <text x="732" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-18 / 09-19</text>
+        <text x="732" y="112" text-anchor="middle" font-size="13" fill="#e8eaf6">资产契约</text>
+        <text x="732" y="130" text-anchor="middle" font-size="13" fill="#ef4444">2003 撞车</text>
+      </g>
+
+      <g class="tl-node" data-target="s9">
+        <rect x="808" y="88" width="112" height="60" rx="10" fill="#161b40" stroke="#6366f1" stroke-width="1.2"/>
+        <text x="864" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-23 / 09-24</text>
+        <text x="864" y="112" text-anchor="middle" font-size="13" fill="#e8eaf6">Buff 重构</text>
+        <text x="864" y="130" text-anchor="middle" font-size="13" fill="#e8eaf6">Id + Tags</text>
+      </g>
+
+      <g class="tl-node" data-target="s10">
+        <rect x="940" y="88" width="112" height="60" rx="10" fill="#161b40" stroke="#6366f1" stroke-width="1.2"/>
+        <text x="996" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-24 / 09-27</text>
+        <text x="996" y="112" text-anchor="middle" font-size="13" fill="#e8eaf6">抽象层</text>
+        <text x="996" y="130" text-anchor="middle" font-size="13" fill="#10b981">零 GC</text>
+      </g>
+
+      <g class="tl-node" data-target="s11">
+        <rect x="1072" y="88" width="112" height="60" rx="10" fill="#161b40" stroke="#6366f1" stroke-width="1.2"/>
+        <text x="1128" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-28 / 09-29</text>
+        <text x="1128" y="112" text-anchor="middle" font-size="13" fill="#e8eaf6">联网适配</text>
+        <text x="1128" y="130" text-anchor="middle" font-size="13" fill="#e8eaf6">配置迁移</text>
+      </g>
+
+      <g class="tl-node" data-target="s12">
+        <rect x="1204" y="88" width="112" height="60" rx="10" fill="#161b40" stroke="#6366f1" stroke-width="1.2"/>
+        <text x="1260" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-29</text>
+        <text x="1260" y="112" text-anchor="middle" font-size="13" fill="#e8eaf6">可玩性</text>
+        <text x="1260" y="130" text-anchor="middle" font-size="13" fill="#e8eaf6">闭环</text>
+      </g>
+
+      <g class="tl-node" data-target="s13">
+        <rect x="1336" y="88" width="108" height="60" rx="10" fill="#161b40" stroke="#f59e0b" stroke-width="1.6"/>
+        <text x="1390" y="72" text-anchor="middle" font-size="11" fill="#6b7280" font-family="Consolas,monospace">09-30 / 10-10</text>
+        <text x="1390" y="112" text-anchor="middle" font-size="13" fill="#f59e0b">待拍板</text>
+        <text x="1390" y="130" text-anchor="middle" font-size="13" fill="#e8eaf6">Animancer</text>
+      </g>
+
+      <text x="730" y="196" text-anchor="middle" font-size="12" fill="#6b7280">GEN1 Legacy / GEN2 Buff / GEN3 FSM 三代并存 → 四层收敛（配置 · 数据 · 控制 · 表现）</text>
+      <text x="730" y="222" text-anchor="middle" font-size="12" fill="#6b7280">红线节点 = 返工最惨 / 尚未拍板的阶段</text>
+    </svg>
+    <div class="tl-hint">▲ 点击任意节点跳转到对应章节</div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="v">4.6 → 5.4</div><div class="k">成熟度评分（09-07 两次评估）</div></div>
+    <div class="stat"><div class="v">1210 → 1075</div><div class="k">CombatUnitController 行数（P13）</div></div>
+    <div class="stat"><div class="v">926 → 741</div><div class="k">Skill.cs 行数（阶段一策略化）</div></div>
+    <div class="stat"><div class="v">700B → 0</div><div class="k">单次技能命中结算 GC</div></div>
+    <div class="stat"><div class="v">3.6 → 2.6ms</div><div class="k">单次技能 CPU（v5 P0–P3）</div></div>
+    <div class="stat"><div class="v">20 → 3</div><div class="k">P0 级缺陷（09-07 → 现在）</div></div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-title">这份文档怎么用</div>
+    <p>每一条演化都按 <strong>痛点 → 做法 → 为什么这么做 → 验证 → 踩坑</strong> 五段记录。「痛点」是当时的真实现象与用户原话，「为什么」记录的是当时被否决的备选方案与拍板依据 —— 这两栏才是这份文档的价值所在，代码本身在仓库里。</p>
+  </div>
+</section>
+
+<!-- ============ 02 演化总表 ============ -->
+<section id="s2">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">演化总表（一页看完）</h2>
+    <span class="section-when">09-03 → 10-10</span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th class="num">#</th><th>时间</th><th>改了什么</th><th>当时的痛点</th><th>为什么这么做（关键取舍）</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="num">1</td><td>09-03</td><td>新建 StateMachine/ 三个文件，Controller 接入 FSM</td><td>没有正式状态机，受击/眩晕/击退全是散落空桩</td><td>先把「单位处于什么状态」这件事有唯一答案，再谈别的</td></tr>
+        <tr><td class="num">2</td><td>09-07</td><td>深度评估报告 + Phase C Buff↔FSM 整合</td><td>Buff 与 FSM 各有一套控制倒计时，互不映射</td><td>Buff 做唯一真相源、状态只做投影；补 Stunned/Silenced 配置才消除根源</td></tr>
+        <tr><td class="num">3</td><td>09-11</td><td>段索引方案 A + v2/v3/v4 三轮修复</td><td>多段技能认不出第几段；连放技能输出错乱</td><td>段推进权收进 FSM；「新一轮」的信号只能是状态转换，不能是时间阈值</td></tr>
+        <tr><td class="num">4</td><td>09-14</td><td>v4 实施：AttackState 主动推进 + CSV SegTimings</td><td>靠 Animation Event 反射 + 隐式推算驱动段号</td><td>配置驱动优先于硬编码；双路并存导致伤害翻倍，必须单一出口</td></tr>
+        <tr><td class="num">5</td><td>09-14</td><td>v5 P0–P3 性能优化</td><td>OnDamaged 星号日志刷屏 + 每帧两次 native call</td><td>先吃掉最大收益（GC 归零），微优化等生产数据再决策</td></tr>
+        <tr><td class="num">6</td><td>09-14/15</td><td>P4–P8：出手特效每段一个、独立时间轴、删重复列</td><td>一个技能只能播一次刀光；时机是写死的 −5%</td><td>时机是技能级属性不能放资源表；用户拍板删隐式推算：没配就不播</td></tr>
+        <tr><td class="num">7</td><td>09-15</td><td>P6 SegCount / P7 逐段效果 / 合并 SkillEffectTypes</td><td>「时机点个数」被当成「段数」；所有段共用一套效果</td><td>段数是玩法数值、时机是表现参数，互不当长度来源</td></tr>
+        <tr><td class="num">8</td><td>09-16</td><td>P9 删 object context / P10 删 m_CurSkill / P11 构造注入 / P12 锁移动</td><td>弱类型传参静默失效；受击特效靠反查攻击者字段</td><td>删弱类型的代价是编译器拦不住 ⇒ LogWarning 是配套前提而非可选</td></tr>
+        <tr><td class="num">9</td><td>09-17</td><td>P13 抽 UnitView / UnitHitReaction</td><td>Controller 1210 行，受击面与 Animator 操作混在一起</td><td>要的是「职责出口唯一」不是「行数分散」；签名全保留 ⇒ 下游零改动</td></tr>
+        <tr><td class="num">10</td><td>09-18</td><td>P15 受击表现 + P16 段号内聚 + 契约校验前移</td><td>配了效果 22 毫无反应；Die 是 Bool 却用 SetTrigger</td><td>fail-fast 优于静默降级：资产缺口应在启动瞬间暴露</td></tr>
+        <tr><td class="num">11</td><td>09-19</td><td>P17–P20：五轮排查后定案 2003 撞车</td><td>第二次攻击起「第一、二段刀光一起显示」</td><td>池化 key 是 ResName 且单实例 ⇒ 同 id 跨业务会「搬家」</td></tr>
+        <tr><td class="num">12</td><td>09-23/24</td><td>Buff 改 Id 主键 + CSV Tags 列</td><td>BuffType 64 位上限、一个 Type 只能一条配置</td><td>BuffType 管身份、Tags 管行为归类；共享位不能 <code>&=~Type</code></td></tr>
+        <tr><td class="num">13</td><td>09-24</td><td>阶段一 ISkillEffect 策略化 + 阶段二 IHitReceiver</td><td>23 分支 switch；AoE 时 Buff 只加到主目标一人</td><td>完整策略模式一次到位；效果类禁止向下转型，需要新语义就加 Facade</td></tr>
+        <tr><td class="num">14</td><td>09-27</td><td>方案 F：SkillCastContext → readonly struct + in 分层</td><td>每次命中 × 每效果 new 一个 context（56B）</td><td>不能「直接传 Skill」：Skill 上没有本次命中目标，SegIdx 会串段</td></tr>
+        <tr><td class="num">15</td><td>09-24/27</td><td>索敌 NonAlloc + 缓冲区溢出 fail-fast</td><td>每帧 <code>Physics.OverlapSphere</code> new 一个数组</td><td>超容量必须报错不能静默丢目标；改造后如实披露「当前零调用 = 零收益」</td></tr>
+        <tr><td class="num">16</td><td>09-28</td><td>S1 ICastClock 联网适配</td><td>段推进唯一依赖 Animator，服务器无 Animator 永不结算</td><td>双模开关应在时钟/身份/随机等边界，禁止在结算内部散落联网 if/else</td></tr>
+        <tr><td class="num">17</td><td>09-28/29</td><td>HitEffect 换源 + 删第 25 列 + CSV→JSON 验证</td><td>两列语义重合；换了加载方式怕漂移</td><td>自动推断映射 + 2597 项行为模拟；唯一回滚源是工程外 CSV 备份</td></tr>
+        <tr><td class="num">18</td><td>09-29</td><td>10002 流血 Buff + OnSkillCastFinished 收尾契约</td><td>Buff 框架完整但没技能用；一次按键无限连击</td><td>复用既有 DoT 管线不重造；基类留空实现、玩家侧 override —— 敌人靠技能不空持续攻击</td></tr>
+        <tr><td class="num">19</td><td>09-30</td><td>UnitBuffComponent 形态调研（未实施）</td><td>它是唯一仍是 MonoBehaviour 的战斗协作者</td><td>反查表不该住在实例组件里；谁被注册谁维护索引</td></tr>
+        <tr><td class="num">20</td><td>10-10</td><td>Animancer 接入可行性（未实施）</td><td>要不要换 Animator</td><td>ICastClock 正是接缝；Lite 版三道坎必须先知道</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 03 起点 ============ -->
+<section id="s3">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">起点：基线评估与 FSM 接入</h2>
+    <span class="section-when">2026-09-03 / 09-07</span>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">第一次全面体检：24 → 31 个脚本通读</span>
+      <span class="evo-date">09-03</span>
+      <span class="badge badge-info">产出《战斗框架分析报告》</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>框架已经能跑，但没人说得清它到底缺什么。三代体系并存：<strong>GEN1 Legacy</strong>（全局命名空间）、<strong>GEN2 Buff</strong>（<code>BattleFramework.Core</code>）、<strong>GEN3 FSM</strong>（<code>StateMachine</code>），只整合了一部分。想改任何一处，都要先有基线。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>通读全部脚本，按「会不会静默出错」给缺陷分级。优点记下来：数据/控制分层、CSV 配置驱动、事件驱动、索敌策略丰富；<code>BufferSystem/</code>（ulong 位枚举 + 零 GC 对象池）质量最高，被定为<strong>后续重构的标杆</strong>。</p>
+        <ul>
+          <li>🔴 P0：<code>CombatUnit.m_Rage</code> 被误设成 <code>static</code>（全服共享怒气）、<code>StringConst</code> 混入大量 UI/业务常量</li>
+          <li>🟠 P1：大量空 Stub（受击/眩晕/浮空/击退全未实现）、无正式状态机、CSV 解析无边界校验 + <code>EffectMsg</code> 切分 Bug、新旧两套 Buff 未打通</li>
+          <li>🟡 P2：每帧 <code>OverlapSphere</code>、命名拼写错误、死代码、单例非线程安全</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>分级的判据不是「严不严重」而是<strong>「会不会静默出错」</strong>。会崩的 bug 反而好办，最贵的是「配了但没反应」「跑了但算错」这类不报错的。这条判据后来贯穿整个项目，最终沉淀成工程铁律第 5 条（禁止静默降级）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><p><code>CombatUnitController.cs</code> 被上一轮失败的 Python 补丁脚本写坏：行尾变成双 <code>\r\r\n</code>（953 行出现孤立 CR），<code>Update()</code> 被嵌套 if 双重污染。修法是 <code>decode('utf-8-sig').replace('\r','')</code> 归一行尾 → 按精确行号重写 → 回写 BOM + CRLF。<strong>这是「改 .cs 一律走带断言的 Python 脚本」这条铁律的起源</strong>，后来又因此吃过三次亏。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">第一阶段 FSM 接入：让「单位当前处于什么状态」有唯一答案</span>
+      <span class="evo-date">09-03</span>
+      <span class="badge badge-ok">编译 0 Error / 0 新增 Warning</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>没有正式状态机。<code>OnDizz/OnHitOut/OnAddBuff/ImmedDamage/HitBack</code> 等受击回调<strong>全是空实现</strong>，「单位是不是在眩晕」这个问题散落在若干个 bool 里，谁都能写、谁都写不全。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>新建 <code>Scripts/BattleFreamwork/StateMachine/</code> 三个文件：</p>
+        <ul>
+          <li><code>CombatState.cs</code>：枚举 <code>Idle/Move/Attack/Stun/Silence/Knockback/Dead</code> + <code>ICombatState</code> 接口</li>
+          <li><code>CombatStateMachine.cs</code>：注册 / 转换合法性校验 / ChangeState / Tick；Dead 为终态，受控态结束回 Idle</li>
+          <li><code>CombatStates.cs</code>：7 个状态类实现</li>
+        </ul>
+        <p>Controller 侧新增 <code>m_StateMachine</code>、<code>CurrentState</code>、<code>IsSilenced</code>，<code>Start()</code> 调 <code>InitStateMachine()</code>，<code>Update()</code> 收口为 <code>m_StateMachine.Tick(Time.deltaTime)</code>。打通受击事件：<code>OnDamaged(Hp&lt;=0)→Dead</code>、<code>OnDizz→Stun</code>、<code>OnHitOut/OnAirHit→Knockback</code>、新增 <code>OnSilence→Silence</code>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>这是所有后续改造的地基。后面每一次「段号在哪推进」「受击要不要进状态机」「Buff 怎么仲裁控制」，争的都是「谁有资格回答单位当前处于什么状态」。先把这个答案收敛成一个地方，后面才吵得起来 —— 也才吵得清楚。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">深度评估 + Phase C：Buff↔FSM 整合</span>
+      <span class="evo-date">09-07</span>
+      <span class="badge badge-ok">成熟度 4.6 → 5.4 / 10</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>Buff 系统自己有一套控制倒计时，FSM 也有一套，<strong>两套互不映射</strong>。控制效果的时长、叠加、免疫、驱散没有唯一真相源 —— 眩晕 3 秒到底是 Buff 说了算还是状态说了算，没人知道。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>改 4 个文件：</p>
+        <ul>
+          <li>Controller 加桥接层：<code>HasHardControlBuff/HasSilenceBuff/IsControlBuff/SyncControlStateFromBuffs/OnControlBuffAdded/OnControlBuffRemoved</code>；<code>OnDizz</code>/<code>OnSilence</code> 改为 <code>AddBuff(Stunned/Silenced)</code> + 覆盖时长，<strong>不再</strong> 直接 <code>RequestState(..., time)</code></li>
+          <li><code>StunState</code>/<code>SilenceState</code> 删除自计时字段，改为每帧查询 Buff；<code>KnockbackState</code> 保留自计时（瞬时硬直，不是 Buff）</li>
+          <li>转换表补 3 条边：<code>Stun→Silence</code>、<code>Knockback→Stun</code>、<code>Knockback→Silence</code></li>
+          <li><code>BufferData.csv</code> 补 <code>1005 Stunned</code> / <code>1006 Silenced</code> 两行 —— 原表只有 4 个 Buff</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>Buff 是唯一真相源，状态只是投影。</strong>优先级定为 硬控（Stunned/Frozen/Petrified/Sleeping） &gt; 沉默 &gt; 回 Idle。时序上天然正确：<code>Update()</code> 先跑 <code>BuffSystem.Update()</code>（到期 → 移除 → <code>OnBuffRemoved</code> → <code>SyncControlStateFromBuffs</code> → 切状态），再跑 <code>m_StateMachine.Tick()</code>。</p>
+        <p>顺带修正了 09-03 的一次判断失误：<code>Skill.ImmedDamage</code> 是空桩意味着「技能无法扣血」，应从 P1 升为 <strong>P0</strong> —— 这是当时最致命的一条。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>成熟度 4.6 → 5.4；缺陷数 P0 4→3、P1 9→6、P2 7→8。十维评分：架构 4 / 数据 5.5 / 控制 7 / FSM 8 / 技能 3 / Buff 9 / 事件 5 / 配置 4.5 / 表现 5 / 测试 3 —— <strong>技能 3 分是全项目最低，精准预言了后面大半年的工作方向</strong>。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04 段号驱动 ============ -->
+<section id="s4">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">段号驱动：四轮返工（v1 → v4）</h2>
+    <span class="section-when">2026-09-11 → 09-14</span>
+  </div>
+
+  <p>这是全项目<strong>返工最集中</strong>的一段，也是教训最值钱的一段。核心命题只有一个：<strong>一个三段技能，怎么知道现在打的是第几段？</strong></p>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">方案 A：动画事件只传 skillId，段号靠顺序计数器</span>
+      <span class="evo-date">09-11</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>多段攻击需要识别段号。前一天的方案是「动画事件多传一个 segIdx 参数」，被用户<strong>明确否定</strong>：动画事件只传 <code>skillId</code>，其余自己推。用户的原话约束后来被反复引用 —— 动画资产是美术的，不该为程序逻辑多背参数。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p><code>Skill.cs</code> 新增 <code>m_SegIdx</code>、<code>BeginNextSegment()</code>（含 60 帧超时兜底）、<code>ResetSegIdx()</code>，<code>SetSkillCaster</code> 入口自动 Reset。<code>OnDamaged</code> 改用 <code>attacker.m_CurSkill.SegIdx</code> 索引 <code>HitEffect[segIdx-1]</code>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><code>m_SegIdx</code> 放在 <code>Skill</code> 类而不是 Controller：<strong>Skill 实例生命周期 = 一次技能释放周期</strong>，对象池复用时 <code>SetSkillCaster</code> 自然重置。这样 <code>OnDamaged</code> 直接读即可，避免在 <code>SkillHit → HitTarget → ImmedDamage → OnDamaged</code> 四层方法签名上穿透参数。</p>
+        <p class="callout warn" style="margin-top:10px;">⚠ 这个「自然重置」的假设在下一轮就被证伪了。</p>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">v2：SetSkillCaster 每次都重置，三段永远只看到第 1 段</span>
+      <span class="evo-date">09-11 09:25</span>
+      <span class="badge badge-bad">用户当场指出</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户原话：<em>「一个技能整个播放过程中要多次调用 OnSkillCase，每次调用都执行 Skill.SetSkillCaster，而每次调用你都重置了攻击次数记录，那这样完全不对吧」</em>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>两层修复：① <code>SetSkillCaster</code> 移除 <code>ResetSegIdx()</code>；② <code>OnSkillCase</code> 入口加 <code>isNewExecution</code> 检测 —— 新字段 <code>m_LastOnSkillCaseSkillId</code> / <code>m_LastOnSkillCaseFrame</code> / 阈值 30 帧，条件为「skillId 变了 或 帧间隔 &gt; 30」。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>教训：「在哪里加新逻辑」之前必须看完整调用链。<code>SetSkillCaster</code> 看似「新技能」入口，实际是 OnSkillCase <strong>每次事件都会调</strong>的上下文设置，把重置放这里是反模式。<strong>任何「重置」操作都要先确认它的调用频率是「每次」还是「每次新一次」。</strong></p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">v3：30 帧阈值让多段识别整体失效</span>
+      <span class="evo-date">09-11 10:45 → 11:50</span>
+      <span class="badge badge-bad">先误判后订正</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户再跑一遍：<em>「还是输出 1」</em>。复核发现：三段技能事件间隔 0.6s = 36 帧 &gt; 阈值 30 ⇒ 第 2、3 段<strong>都被误判成「新一轮执行」</strong>而 Reset ⇒ 永远只看到 segIdx=1。<strong>只要段间隔 &gt; 0.5 秒，所有段都退化成第 1 段</strong> —— 而 0.5s 是动作游戏极常见的段间隔。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>删除 Controller 层 <code>isNewExecution</code> 三字段与判断；<code>BeginNextSegment</code> 超时改用 <code>Time.time</code>、阈值 3 秒（纯异常保护）；保留 <code>IdleState.OnEnter → ResetSkillSegIdx()</code> 为<strong>唯一主重置点</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><ul>
+          <li>「段间隔 &gt; 阈值」<strong>不是「新一轮执行」的可靠信号</strong> —— 动作游戏段间隔可长可短，任何帧/秒阈值都会误伤</li>
+          <li>真正的「新一轮」信号是 <strong>FSM 状态转换</strong>（Attack 无自环 → 必过 Idle → 转换点才是归零点）</li>
+          <li><strong>同一种「重置职责」在多处冗余实现 = 必然有 bug</strong>。当时有 3 道重置关互相打架，精简到 1 道反而可靠</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><p>11:35 我先推断「动画事件没绑」—— 这是<strong>错的</strong>。模型扫描的 events 字段为空不等同于没绑。<code>Skill.cs:174</code> 的 <code>Debug.LogError(m_SegIdx)</code> 能出 ⇒ OnSkillCase 至少回调过一次。真因是 30 帧阈值。<strong>教训：不要用「扫描结果为空」直接下「没有」的结论。</strong></p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">v4：连放技能输出错乱 —— 主重置点根本没被触发过</span>
+      <span class="evo-date">09-11 下午</span>
+      <span class="badge badge-bad">最关键的修复</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户原话：<em>「如果玩家持续连续释放当前技能，那么输出的结果就不对了」</em>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>两条根因，缺一不可：</p>
+        <ul>
+          <li><strong>根因 A</strong>：grep 全工程 <code>RequestState</code> —— <strong>没有任何地方调 <code>RequestState(CombatState.Attack)</code></strong>。<code>_currentState</code> 从构造起一直是 Idle，<code>IdleState.OnEnter</code> 只在 <code>InitStateMachine()</code> 跑过一次 ⇒ v3 定的「唯一主重置点」是死代码</li>
+          <li><strong>根因 B</strong>：<code>NYT.controller</code> 的 Idle 状态上挂着 <code>SkillId == 10003 → Skill10003</code> 转换，技能播完沿 exitTime 回 Idle 时 <code>SkillId</code> 仍残留 ⇒ 条件立刻再成立 ⇒ <strong>技能自动重放</strong>，段号继续往上爬（第 1 次 1/2/3，第 2 次 4/5/6）</li>
+        </ul>
+        <p>后果链：<code>SegIdx</code> 跨释放累加 → <code>OnDamaged</code> 的 <code>segIdx &lt;= hitEffects.Count</code> 守卫失败 → 掉进 else 分支 → <strong>每次命中把整个特效列表播一遍</strong>。</p>
+        <p>修法：<code>BattleConst</code> 加 <code>ani_IdleState = "Idle"</code>（⚠ 控制器里 Idle 是<strong>状态</strong>名，<code>ani_IdleC("IdleC")</code> 是<strong>片段</strong>名，原来的 <code>IsUseAttSkill</code> 拿片段名比状态名，永远 false）；新增 <code>IsAnimatorInIdleState</code>；<code>StarSKill</code> 动画真正播放后 <code>RequestState(CombatState.Attack)</code>；<code>AttackState</code> 补两段式判定 + <strong>5 秒保险丝</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>为什么必须两段式判定：</strong><code>SetInteger("SkillId", 10003)</code> 后 Animator 不会立刻切状态（Idle 那条转换带 <code>m_HasExitTime: 1</code> / <code>m_ExitTime: 0.84</code>），这一两帧内 <code>IsAnimatorInIdleState</code> 仍为 true。若进 Attack 当帧就判「播完了」，<code>IdleState.OnEnter</code> 的 <code>ResetSkillId()</code> 会把 SkillId 清 0 —— <strong>那条还没生效的 Idle→Skill 转换条件就永久不成立，技能根本播不出来</strong>。</p>
+        <p><strong>对上一轮「关键学习」的修正：</strong>「Attack 无自环 → 必过 Idle」只对了一半 —— 转换表只定义「允许怎么走」，<strong>不保证运行时真的这么走</strong>，必须同时确认有代码在调 <code>RequestState(Attack)</code>。验证设计假设时，要顺着调用方 grep 一遍，而不是只读转换表。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">遗留</span>
+        <div class="evo-text"><p>顺带查出：<code>SetCd(Skill)</code> 是空实现 ⇒ <strong>普攻完全没有 CD 拦截</strong>（v2 时记的「冷却拦截保护」<strong>记反了</strong>，是根本没有保护）；<code>IsUseAttSkill</code> 是永远 false 的死代码。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">v4 落地 + 清理：双路并存导致伤害翻倍</span>
+      <span class="evo-date">09-14</span>
+      <span class="badge badge-ok">段推进 t=0.303/0.601/0.901</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>v4 方案（段号判定放进 <code>AttackState.OnUpdate</code>，用 <code>normalizedTime</code> 推进，段数/时机从 CSV 读）需要落地。首轮 Play 只跑到 10003 一轮 GBL 就被打死、且 <code>GameStart</code> 无 respawn ⇒ v4 路径没机会跑。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>5 个文件（备份 <code>.bak.2026-09-14-fsm-driven</code>）：<code>AttackState</code> 完全替换、Controller 加 <code>TriggerSegmentHit/GetCurrentAnimatorStateInfo/GetWeaponAnchor</code>、<code>Skill.SegIdx</code> 改可读写 + <code>PlayCastEffect</code>、<code>SkillData</code> 加 <code>SegTimings/CastEffectIds/HitEffectIds</code>（列 23/24/25）。</p>
+        <p>验证阶段临时给 GBL 加 5 行「不死」代码（<code>if (gameObject.name.Contains("GBL") &amp;&amp; Hp &lt;= 0) Hp = 1;</code>），跑通后<strong>必须删除</strong>。清理阶段还做了三件事：删不死代码、删 <code>[DIAG]</code> 日志、<strong>注释掉 <code>OnSkillCase</code> 里的 <code>m_CurSkill.SkillHit()</code></strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>旧的 <code>OnSkillCase</code> 反射路径与新的 <code>AttackState</code> <strong>都会调 <code>SkillHit()</code></strong> ⇒ 伤害被两条路径同时触发。v4 落地时刻意<strong>不删</strong> OnSkillCase（作为兼容路径保留），清理时才收口。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>用数值落差反证：清理前 GBL 单次三段伤害约 <strong>26000</strong>（双路各打一次），清理后 <strong>13063</strong>（单路独占）。段推进 t=0.302/0.602/0.901，与 CSV 配置的 0.3/0.6/0.9 精确吻合。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout danger">
+    <div class="callout-title">这一段沉淀的方法论（用户原话）</div>
+    <p>用户在 09-12 的方案评审中给了三条关键提示，后来被反复引用：<br>
+    ① <em>「下一步做的事也是错的」</em> —— 当用户否定时，<strong>先承认错误再追问「你想要的是什么」</strong>，而不是继续推销原方案；<br>
+    ② <em>「对于类似 RPG 类型的游戏，一般玩家的技能特效都是怎么进行管理的」</em> —— 先确认<strong>当前架构已有的能力</strong>，再决定是补缺还是改架构；<br>
+    ③ <em>「10 个玩家 × 5 个技能 × 5 段」</em> —— 用具体数字量化痛点，<strong>让规模化问题具象化</strong>，比泛泛说「工作量太大」有力得多。</p>
+  </div>
+</section>
+
+<!-- ============ 05 性能与特效解耦 ============ -->
+<section id="s5">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">性能与特效解耦（v5 P0 – P8）</h2>
+    <span class="section-when">2026-09-14 → 09-15</span>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P0–P3：把最大的收益先吃掉</span>
+      <span class="evo-date">09-14</span>
+      <span class="badge badge-ok">CPU −28% · GC 700B→0</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><ul>
+          <li><strong>P0</strong>：<code>OnDamaged</code> 里 <code>Debug.LogError($"★★★★★★★{name}...收到{hp}的伤害")</code> 满屏刷屏，<strong>Release 下照样写磁盘</strong>；三元表达式链与下标取值产生装箱</li>
+          <li><strong>P1</strong>：每帧两次跨语言调用（<code>GetCurrentAnimatorStateInfo</code>）</li>
+          <li><strong>P2</strong>：<code>OnSkillCase</code> 反射路径是死代码，却仍可能被动画事件残留触发</li>
+          <li><strong>P3</strong>：阶段判断散落在裸 bool 里</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><ul>
+          <li><strong>P0</strong>：星号日志 → <code>#if UNITY_EDITOR</code> 包裹的 <code>Debug.Log</code>；三元链 → 直读 <code>BaseData.HitEffectIds</code></li>
+          <li><strong>P1</strong>：<code>OnUpdate</code> 进入 Playing 时只调 1 次 <code>GetCurrentAnimatorStateInfo()</code> 并复用</li>
+          <li><strong>P2</strong>：<code>OnSkillCase</code> 函数体 80+ 行 → 5 行（保留签名，防止 Animation Event 找不到函数报错）</li>
+          <li><strong>P3</strong>：<code>_leftIdle</code> bool → <code>_phase</code> 枚举（<code>WaitingForLeave</code>/<code>Playing</code>），3 个 if → 1 个 if-else</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>12:14 曾拍板「选项 D 封存，暂不做 P1/P2」—— P0 已吃掉最大收益，1v1 场景 0.7ms/技能无体感差异，等生产数据再决策。<strong>半小时后用户追加要求，才把 P1–P3 一起做了。</strong>这次反复本身说明：<strong>性能优化要按收益排序，不要按「顺不顺手」排序。</strong></p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>单次技能 CPU <strong>3.6ms → 2.6ms（−28%）</strong>；GC <strong>700B → 0</strong>；native call <strong>2 → 1</strong>；帧时间波动 +0.08ms → +0.06ms。</p>
+        <p>⚠ 7 条 Warning 分类确认非回归：3 条 <code>Parameter 'Move' does not exist</code>、4 条 <code>Transition doesn't have an Exit Time</code>（GBL 资产既有问题）。<strong>这次分类建立了后面一直沿用的判据：必须区分「既有配置/资产告警」与「本次代码回归」。</strong></p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P4–P5：出手特效从「一次一个技能」到「独立时间轴」</span>
+      <span class="evo-date">09-14 17:05 → 17:50</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>一个三段技能要播三段各自的刀光，旧逻辑 <code>bool _castFired</code> 是一次性开关 ⇒ 整个技能只能播一次。三层诊断结论：</p>
+        <ul>
+          <li><strong>数据层</strong>本来就是对的（CSV 早就支持 <code>CastEffectIds</code> 分号分隔，Skill 内部按 <code>castList[m_SegIdx-1]</code> 取）</li>
+          <li><strong>调度层</strong>写死成一次（一次性 bool → 只有第一段有拖尾）</li>
+          <li><strong>时序层</strong>致命：无参 <code>PlayCastEffect()</code> 读 <code>skill.SegIdx</code>，而刀光要求早于本段 5%，此刻 SegIdx 还是上一段，首段更是 0 ⇒ 被 <code>if (m_SegIdx &lt;= 0) return</code> 拦死 ⇒ <strong>实际一次都没播</strong></li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><ul>
+          <li><code>PlayCastEffect()</code> → <code>PlayCastEffect(int segIdx)</code> 显式传段号</li>
+          <li><code>bool _castFired</code> → <code>int _castFiredSegIdx</code>（与 <code>_firedSegIdx</code> 平行的第二条游标）；刀光块<strong>移到段推进之前</strong>（同帧先出刀光再结算伤害，避免观感倒挂）</li>
+          <li><strong>P5</strong>：新增 <code>CastEffectTimings</code> 列（列 26），<code>_castFiredSegIdx</code> 升级为 <code>_castCursor</code>，<code>if</code> → <code>while</code>（掉帧时同帧补播多个已到点的特效）</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>字段加在 SkillData 而不是 EffectData：</strong><code>EffectData.csv</code> 是资源表（资源名/绑点/是否跟随旋转），与技能无关且全局共享。同一个特效 10001 在「三连斩」要 30% 播、在「天诛」要 10% 播，时机放这里会变成<strong>一对多冲突</strong> ⇒ 否决。时机是<strong>技能级属性</strong> ⇒ 采用。</p>
+        <p><strong>P5 定稿时用户拍板删掉「−5% 隐式推算」回落层 —— 没配就不播。</strong>理由极其漂亮：<em>表现缺位一眼可见，时机错位要逐帧比对才能发现。</em>这条后来成为全项目的通用判据。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><p>★ <strong>挖出 EffectData.cs 既有致命 bug</strong>：刀光链路打通后首次真正调用 <code>EffectManager.CreateEffect</code>，暴露两个从未被触发的缺陷 —— <code>GetData</code> 只在「本次查询 miss」时才加载全表 ⇒ <code>Add</code> 重复 key 抛 <strong>ArgumentException</strong>；加载后立刻 <code>return EffectDataDict[id]</code> ⇒ id 不存在抛 <strong>KeyNotFoundException</strong>。<strong>教训：dead code 路径一旦被打通，会引爆下游从未执行过的分支里的既有缺陷。</strong></p>
+        <p>★ <strong><code>CommonHelper.Str2IntList("")</code> 返回的不是空 List，而是含一个 0 的 List</strong>（<code>"".Split(';')</code> 得长度 1 数组）。两个连锁后果：<code>Count &gt; 0</code> 恒为真；<code>CastEffectIds.Count &gt; 0 ? CastEffectIds : AttackEffects</code> 永远选中前者 ⇒ <strong>「回落旧字段」分支是死代码，从未执行过</strong>。首发症状是加校验后刷出 <strong>233 条假告警</strong>。修法是收敛到单一真相源 <code>GetCastEffectIdList()</code> ⇒ 233 条降到 <strong>1 条</strong>，精确命中真正漏配的 10004。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P6–P8：段数独立、逐段效果、删重复列</span>
+      <span class="evo-date">09-15</span>
+      <span class="badge badge-ok">CSV 27 ↔ 28 ↔ 27 列</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><ul>
+          <li><strong>P6</strong>：用户指出 <code>_segCount = BaseData.SegTimings.Length</code> 不合理 —— <strong>「时机点个数」不能代表「伤害段数」</strong></li>
+          <li><strong>P7</strong>：命中表现所有段共用一套，做不到「第 1 段只掉血 / 第 2 段掉血+浮空 / 第 3 段只后退」</li>
+          <li><strong>P8</strong>：<code>CastEffectIds</code>（v4 新加，列 24）与策划原列 <code>AttackEffectID</code>（列 22）语义完全重合</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><ul>
+          <li><strong>P6</strong>：新增 int 列 <code>SegCount</code>，<code>GetSegmentCount() = min(SegCount, SegTimings.Length)</code> 作为全工程唯一段数真相源</li>
+          <li><strong>P7</strong>：新增 <code>SegEffectTypes</code>，<code>|</code> 分段、<code>;</code> 段内分效果；<strong>空组记 null 而非空 List</strong></li>
+          <li><strong>P8</strong>：数据迁移三规则（以 <code>AttackEffectID</code> 为准；为空则用 CastEffectIds 补位；两者都空保持空），删列后各列左移；特效「播几个/何时播/播哪个 id」三问全下沉到 SkillData；删 <code>GetWeaponAnchor()</code></li>
+          <li>最后<strong>合并 <code>SegEffectTypes</code> → <code>SkillEffectTypes</code></strong>（列 13），明确「没有 <code>|</code> 时整串只在第 1 段生效」</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><ul>
+          <li><code>min()</code> 是防越界硬约束：<code>_segTimings[_firedSegIdx]</code> 按下标取，段数超时机点数会 IndexOutOfRange，<strong>宁可少打一段 + 告警也不能崩</strong></li>
+          <li><strong>效果类型里 0 是合法且最常用的值</strong>（ImmedDamage），与特效 id「≤0 视为未配置」的约定完全相反 ⇒ 空组必须显式记成 null，否则会被误解成「这段只掉血」</li>
+          <li><code>GetWeaponAnchor</code> 是死路径：<code>m_WeaponAnchor</code> 是 private 且<strong>没有 <code>[SerializeField]</code></strong> ⇒ Inspector 里根本没法赋值 ⇒ 永远 null ⇒ 恒定返回 transform；而 <code>EffectManager.CreateEffect</code> 内部的 <code>BindOnDot</code> 本来就会按 <code>BindName</code> 自己找挂点 ⇒ 删除行为完全等价，且消除了两套并存逻辑</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>P6 做了<strong>对照实验</strong>：把 10003 的 SegCount 临时改成 2（SegTimings 仍 3 点）⇒ 只打 2 段（0.305/0.605），0.9 被忽略并输出告警 ⇒ 证明段数确实由新列驱动，随后恢复为 3。</p>
+        <p>★ 顺带暴露重大既存问题：<strong>全表 236 个技能只有 10002/10003 配了 SegTimings</strong>，其余 233 个段数为 0 ⇒ <strong>动画照播、一点伤害都不结算</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><ul>
+          <li><strong>同一文件并行发多个 Edit 会互相覆盖</strong>（后写的基于旧内容）—— 本次 3 处改动静默丢失，靠冒烟脚本才发现 ⇒ <strong>同一文件必须串行 Edit</strong>（这条后来写进用户级记忆）</li>
+          <li><strong>WPS（et.exe）独占 CSV</strong> → 写入失败被误报成权限问题（Python 报 WinError 5，node 报 EBUSY —— 后者才是真相）</li>
+          <li><strong><code>editor_play</code> 返回 <code>Already in play mode</code> 会让改造后的 CSV 完全不生效</strong>（Unity 只在加载期读一次 Resources）⇒ CSV 改动后务必 <code>stop → play</code></li>
+          <li><strong><code>console_start_capture</code> 必须在 <code>editor_play</code> 之前启动</strong>，否则加载期告警抓不到，Error 数会假性显示 0</li>
+          <li>改 HTML 不要用「行号区间」批量替换 —— 要<strong>用内容锚点定位</strong> + 断言命中次数</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06 拆参数通道 ============ -->
+<section id="s6">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2 class="section-title">拆参数通道（P9 – P12）</h2>
+    <span class="section-when">2026-09-16</span>
+  </div>
+
+  <p>这一天的四个改造是同一件事的四个面：<strong>把「靠约定/靠反查/靠注释守护」的隐式依赖，换成编译器能管住的东西。</strong></p>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P9：删掉 <code>object context</code> 状态切换通道</span>
+      <span class="evo-date">09-16</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p><code>ICombatState.OnEnter(owner, object context)</code> 里 <code>context</code> 全工程只有 2 个消费者：<code>AttackState</code>（传 int skillId，再 <code>GetSkill(id)</code> 线性查表捞回来）与 <code>KnockbackState</code>（传 float 拆箱）。而 <code>m_CurSelectedSkill</code> 本就来自 <code>m_SkillList</code>，<code>GetSkill(id)</code> 返回的是同一实例 —— <strong>把引用降级成 int 再捞回是纯浪费</strong>。</p>
+        <p>真正的病灶是<strong>类型安全</strong>：传错类型不报错不打日志，AttackState 静默跳过全部段推进。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>三方案提交（A 只改 Attack 传对象 / B 删 context 走 owner 暂存槽 / C 新增 StateContext 复用实例）。用户追问 B 的隐患后<strong>拍板</strong>：不要 <code>object context</code>，也不要 <code>EnterAttack/EnterKnockback</code> 封装，<strong>入口统一只有 <code>RequestState</code>，带数据的状态改为「先写 owner 字段再切换」</strong>。落地：<code>AttackState</code> 读 <code>owner.CurSelectedSkill</code> + 空值 LogWarning；<code>KnockbackState</code> 读 <code>owner.KnockbackDuration</code> + 默认 0.4s。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>方案 B 有两个实质隐患，已如实论证：① 编译期错误降级为运行期静默错误（漏设槽则 AttackState 拿 null，动画照播、一段伤害不打、控制台零提示）；② 转换被拒时脏值跨调用泄漏。<strong>所以 LogWarning 是配套前提而非可选 —— 删掉 object 的代价是编译器拦不住「前置数据缺失」，必须用日志补上。</strong></p>
+        <p>⭐ 诚实口径：装箱代价仅 24B/次，10 单位 ×1.5 次/秒 ≈ 21KB/分钟，<strong>对 GC 无感。这是类型安全改造，不是性能改造。</strong></p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P10：受击特效改「攻击方按段算好传参」+ 删 <code>m_CurSkill</code></span>
+      <span class="evo-date">09-16</span>
+      <span class="badge badge-ok">235 行 946 单元格差异 0</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>调查 <code>m_CurSelectedSkill</code>（决策层意图）与 <code>m_CurSkill</code>（实为「最近一次命中结算的技能 + 段号」）职责时发现：<code>Skill.ImmedDamage</code> 传的是 <code>BaseData.HitEffect</code>（<strong>列 14</strong>），而 <code>OnDamaged</code> 方法体内<strong>一次都没用 <code>hitEffects</code></strong>，受击特效实际改走 <code>attacker.m_CurSkill.BaseData.HitEffectIds[SegIdx-1]</code>（<strong>列 24</strong>）—— <strong>传的和用的是两个不同 CSV 字段</strong>。其余问题：</p>
+        <ul>
+          <li><strong>Buff 路径会播错特效</strong>：<code>UnitBuffComponent</code> 传空表，但 OnDamaged 不认，仍反查攻击者残留的 SegIdx=2 ⇒ DoT 伤害播第 2 段受击特效</li>
+          <li>反查 = <strong>隐式时序耦合</strong>（注释自己写「顺序绝不能颠倒」）</li>
+          <li>段号寄生在<strong>共享复用</strong>的 Skill 实例上；<code>m_CurSkill</code> 永不置 null</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>6 个文件：<code>OnDamaged</code> 签名 <code>List&lt;int&gt; hitEffects</code> → <strong><code>int hitEffectId</code></strong>；删整段反查；<strong>删 <code>m_CurSkill</code> 字段</strong>与 <code>ResetSkillSegIdx()</code>；段号归零职责从 <code>IdleState.OnEnter</code> 迁移到 <strong><code>AttackState.OnEnter</code></strong>（删字段就没法归零，这个迁移是必要补偿不是顺手改）。另删死代码 <code>Skill.ClearSkill()</code>（private + 零调用 + 方法体为空 + 裸解引用，一调必 NRE）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>三方案中 A「参数归位」胜出：B（只改名正名）没解决问题；C（引入 <code>SkillCastContext</code> 根治段号寄生）与后续零 GC 目标冲突、时机未到。先例是 <code>OnHeal</code> 早就是「传单个 effectId」形态。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>新增 <code>verify_hiteffect_equiv.py</code> 做<strong>全表等价性证明</strong>：235 行技能 × 946 个单元格，<strong>差异 0</strong>。运行时：<code>[HitEffectCalc]</code> 第 1/2/3 段 → 10002(38)/10001(37)/10002(37)，与 CSV <code>HitEffectIds=10002;10001;10002</code> 逐段一致；<code>[HitEffect]</code> 10002 共 75 次（=38+37）、10001 共 37 次，计数吻合。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><p>⚠ <strong><code>m_CurSkill</code> 曾被误判为死字段</strong> —— grep 带 <code>head_limit=20</code> 时被 <code>.bak.*</code> 备份文件命中占满，实际它在 <code>Skill.cs:264</code> 写入、<code>Controller:553-558</code> 读取。<strong>教训：<code>head_limit</code> 截断时不能下「无引用」结论。</strong>这次误判直接催生了 <code>Assets/Tools/scan_refs.py</code>（全量扫描、自动排除 .bak/Library）。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P11：状态回调去 owner 参数，改构造注入</span>
+      <span class="evo-date">09-16</span>
+      <span class="badge badge-warn">性能收益 ≈ 0</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户问：<em>「<code>OnUpdate(owner, deltaTime)</code> 第一个参数有必要每帧传吗，OnEnter 已经拿到 owner 了」</em>。调查结论：<strong>不必要</strong>。四条证据：</p>
+        <ul>
+          <li>状态实例与单位是 <strong>1:1</strong>（<code>InitStateMachine()</code> 逐行 <code>new XxxState()</code>），且 AttackState 自带 <strong>8 个跨帧字段</strong>，共享必串台</li>
+          <li>owner 来源唯一（<code>CombatStateMachine._owner</code> 是 readonly 构造注入，Tick 每帧传同一引用）</li>
+          <li>同一工程两套风格并存（状态机自己就是构造注入，7 个状态类却走每帧传参）</li>
+          <li><strong>21 个方法签名里 7 个的 owner 参数从未被方法体读</strong>（5 个 OnExit 全空 + DeadState.OnUpdate 双空）</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>接口改 <code>OnEnter()/OnUpdate(float)/OnExit()</code>；新增 <code>abstract class CombatStateBase : ICombatState</code>（<code>protected readonly CombatUnitController Owner</code> + 构造注入 + 3 个 virtual 空实现）；7 个状态改继承基类，<strong>38 处 <code>owner.</code> → <code>Owner.</code></strong>，删掉 <strong>6 个空实现</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>构造注入优于「OnEnter 存一份」：</strong><code>readonly</code> 在对象诞生即有效，不存在「没进过 OnEnter 就被 Tick」的窗口 —— 而该窗口在<strong>幽灵状态路径</strong>上真实存在（转换表有边但未 <code>RegisterState</code>，<code>ChangeState</code> 静默跳过 OnEnter 却已改 <code>_currentState</code>）。</p>
+        <p>⭐ <strong>诚实口径：性能收益 ≈ 0</strong>（引用传参不装箱不分配）。真实收益是：签名不再承诺假依赖、6 个空实现可删、风格统一。<strong>这是结构优化不是性能优化</strong> —— 这个诚实标注后来成为惯例。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><p>首轮报 1 处 <code>CS0103</code>：<code>SetSkillCaster(owner, Owner.m_Target)</code> 的<strong>第一参 <code>owner,</code> 以逗号结尾不含点号</strong>，被 <code>owner.</code> 的批量替换漏掉，编译器当场抓出 —— <strong>这正是「编译器兜底」的价值实例</strong>：机械批量替换后，编译是最后一道网，不能省。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P12：攻击期间锁移动（删 AttackState 里的 DoAutoFight）</span>
+      <span class="evo-date">09-16 16:25</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户问：<em>「玩家自动攻击本来就是 Mono Update 调的，Attack 里再调一次是否多余」</em>。调查发现<strong>前提是反的</strong>：<code>Update()</code> 里 <code>if (m_StateMachine != null) Tick(); else AutoFightUpdate();</code> —— <code>InitStateMachine()</code> 在 <code>Start()</code> 无条件调用 ⇒ <code>m_StateMachine</code> 永不为 null ⇒ <strong>else 是死分支</strong>。状态里那 4 行<strong>不是重复调用，是当前唯一活着的决策路径</strong>。</p>
+        <p>现在没出事靠两个巧合：① 玩家 10003 播的 clip <code>@spec02</code> 一个动画事件都没有 ⇒ <code>IsIdleToUseSkill</code> 闸门恒 false；但事件仍绑在 <code>@spec01/03/04/05</code> 与三个敌方 clip 上，<strong>美术一旦换 motion 那道闸当场失效</strong>；② 即便失效也不重入（「禁自转换」拒掉切换，但<strong>副作用已落地</strong>）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>用户选择「锁移动」⇒ 删掉 <code>AttackState.OnUpdate</code> 末尾的 <code>Owner.DoAutoFight();</code>，原地留 18 行注释（为什么删 / 删了不影响什么 / 怎么恢复 / 摇杆路径唯一性）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>逐条核实「不会坏的」：出 Attack 靠 <code>IsAnimatorInIdleState</code>、5 秒保险丝、三段伤害靠 <code>TriggerSegmentHit</code>，全在 <code>OnUpdate</code> 内；攻击结束回 Idle 后 <code>IdleState.OnUpdate</code> 会自动恢复决策。「会坏的」只有玩法层面（玩家攻击期间摇杆失效约 1 秒）—— <strong>这不改变任何正确性，是纯玩法/手感取舍</strong>。</p>
+        <p>顺带查明 <strong><code>MoveState</code> 从未被进入</strong>（零个 <code>RequestState(CombatState.Move)</code>，转换表里 <code>Idle→Move</code> 与 <code>Move→*</code> 共 6 条边全废；NPC 追击走 <code>MoveTarget()</code> 直接 NavMesh 位移绕过状态机）⇒ 「移动」有两套并行且互不相干的实现。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 显示层组件化 ============ -->
+<section id="s7">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2 class="section-title">显示层组件化（P13 / P14）</h2>
+    <span class="section-when">2026-09-17</span>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">先定规矩：受击表现「要不要进 FSM」</span>
+      <span class="evo-date">09-17 上午</span>
+      <span class="badge badge-info">只出建议不动手</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户问「既然有 FSM，能否把每个受击表现做成状态」，同时抱怨 Controller 臃肿（1210 行）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>⚠ <strong>反直觉发现：23 个效果里只有 3 个真正有实现体</strong>（<code>ImmedDamage(0)</code> / <code>AddBuff(2)</code> / <code>Sneer(3)</code>），其余 20 个（ImmedHeal、Rigor、HitOut、HitBack、HitDown、Dizz、AirHit、Frozen、DownHit 等）<strong>全是空方法体</strong> ⇒ 「受击表现臃肿」不是真问题，<strong>现在是定规矩的最佳时机</strong>。</p>
+        <p>判据一句话：<em>这个表现是否要独占单位的行为权并持续一段时间？</em> <strong>三层分流</strong>：① 瞬时结算（掉血/特效/飘字/音效/顿帧/Buff/嘲讽）= 事件；② 表现层（受击动画/抖动/姿态）= Animator Layer + 权重；③ 控制层（Knockback 已有 / Float / Down / Frozen / Grab / Dead 已有）= 新状态。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>三条不能做成状态的理由：① 状态天然互斥，而受击常需叠加；② 瞬时表现会「OnEnter 立刻 OnExit」空转；③ 高频受击会造成状态抖动，<strong>摧毁 AttackState 的 8 个跨帧字段语义</strong>（多段技能第 2 段被打断）。</p>
+        <p>⚠ <strong>关键提醒：把受击搬进 FSM 不等于给 Controller 瘦身</strong> —— 状态实例是 <code>new XxxState(this)</code>，<code>Owner</code> 就是 Controller，这是「搬家」不是「解耦」。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P13：抽 UnitView / UnitHitReaction，Controller 1210 → 1075</span>
+      <span class="evo-date">09-17</span>
+      <span class="badge badge-ok">双向 baseline 对照</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户指令「给我具体的实现 3 的方案」。Controller 1210 行，「受击面 ≈ 200 行」与「Animator 操作」混在一处。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><ul>
+          <li>新建 <code>View/UnitView.cs</code>（画面端唯一出口：SetSkillId/ResetSkillId/StateInfo/IsInIdleState/PlayEffect/PlayDeath/HasAnimator/AnimatorSpeed）</li>
+          <li>新建 <code>View/UnitHitReaction.cs</code>（受击编排层：<code>ApplyHit</code> → <code>HitOutcome{Ignored,Normal,Dead}</code>，四步「扣血 → 致死判 Dead → 播特效 → 记仇恨」）</li>
+          <li><strong>签名全部保留</strong> ⇒ <code>Skill.ImmedDamage</code>、<code>UnitBuffComponent</code> DoT 结算<strong>一行未改</strong></li>
+          <li><code>KnockbackDuration</code> 改 <code>private set</code> + <code>SetKnockbackDuration()</code>，<strong>把写入权锁死在贴着 RequestState 的唯一位置</strong></li>
+          <li>Controller 至此<strong>不再有一行代码触碰 Animator</strong></li>
+        </ul>
+        <p>紧接着两轮 fix（用户追问驱动）：<strong>fix</strong> —— 去掉 <code>: MonoBehaviour</code>，改<strong>构造函数注入</strong>（用户诉求「不给玩家挂载脚本，改由 Controller 持有对象」）；<strong>fix-2</strong> —— <code>UnitView</code> 复用基类已取的 Animator。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>组件化而非 partial 拆分，是因为要的是<strong>「职责出口唯一」而非「行数分散」</strong>；普通类而非 MonoBehaviour，是因为这两个类<strong>从未使用 MonoBehaviour 的任何能力</strong>（无 Awake/Update/OnEnable、无序列化字段、不进 Inspector）。</p>
+        <p><strong>fix-2 复用 Animator 的理由不是性能而是真相源</strong>：避免将来 Animator 改挂子节点时「Controller 认为有、View 认为没有」的静默偏差。刻意<strong>未改</strong> <code>PlayDeath</code> 里的 <code>GetComponent&lt;CapsuleCollider&gt;</code>（死亡时临时取、立刻 Destroy，长期缓存反而制造悬空引用）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>★ 做了<strong>术前/术后双向 baseline</strong>：把新组件移出 Assets 目录（Unity 会编译 Assets 下任何 .cs）跑一轮，再恢复新版跑一轮，各 ~28 秒 —— <code>[HitEffectCalc]</code> 32 ↔ <code>[HitEffect]</code> 32 <strong>严格 1:1</strong>；<code>Parameter 'Move' does not exist</code> 告警<strong>术前就有 10 条</strong> ⇒ 非本次引入。冒烟 36/36 → 55/55 → 58/58 PASS。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><ul>
+          <li><strong>logs 输出是 <code>sorted(buckets)</code> 字典序不是时间序</strong> ⇒ 看起来像「HP 递增」，实为字符串排序假象，差点误判出「HP 反向增长」bug</li>
+          <li><strong>改 MonoBehaviour → 普通类前必须先查类 GUID 在全部 .prefab/.unity/.asset 中零引用</strong>，否则会留 Missing Script（唯一不可逆风险点）</li>
+          <li><strong>注释里的代码签名是最容易被遗漏的同步点</strong>（<code>new UnitView(this)</code> 老签名藏在注释里，编译不报错）</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P14：Buff 组件去挂载评估（定稿 · 暂不实施）</span>
+      <span class="evo-date">09-17</span>
+      <span class="badge badge-warn">零代码改动</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户设想三条：① 由数据类初始化时创建 Buff 系统；② 加 Buff 时<strong>先进入</strong>对应状态；③ 该状态退出时调用 Buff 系统清理。并要求把 <code>UnitBuffComponent</code> 也改成普通类。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>实测事实：<code>UnitBuffComponent</code> 中 <code>gameObject</code>/<code>transform</code>/<code>GetComponent&lt;</code> <strong>各 0 次</strong> ⇒ 它继承 MonoBehaviour 的唯一收获就是白拿一个 <code>OnDestroy</code>；GUID 在全部 prefab/unity/asset <strong>零引用</strong>。</p>
+        <p>⚠ <strong>真实泄漏点</strong>：<code>Shutdown()</code> 只做退订 + ClearAllBuffs，<strong>没有 <code>s_ControllerById.Remove(m_OwnerId)</code></strong>，注销只由组件 <code>OnDestroy</code> 完成；而 <code>s_ControllerById</code> 是<strong>静态字典、持整个 Controller 强引用</strong> ⇒ 改普通类后兜底消失，<strong>每个单位销毁永久泄漏一条，对象无法被 GC</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>设想②方向对，但顺序必须反过来（现状已正确）</strong>：<code>AddBuff</code> 内部先写数据（<code>_buffFlags</code>/<code>_buffById</code>/<code>_buffsByType</code>），<strong>然后</strong>才 <code>OnBuffAdded?.Invoke</code> → <code>SyncControlStateFromBuffs</code> → <code>RequestState(Stun)</code>。硬理由是 <code>StunState.OnUpdate</code> 每帧查 <code>Owner.HasHardControlBuff()</code>，<strong>若「先进状态、后加 Buff」，进入后的下一帧即查到 false → RequestState(Idle) → 眩晕完全失效</strong>。</p>
+        <p><strong>设想③不可行，四条理由</strong>：① 状态是互斥一维量、Buff 是可并存多维量（46 种可同时眩晕+中毒+攻击加成），等式在多重并存时必然断裂；② 转换表内有设计证据 <code>Silence→Stun</code> 与 <code>Stun→Silence</code>（注释明写「眩晕到期回退到仍生效的沉默」），若 <code>SilenceState.OnExit</code> 清沉默 Buff，被眩晕抢占时沉默即被误清 ⇒ 该回退边永远走不到；③ 状态退出 ≠ Buff 结束（退出原因四种，只有「到期」等于结束）；④ 闭环重入风险（双硬控时抖动）。</p>
+        <p><strong>正确边界</strong>：Buff 的时长/叠加/免疫/驱散/清理全归 <code>BuffSystemPooled</code> 独占；状态 <code>OnExit</code> 只清<strong>自己的副作用</strong>（范例 <code>SilenceState.OnExit → Owner.IsSilenced = false</code>，漏掉会让单位永远放不出技能）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">遗留</span>
+        <div class="evo-text"><p>⚠ <strong>验证盲区</strong>：编译 0 Error + <code>[HitEffectCalc]</code> 32:32 <strong>只证明普通受击链路没坏，证明不了 Buff 链路正常</strong>（当时没有任何 Buff 被真正施加）。实施时必须同步加两条临时探针。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 08 表现与资产契约 ============ -->
+<section id="s8">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2 class="section-title">表现与资产契约（P15 – P20）</h2>
+    <span class="section-when">2026-09-18 → 09-19</span>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P15：受击表现接通（含一次重大订正）</span>
+      <span class="evo-date">09-18</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>10003 = 三连斩，列 13 <code>SkillEffectTypes = 0|0;22|0;22</code> ⇒ 段 2/段 3 配了「受击（Hure=22）」，但 <code>Skill.OnHure()</code> <strong>是空桩</strong> ⇒ 配了毫无反应。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>⚠⚠ <strong>第一轮结论是错的，第二轮订正</strong>：首轮写脚本解析 <code>GBL.controller</code>，判定「17 个扁平状态、受击状态全是孤儿」。真实结构是<strong>三层嵌套</strong>：<code>Base Layer(idle/Run_F/Die)</code> → <code>[SM] Skill</code> + <strong><code>[SM] Hit</code>（13 个受击状态整棵子树无入边）</strong> ⇒ 受击动画不是散落的孤儿，而是整齐收在 Hit 子状态机里，<strong>断的是子树的入口</strong>。</p>
+        <p>方案：新增参数 <code>Hit</code>(Trigger) / <code>HitType</code>(Int) / <code>Move</code>(Bool) —— 用 <code>Hit</code>+<code>HitType</code> 而非 6 个 Trigger（避免竞态、可查询可归零）；转换结构 = <strong>一条入口 + 内部按 HitType 分流</strong> ⇒ 将来新增受击类型只在 Hit 内部加分支，父层零改动。</p>
+        <p>⚠ 实测确认 <strong>UnitySkills 没有任意代码执行能力</strong>，但有 <code>editor_execute_menu</code> ⇒ <strong>改 Unity 资源的唯一自动化路径 = 写带 MenuItem 的 Editor 脚本再调菜单，且脚本必须幂等</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>受击表现<strong>不进 FSM</strong>（沿用 09-17 定论：瞬时表现做状态会摧毁 AttackState 跨帧字段）。<code>Animator.Play</code> 绕路被否决，用户要求「在敌人动画状态机中正式制作状态与转换」。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P15-fix：打断回退 + 死亡链路三根一起才是真相</span>
+      <span class="evo-date">09-18</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>① 曾加了「受击打断攻击」；② 敌人死亡只有死亡动画、没有下沉（后来证伪）；③ <code>Die</code> 链路有问题。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p><strong>① 打断回退 —— 删掉 <code>ApplyHurt</code> 里的 <code>if (CurrentState == Attack) RequestState(Idle)</code> 整块。</strong></p>
+        <p><strong>② 死亡链路（三根一起才是真相）</strong>：<code>Die</code>/<code>Run</code> 实为 <strong>Bool（m_Type=4）</strong> 但 <code>PlayDeath()</code> 用 <code>SetTrigger("Die")</code> ⇒ <strong>静默失效</strong>；<code>idle→Die</code> 无条件但<strong>排在 idle 出边列表末位</strong>，前面三条同样无条件 ⇒ <strong>死亡从来没有入口</strong>；<code>Die→idle</code> 有 ExitTime 回边 ⇒ <strong>只加入口不拦回边 = 「死亡→回待机→再死亡」无限循环</strong>。修法：<code>WriteDeathParam()</code> 查类型分派；补 <code>[Die==true]</code> + 新增 <code>Any State→Die</code>；补 <code>Die→idle [Die==false]</code>；⚠ <strong>AnyState 转换必须设 <code>canTransitionToSelf = false</code></strong>（否则死亡动画每帧被重新进入、永远重播第一段）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>为什么回退打断</strong>（重要，别再捡回来）：该方法对玩家与敌人<strong>对称生效</strong>，<strong>CSV 里 37 个技能配了效果 22</strong>，敌人一旦使用，<strong>玩家三连斩会被逐段打断</strong>；「挨打即打断」是<strong>玩法规则</strong>（霸体/韧性），天然位置是 FSM/Buff 的显式判定，不是通用受击表现管线。当前场景只有玩家放技能所以看不出来，敌人 AI 上线就会暴露。</p>
+        <p><code>SetTrigger</code> 对 Bool 静默失效、「无条件出边谁优先无保证」都是 Unity 的隐式行为，必须显式化。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><ul>
+          <li>⚠ <strong>不能用 <code>normalizedTime</code> 判断动画是否循环</strong> —— 它在 non-looping 状态下同样持续累加，「循环」和「播完定格」涨法<strong>一模一样</strong>。<strong>唯一可靠判据是 <code>AnimatorStateInfo.loop</code></strong>。这是当时最大的误判源</li>
+          <li>⚠⚠ <strong>曾把 FBX 资产改坏</strong>：为「修死亡动画循环」给 <code>Die.FBX.meta</code> 显式写入 <code>clipAnimations</code>，导致 FBX 内冒出两个片段、控制器 Die 状态的 Motion 变成 <strong>Missing</strong>（引用彻底断掉，且不报错）。<strong>教训：显式写 clipAnimations 后 Unity 只认新定义出来的那条 clip，sub-asset 的 fileID 一旦对不上，所有引用它的 Motion 全部失效且悄无声息。</strong>复原时不能直接覆盖旧备份（老格式会让 Unity 重新分配 fileID），正确做法是<strong>只删掉当前 meta 里那 30 行 clipAnimations 再 ForceUpdate 重导</strong></li>
+          <li>⚠ <strong><code>EditorApplication.update</code> 在编辑器窗口未获焦时一次都不回调</strong> ⇒ 改用运行时探针（MonoBehaviour.Update + 时间间隔采样）</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">契约校验前移：UnitView 构造期 fail-fast</span>
+      <span class="evo-date">09-18</span>
+      <span class="badge badge-ok">当场抓出两个资产缺口</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户质疑 <code>PlayHit</code> 里的 <code>EnsureHitParams()</code> 没意义 —— 玩家/敌人的受击应在<strong>资产层面统一</strong>，代码不该为「某单位没有某参数」做运行时兜底。质疑成立且比他说的更严重：Unity 对不存在的 Animator 参数 <code>SetXxx</code> <strong>只打 warning 不崩</strong>，运行时兜底不防崩溃，只把 Unity 每次都会刷的告警吞掉，<strong>把「资产漏配」伪装成「打了没反应」</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>构造函数末尾调 <code>ValidateAnimationContract()</code>（<code>#if UNITY_EDITOR</code>）：一次性检查 <code>Hit</code>/<code>HitType</code>/<code>Die</code>，缺失汇总成<strong>一条</strong> <code>Debug.LogError</code> 指名；无 Animator 直接 return（非协议违规）。删掉 <code>EnsureHitParams()</code> 与三个判空字段。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>Play 契约全绿（三条链各 300/450/150 严格 1:1），且 <strong>fail-fast 当场抓出两个资产缺口</strong>：<code>GBL(Clone)</code> 缺 <code>[HitType]</code>；<code>NYT(Clone)</code> 缺 <code>[Hit, HitType, Die]</code>。</p>
+        <p>★ <strong>由此暴露更严重的事实：P15 给 GBL.controller 加的 HitType 从未真正生效</strong> —— 磁盘 YAML 参数有 6 个，运行时 <code>Animator.parameters</code> 只有 5 个（少 HitType），<code>ImportAsset(ForceUpdate)</code> 也拉不回来 ⇒ <strong>改磁盘 YAML ≠ 改 Unity 认识的对象，必须走 Editor API 改内存实例 + SetDirty + SaveAssets</strong>。也就是说「受击动作的 HitType 分流从 P15 起就没生效过，而旧的静默降级让人误以为已经接通」。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">用户拍板</span>
+        <div class="evo-text"><p>用户澄清：<em>「GBL 控制器中已有受击状态，我后续再补玩家受击状态并统一参数，这个工作我手动完成，你别乱猜乱写了」</em> ⇒ 停止一切「替用户补 Animator 参数/建状态/重导 FBX」的动作，契约校验报什么就原样汇报。<strong>这条后来固化为铁律：配置与资产归用户，AI 只做契约校验 + fail-fast 指名。</strong></p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P16：段号内聚进 Skill（<code>SkillHit(segIdx)</code>）</span>
+      <span class="evo-date">09-18</span>
+      <span class="badge badge-info">结构优化</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p><code>CombatUnitController.cs:1018</code> 的 <code>skill.SegIdx = segIdx;</code> 是<strong>全工程唯一的外部写入点</strong>；「先写后调」是靠<strong>注释</strong>守护的时序约定（Controller:1016、CombatStates:330-334、Skill.cs:274/492 四处都在强调）。且 setter 有隐式副作用（外部赋值会静默改超时兜底时间戳）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p><code>SegIdx</code> setter → <strong>private set</strong>；新增<strong>唯一对外入口</strong> <code>public void SkillHit(int segIdx)</code>；原 <code>public void SkillHit()</code> → <code>private void SkillHitInternal()</code>（方法体一字未动）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>需要注释守护的顺序，本身就是内聚不足的症状。</strong>同类病在出手特效那条线已经治好（改成显式传参 <code>PlayCastEffect(index)</code>），受击特效也治好了（P10 按段算好传参），<strong>唯独入口段号还靠外部写</strong>。收进 Skill 后可改 <code>{ get; private set; }</code>，<strong>从类型系统杜绝「段号已改、结算未发生」的中间态</strong>。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">★★★ 2003 撞车事故：五轮排查（P17 → P18 → P19 → 回退 → P20）</span>
+      <span class="evo-date">09-19</span>
+      <span class="badge badge-bad">全天返工 · 方法论反思最重</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户反馈：<em>「第一次攻击 3 段正常，第 2 次攻击时敌人身上会实例化一个特效，所以看起来就是 2 个特效重叠」</em>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>P17（时序）→ P18（特效生命周期回收器）→ 用户否决回退 → P19（RestartParticles + 资产 stopAction）→ 再次回退 → P20。<strong>五轮，写了探针、加了回收器、改了特效资产、又全部回退，没有一个命中。</strong></p>
+        <p><strong>真凶</strong>：10003 列 22 <code>AttackEffectID = 2001;2002;2003</code>，列 24 <code>HitEffectIds = 10001;10002;2003</code> —— <strong>第三段与出手第 3 段同一个 id</strong>。而 <code>EffectData.csv</code> 全表只有 3 行 ⇒ 10001/10002 根本不存在（死配置）。⚠⚠ <strong>致命机制：池化 key 是 <code>ResName</code> 不是 id，且每个 key 只留一个实例</strong> ⇒ 玩家第三段刀光与敌人第三段受击火花是<strong>同一个 GameObject</strong>，父节点在 <code>Atk3</code>（玩家武器）↔ <code>GBL(Clone)</code>（敌人身上）之间<strong>来回搬家</strong>。</p>
+        <p>P20 补偿产出：加载期 <code>ValidateEffectIdContract()</code> —— 列 22 ∩ 列 24 撞车 → LogError；引用不存在的 Effect id → LogError。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>为什么五轮都没命中 —— 五处错误（按严重度）：</strong></p>
+        <ol>
+          <li><strong>现象定义就错了</strong>：一直当成「同一业务内部为什么会同时播两个」，全部精力花在时序/游标/生命周期上；真相是<strong>两条业务各播各的</strong>（玩家出手 2001/2002 + 敌人受击 2003），<strong>与时序无关</strong> ⇒ 视觉类 bug 第一步永远是「画面上现在有几个对象、各自叫什么、挂在谁身上」</li>
+          <li><strong>已经抓到真凶却把它当噪声</strong>：P18 探针里「父节点瞬移」那条数据就是答案本身，却降级成「顺带发现」，转头继续论证自己构造的「残留 2 秒」假设 ⇒ <strong>探针里任何「不该出现却出现了」的字段就是主因，优先级高于我自己的任何推理</strong></li>
+          <li><strong>先假设后取证</strong>：在没确认「现象到底是什么」的情况下就交付 P18、P19，两次都是用实现去套未被证实的假设 ⇒ <strong>假设必须先用「一条 10 秒能拿到的观测」证实或证伪</strong></li>
+          <li><strong>没读全配置就下工程结论</strong>：<code>EffectData.csv</code> 全表只有 3 行，一次 grep 就能看出撞车和死配置，却先读了十几 KB 的 prefab YAML 和几百行运行时日志 ⇒ <strong>涉及 id/资源/配置的 bug，第一步先做 id → 资源的全量映射核对</strong></li>
+          <li><strong>该问用户的时候没问</strong>：一句「Hierarchy 里敌人身上那个特效叫什么名字？」10 秒就能拿到决定性线索</li>
+        </ol></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">用户追加的根本原因</span>
+        <div class="evo-text"><p>用户原话：<em>「你给我描述问题的时候你没有真正理解我的问题」</em>，并且 <em>「你不会识别游戏画面，你仅仅靠日志来进行分析」</em>。</p>
+        <ul>
+          <li><strong>视觉描述被自行「翻译」成技术假设</strong>：「第一、二段刀光一起显示」= 画面上出现了两个东西，被理解成「同一帧播出」= 时序问题 ⇒ 整天排查全打在时序上 ⇒ <strong>铁律：视觉描述不许自行翻译；先复述确认再动手</strong></li>
+          <li><strong>看不到画面，却从未向用户索要截图</strong> —— 尽管本身能读图片。补偿措施：新增 <code>EffectSnapshotTool</code>（导出场景所有特效实例的名称/层级路径/挂点/世界坐标 → 工程根 <code>_diagnose/</code>，刻意不放 Assets 以免 import 与 guid 污染；另可截图）</li>
+          <li><strong>以后视觉类 bug 的第一动作顺序</strong>：① 直接问用户要截图（Game 视图 + Hierarchy 各一张）② 拿不到图就跑「Dump Effect Objects」看对象归属 ③ 最后才碰日志与时序</li>
+        </ul>
+        <p>⚠ 同时被证伪的还有「刀光粒子 2 秒」这条：错把 <code>lengthInSec: 2</code> 当可见时长，实测 burst 模式下 <code>startLifetime</code> 只有 0.15~0.5 秒 ⇒ <strong>P18 用 <code>duration + startLifetime</code> 推算存活时间，高估约 10 倍</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">其他踩坑</span>
+        <div class="evo-text"><ul>
+          <li>⚠ <strong>在 Unity 之外删除 .cs 会让编译列表残留</strong>：移走后连续 3 次 refresh+recompile 仍报 <code>CS2001: Source file could not be found</code>，csproj 里那条 <code>&lt;Compile Include&gt;</code> 不消失 ⇒ <strong>铁律：删/移 .cs 一律走 <code>asset_delete</code> 接口</strong></li>
+          <li><strong>Play 模式下 recompile 会刷大量无关 NRE</strong>（域重建）⇒ stop → recompile → play 后即消失，别被 50 条异常误导</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 09 Buff 重构 ============ -->
+<section id="s9">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <h2 class="section-title">Buff 系统重构（Id 主键 + Tags）</h2>
+    <span class="section-when">2026-09-23 → 09-24</span>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">先摸天花板：三层限制</span>
+      <span class="evo-date">09-23</span>
+      <span class="badge badge-info">纯调研</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>想扩展 Buff 能力，先摸清天花板在哪。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>实测三层都撞墙：</p>
+        <ul>
+          <li><strong>位宽上限 64</strong>：<code>BuffType</code> 是 <code>[Flags] enum : ulong</code>，已用 bit 0..45 = 46 种，剩 18 位</li>
+          <li><strong>配置上限也是 64</strong>：<code>_buffDic</code> 是 <code>Dictionary&lt;BuffType, BuffData&gt;</code>，重复 Type 直接 LogError 跳过 ⇒ <strong>一个 Type 只能一条配置行</strong>，想要「攻击 +50」和「攻击 +20%」两种都做不到</li>
+          <li><strong>生效上限远小于 46</strong>：只有 <code>Stunned</code>/<code>Silenced</code> 被消费驱动 FSM，其余 43 种只写标志位、无人消费；现状 CSV 仅 6 条</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>位宽墙比配置墙<strong>晚</strong>撞到。先把真正的瓶颈找出来，才能决定改造顺序 —— 不要一上来就解决最显眼的那个问题。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">方案 2 落地：Id 成为唯一主键</span>
+      <span class="evo-date">09-24</span>
+      <span class="badge badge-ok">加 Buff 只改配置</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>64 位天花板 + 一个 Type 一条配置的死结；且<strong>共享位删除时会误清其他 Buff</strong>（<code>&amp;=~Type</code> 把仍生效的同 Type 实例连坐清掉）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><ul>
+          <li><code>BuffType.cs</code>：Type 降级为「标签位图，可共享」；新增 <code>HardControl = Stunned|Frozen|Petrified|Sleeping</code>（从私有常量提升）</li>
+          <li><code>BuffData.cs</code>：重复 Type 由 Error+跳过改为 <strong>Warning+保留首个</strong>（Id 才是主键）；新增 <code>ValidateCategoryContract()</code></li>
+          <li><code>BuffSystemPooled.cs</code>：新增 <code>AddBuff(int, casterId)</code>，叠加/刷新改按 <strong>Id</strong> 判定；新增 <code>IndexByTypeBits()</code> 与 <strong><code>RecomputeFlags()</code> 全量重算</strong></li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>★ <strong>入口本来就是 Id</strong>：<code>Skill.OnAddBuff(attacker, skill, int buffid)</code> → <code>GetBuffData(buffid)</code> —— <strong>最后一步才退化成 Type</strong> ⇒ 改按 Id 添加，上层链路零改动。这是整个改造能被接受的关键前提。</p>
+        <p><strong><code>RecomputeFlags</code> 全量重算是必须的</strong>：否则移除一个 Type 会把仍生效的同 Type 实例连坐清掉。</p>
+        <p>⚠⚠ <strong><code>HardControl</code> ⊂ <code>AllControlEffects</code>，是子集不是重复，绝不能用后者替换前者</strong>：① 沉默/缴械/致盲/恐惧/嘲讽会变成「定身」；② 更致命 —— <code>SyncControlStateFromBuffs()</code> 硬控分支在前、而 <code>Silenced ∈ AllControlEffects</code> ⇒ <strong>沉默永远走不到 Silence 分支，Silence 变死状态</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>新增自检菜单 <code>Tools/Diag/BuffContractCheck</code>：<code>RemoveBuffById(1006)</code> 后只剩 Stunned 且 <strong>Stunned 仍在 = True</strong>（旧 <code>&amp;=~</code> 此处会连坐清掉）；反射造假数据 <code>Category=Control + Type=Berserk</code> → 如期报两条 Error；现有 6 行 CSV 零误报。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">1B：CSV 增 Tags 列 —— BuffType 管身份，Tags 管行为</span>
+      <span class="evo-date">09-24</span>
+      <span class="badge badge-ok">bit45 Frenzy 实测通过</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>想加行为归类就得改 C# 代码，与「加 buff 只改配置」的目标不符。另发现控制定义有<strong>五套、四个来源、互不校验</strong>：<code>BuffType.AllControlEffects</code>（免疫口径，12 种）、<code>HardControlMask</code>（FSM 投影，私有 4 种）、<code>AllMovementImpair</code>（5 种）、<code>AllPositive</code>（只列到 bit15）、CSV <code>BuffCategory</code>（驱散口径）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>CSV 追加第 15 列 <code>Tags</code>（不动现有列）：1003 流血 / 1004 中毒 = <code>DoT</code>；1005 眩晕 = <code>Control;HardControl;MovementImpair</code>；1006 沉默 = <code>Control;Silence</code>。代码侧新增 <code>BuffTags</code> 常量类，<strong>分工定死：<code>BuffType</code> = 身份位图（我是谁），<code>Tags</code> = 行为归类（我该怎么被处理）</strong>；<code>IsImmuneTo</code> / <code>CanMove</code> 改走标签优先、位兜底；契约要求控制类若未声明对应标签 → <strong>LogError 指名，不静默退回位判定</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>★ 临时加 <code>1008,Frenzy,...,Control;HardControl;MovementImpair</code>（Frenzy = bit45，<strong>不在 HardControl 枚举位里</strong>）→ 被正确判为硬控、限制移动、三项一致性全「一致」⇒ <strong>加 Buff 只改 CSV、不改一行代码</strong>。挂 1006 → <code>Silence=True</code>、<code>HardControl=False</code>、<code>CanMove=True</code>（沉默不定身）。验证后删掉 1008。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><p>① <strong>拿错备份</strong>：想还原 CSV 用了 <code>.bak.2026-09-24-tags</code> —— 那是<strong>加 Tags 列之前</strong>的备份，Tags 列差点丢失 ⇒ <strong>备份标签应表示「改动之后的状态」</strong>。② <strong>改 CSV 后 <code>asset_reimport</code> 不足以让 <code>static readonly</code> 的配置重建</strong> ⇒ 必须 recompile 触发域重建。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">补漏：语义级控制 Buff 施加改走 Tags 路由</span>
+      <span class="evo-date">09-24</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p><code>UnitHitReaction.ApplyStun</code> 写死 <code>BuffType.Stunned</code>、<code>ApplySilence</code> 写死 <code>BuffType.Silenced</code>，走 <code>AddBuff(BuffType)</code> → 取 <code>_buffDic</code> <strong>首个登记者</strong> ⇒ Tags 数据驱动覆盖不到这条路径，<strong>「只靠 Tags」的承诺破功</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p><code>ApplyControlBuff(BuffType)</code> → <code>ApplyControlBuff(string tag, int buffId = 0, ...)</code>，查询优先级 <strong>显式 buffId ＞ Tags 反查</strong>，查不到 → LogError 指名 fail-fast（不静默降级）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>临时摘掉 1005 的 HardControl 标签、加 <code>1008,Feared,...</code>（bit27 在 AllControlEffects 内但不在 HardControl 枚举位内）→ <code>ApplyStun</code> 路由到 <strong>id=1008</strong>，命中来源 = Tags 列（完全不依赖枚举位）。<strong>改造前这不可能发生</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">遗留</span>
+        <div class="evo-text"><p><strong>BuffType 列暂时不能删</strong>，三处残留依赖：① 上面这条已修；② <code>EffectValue/EffectPercent</code> 只能按 Type 检索（「这个 Buff 加的是哪个属性」没有独立列 ⇒ 终局方案是 CSV 加 <code>StatKey</code> 列）；③ Category 契约校验主体是 Type 位。另发现列 11/12/13（IconName/EffectName/Des）<strong>全是死配置</strong>。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 抽象层与零 GC ============ -->
+<section id="s10">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <h2 class="section-title">抽象层与零 GC（ISkillEffect / 方案 F）</h2>
+    <span class="section-when">2026-09-24 → 09-27</span>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">先修一个真 bug：目标来源分叉</span>
+      <span class="evo-date">09-24</span>
+      <span class="badge badge-bad">用户拍板当 bug fix</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>评审抽象方案时发现<strong>目标来源分叉</strong>：<code>ImmedDamage(target)</code> / <code>OnHure(target)</code> 用的是 <code>ExecuteEffect</code> 传入的 target，而 <code>AddBuff()</code> / <code>Sneer()</code> <strong>无参数、内部用字段 <code>m_SkillTarget</code></strong>。10003 的 <code>SkillHitTypes=2</code>（<strong>扇形多目标</strong>），全表绝大多数是 1/2 ⇒ <strong>AoE 时 Buff 只会加到主目标一人</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p><code>AddBuff()</code> → <code>AddBuff(CombatUnitController target)</code>，<code>Sneer()</code> 同理；<code>ImmedDamage</code> 补 <code>target == null</code> 判空，但<strong>刻意放在 <code>[HitEffectCalc]</code> 日志之后</strong>（提到最前会丢失「命中 null 目标」的可观测性）。</p>
+        <p>新建 <code>SkillEffectTargetProbe</code> 做<strong>决定性实测</strong>：不去搭多目标场景，而是把 <code>m_SkillTarget</code> 设成 null / 别的单位做对照 —— A：<code>m_SkillTarget=null + AddBuff(victim)</code> → victim Buff <strong>0→1</strong>（旧实现必为 0）；B：<code>m_SkillTarget=caster</code> → victim 1 / caster 0；C：Sneer 同理；D：<code>ImmedDamage(null)</code> 不抛异常（改造前 NRE）。四项全绿。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>★ <strong>两个配置层重大发现</strong>：① 全表 12 个配了效果 2 的技能，<strong><code>BuffID</code> 列全部为空</strong> ⇒ AddBuff 循环跑 0 次、<strong>空转</strong> —— 这才是 Play 里从无 Buff 日志的<strong>真因</strong>（此前误归因为「场景不用 10003」）；② <strong>效果 3（Sneer）整张技能表零配置</strong> ⇒ 该分支从未被触发过。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">阶段一：ISkillEffect 策略化（23 分支 switch → 注册表三态）</span>
+      <span class="evo-date">09-24</span>
+      <span class="badge badge-ok">Skill.cs 926 → 741 行</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p><code>ExecuteEffect</code> 是 23 分支 switch，难扩展；17 个空桩无处安放。硬数据：CSV 列 13 用到 <strong>21 种效果号</strong>，已实现仅 4 个（0/2/3/22），<strong>17 个空桩却出现在约 175 个技能段</strong>（高频 7×54 / 4×40 / 16×38 / 5×15）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>新建 <code>SkillEffect/</code>：<code>ISkillEffect.cs</code>、<code>SkillEffectContext.cs</code>、<code>SkillEffectRegistry.cs</code>（Register/TryGet/<strong>IsKnownStub</strong>/Clear/<strong>LogConfiguredEffectSummary</strong>），<code>Effects/</code> 四个效果类 + <code>SkillEffectSetup.cs</code>（<code>RuntimeInitializeOnLoadMethod</code>，先 Clear 再注册）。23 分支 switch（2732 字符）→ 注册表三态（1230 字符）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>为什么是「三态」而不是二态</strong>：一律报错会刷屏（光 7/4/5 就 109 个技能）不可行，一律静默则等于给 175 段失效盖章、撞铁律 5 ⇒ <strong>三态（已实现 / 已知空桩白名单 / 未知效果号报错）是唯一解</strong>。填桩是确定要做的事 ⇒ 完整策略模式一次到位，不上 80/20 的委托表。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>基准 vs 改造后 <strong>7 行逐条一致</strong>；Play ERROR COUNT 恒 17 零新增；加载期汇总实测 21 种效果号分布，<strong>未知效果号 0 条 Error</strong>。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">阶段二：IHitReceiver —— 效果类不许认识 HitReaction</span>
+      <span class="evo-date">09-24</span>
+      <span class="badge badge-ok">编译器替我们验契约</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>效果类直接摸 <code>Target.HitReaction</code>，下层实现被硬耦合，后续填 17 个桩无处下手。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>新建 <code>Controller/IHitReceiver.cs</code>（9 个既有 Facade 签名 + 新增 <code>OnHurt</code> + <code>string name { get; }</code>）；<code>CombatUnitController</code> 加 <code>, IHitReceiver</code> 并新增 <code>OnHurt</code> Facade；<code>SkillEffectContext.Target</code> 类型改为 <code>IHitReceiver</code>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>★ <strong>唯一偏离草案处（有理由）</strong>：草案接口没有 <code>name</code>，实际必须补 —— 诊断日志要打印 <code>ctx.Target.name</code>。关键技巧：<code>MoveBaseController : MonoBehaviour</code>，其 <strong><code>Object.name</code> 属性隐式满足</strong>接口成员 ⇒ <strong>实现类零改动</strong>。备选要么手写转发，要么在效果类里向下转型（后者会把本阶段刚解除的依赖重新装回去，直接违背初衷）。</p>
+        <p><strong>纪律</strong>：效果类取不到 <code>Target.HitReaction</code>/<code>Target.View</code>，填桩时需要新语义就<strong>给 IHitReceiver 加 Facade 方法</strong>，不要向下转型 —— <code>OnHurt</code> 就是样板。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>① <strong>编译器替我们验契约</strong>：<code>: MoveBaseController, IHitReceiver</code> 编译通过 ⇒ 9 个签名逐字一致、隐式实现成立；② 三链 <code>[SegEffect]</code>/<code>[HitEffectCalc]</code>/<code>[HitEffect]</code> = 36/36/36；③ <strong>调用栈证明收口</strong>：<code>UnitHitReaction:ApplyHurt ← CombatUnitController:OnHurt ← HureEffect:Execute</code>，中间那层是本轮新增 Facade。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">方案 F：SkillCastContext → readonly struct + in 分层</span>
+      <span class="evo-date">09-27</span>
+      <span class="badge badge-ok">命中结算 GC → 0</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户问「为什么不直接把当前 Skill 对象传递出去」。<code>SkillEffectContext</code> 是 <strong>class</strong> ⇒ 每次「命中 × 每个效果」一次堆分配，约 <strong>56 字节</strong>/次。实测平均每<strong>段</strong> 1.87 个效果 ⇒ 一次施法 ≈ 3 段 × 2 目标 × 1.87 ≈ <strong>11 个 ctx ≈ 630 B</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>用户拍板走 F（上下文分层），指令「仅仅做 1,2 两点，我要战斗中绝对的 0GC」：</p>
+        <ul>
+          <li>新建 <code>SkillCastContext</code> = <strong><code>readonly struct</code></strong>（Caster/Skill/BaseData/SegIdx），<strong>Caster/BaseData 转发至 Skill，但 SegIdx 保留 4 字节快照</strong></li>
+          <li><code>ISkillEffect.Execute(in SkillCastContext cast, IHitReceiver target)</code> —— Target 从结构里<strong>移出</strong>变第二参数</li>
+          <li><code>Skill.HitTarget</code> public → <strong>private</strong></li>
+          <li>为达成「绝对 0 GC」一并清掉：<code>Skill.cs</code> 三处 <code>OverlapSphere</code> → NonAlloc；<code>TriggerSegmentHit</code> 的无条件 <code>Debug.Log</code> 收进 <code>#if UNITY_EDITOR</code>（真机也分配）</li>
+        </ul></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>为什么不能「直接传 Skill」</strong>：① Skill 上没有「本次命中的目标」—— <code>m_SkillTarget</code> 是施法选中的<strong>主目标</strong>，<code>ctx.Target</code> 是本次结算的那一个；效果类若回 Skill 上取目标，就把「AoE 命中 N 人时 Buff 只给主目标一人」的旧 bug <strong>重新装回去</strong>；② <code>SegIdx</code> 必须是当次调用快照（可变，嵌套/重入会读到错段号）；③ ctx 让 <code>ISkillEffect.Execute</code> 签名稳定。</p>
+        <p>⭐ <strong>诚实口径</strong>：这个量级<strong>不是热点</strong>（对比每帧 <code>OverlapSphere</code> ~38KB/s，以及编辑器日志字符串 ≈200B/次比 ctx 还大）。曾提出最便宜的方案 E（把 ctx 构造提到效果循环外，构造次数 −47%），但用户直接要「绝对 0 GC」⇒ 上 struct。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>三链 <strong>21/21/21</strong> 1:1；★ <strong><code>[CastCtx]</code> 21 == <code>[SegEffect]</code> 21</strong> ⇒ 每段构造一次，印证收益；缓冲区告警 0；真机命中结算链路归零（struct 栈上不装箱，日志全在 <code>#if UNITY_EDITOR</code> 内）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">遗留</span>
+        <div class="evo-text"><p>仍未归零的三处：① <code>EffectManager.CreateEffect → Instantiate</code> 必然分配；② Controller <strong>每帧 <code>OverlapSphere</code></strong>（SelectedEnemy/SelectedFriend 分支无条件调用）；③ 下游 <code>OnDamaged</code> → Buff 内部未做分配审计（09-28 补做：命中窗与空闲窗差异 &lt;3% 且为负）。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">索敌 NonAlloc：一个「改了但当前零收益」的诚实案例</span>
+      <span class="evo-date">09-24 / 09-27</span>
+      <span class="badge badge-warn">预埋 · 零运行时收益</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户问 <code>OverlapSphere</code> 与 <code>OverlapSphereNonAlloc</code> 的区别。静态普查发现全工程 <strong>7 处球形检测全是 <code>Physics.OverlapSphere</code></strong>；且 <code>SelectTartgetBySkill()</code> 的 SelectedEnemy 分支<strong>无条件</strong>调 <code>FindTargetInRadius_MinDistance</code>，<strong>没有 <code>m_Target == null</code> 短路</strong> ⇒ 每帧一次数组分配，N 个敌人 = <strong>60N 次/秒堆分配</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>用户指令原文：<em>「我选择 A，但 309 行的不改，仅仅需要你清理掉过期的注释」</em>。新增 <code>TARGET_BUFFER_SIZE = 64</code> + 静态 <code>s_TargetBuffer</code> + 辅助 <code>OverlapTargets()</code>；三个方法改 NonAlloc 并按 <strong>返回 count</strong> 遍历；<strong>缓冲区溢出时一次性 <code>LogError</code> 指名要求调大容量</strong>（用幂等开关）；<code>FindTargetInRadius_MinDistance</code> 一行未动，仅删除那条<strong>把优化目标带偏的过期注释</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>⚠ <strong>那条过期注释正是误导源</strong>：region 注释写「foreach 遍历碰撞数组会造成内存垃圾，顾此方法放弃」，但下方代码<strong>实际仍是 foreach</strong>；且该经验已过时（Unity 2019.3 之后数组/List 的 foreach 不再产生额外 GC）⇒ <strong>真正的分配源是 <code>Physics.OverlapSphere</code> 本身每次 new 数组</strong>。</p>
+        <p><strong>NonAlloc 三坑必须讲清</strong>：① 必须按返回值 count 遍历，按 Length 会读到上次残留；② count 之后的元素不会被清空；③ 超出缓冲区容量的目标<strong>静默丢弃且不报错</strong> —— 违反铁律 5，容量要留足并加断言。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>⚠⚠ <strong>必须记住的结论：改造是「预埋」，当前零运行时收益。</strong><code>scan_refs.py</code> 全量扫描（364 个源码文件）：改的三个方法 <strong>各只有定义、全工程零调用点</strong>；而真正每帧被调用的 <code>FindTargetInRadius_MinDistance</code>（4 命中 = 定义 + 3 处调用）<strong>恰恰是用户说「不改」的那个</strong>。⇒ 每帧分配热点仍在，唯一见效路径是给 SelectedEnemy 分支补 <code>m_Target == null</code> 短路，但<strong>会改变行为</strong>（目标切换不再那么及时）⇒ 待拍板，未擅自做。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 联网适配与配置迁移 ============ -->
+<section id="s11">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <h2 class="section-title">联网适配与配置层迁移</h2>
+    <span class="section-when">2026-09-28 → 09-29</span>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">S1：ICastClock —— 把「时钟」抽成边界</span>
+      <span class="evo-date">09-28</span>
+      <span class="badge badge-ok">单机行为零变化已实锤</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户问：如果接入状态同步的游戏，要改哪些数据、当前框架是否想到了这一点。核心病灶：<strong>段推进唯一依赖 Animator 的 <code>normalizedTime</code></strong> —— 服务器没有 Animator ⇒ <strong>一次施法永远不会推进段号</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>新增 <code>Net/CastClock.cs</code>：<code>ICastClock</code>（<code>Reset/Tick/GetProgress/IsCasting</code>）+ <code>AnimatorCastClock</code>（单机，读 Animator）+ <code>LogicCastClock</code>（预留，未接线）。<code>AttackState</code> 构造注入，<strong>默认保持单机实现</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>双模开关应该在「边界」上，而不是散落在结算内部。</strong>用户追加要求「能否通过一个参数控制是否走网络部分」—— 采纳的原则是：把开关放在<strong>时钟 / 身份 / 随机 / 输出</strong>这类边界概念上，<strong>禁止在伤害结算内部散落联网 if/else</strong>。单机视作「本地权威服务器」，两者共用同一套结算代码。</p>
+        <p>⭐ 这次改造的价值在 10-10 得到回报：<strong>Animancer 接入时，<code>ICastClock</code> 正好就是接缝</strong> —— 全工程只有 <code>AnimatorCastClock</code> 一处读 <code>View.StateInfo</code>，换一个时钟实现，<code>AttackState</code> <strong>一行都不用改</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>无 AnimationEvent 依赖；三链 30/30/30，<code>[CastCtx]</code> = <code>[SegEffect]</code> = 30；行为零变化。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">遗留</span>
+        <div class="evo-text"><p><code>LogicCastClock</code> 需要「技能总时长」（CSV 无此列）⇒ 未接线。后续还有 netId、确定性随机、纯数据状态、固定 tick 等 S2–S4。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">受击特效换源 + 删除第 25 列</span>
+      <span class="evo-date">09-28 / 09-29</span>
+      <span class="badge badge-ok">235 × 26 字段逐条全等</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户指出第 25 列（<code>HitEffectIds</code>）是多余配置，应该用<strong>第 15 列 <code>HitEffect</code></strong>。⚠ 期间发生一次列号误判（用户纠正：<em>「请你注意是配置表中的第25列，对应代码解析下标应该是24」</em>）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>换源后规则定为：<strong>配 1 个特效就全段播</strong>；<code>segIdx &lt;= 特效数</code> 时取 <code>ids[segIdx-1]</code>；<strong>超出则复用最后一个</strong>；硬约束「特效数 ≤ 生效段数」由 <code>ValidateHitEffectCount</code> 加载期校验。随后删除原下标 24，<code>CastEffectTimings</code> 25→24、<code>SegCount</code> 26→25。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>消除重复列 + 消除「攻击方/受击方跨对象反查」；保留「单列复用可覆盖多段技能」的表达力。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><ul>
+          <li><strong>用户说「第 N 列」必须先换算为下标 N−1</strong> —— 这条已写进长期记忆</li>
+          <li><strong>删列后不能用旧下标裸值作残留判据</strong>：26 列下 <code>proArray[25]</code> 是<strong>新正确</strong>下标，曾误判成残留</li>
+          <li>BOM、CRLF 必须原样保留</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">CSV → JSON 迁移验证</span>
+      <span class="evo-date">09-29</span>
+      <span class="badge badge-ok">2597 项行为输出一致</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户用其他 AI 把五张 CSV 转成了 JSON，需要确认<strong>字段和最终行为都没有漂移</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p><code>JsonConfigLoader.cs</code> 统一 <code>Resources.Load</code> + Newtonsoft 反序列化（保留「单行脏数据 LogError 后跳过」）。三个脚本：<strong>自动推断列↔键映射</strong>（对每个 JSON 键遍历所有 CSV 列，模拟 <code>CommonHelper</code> 解析找 100% 匹配列）、检查成员可写性、<strong>模拟业务取值 2597 项</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>为什么必须自动推断映射</strong>：<code>AttackNpcData</code> 表头<strong>有 7 列空列名</strong>、20 列只用 19 列 ⇒ 靠列名比对齐不可行。另一硬理由：<strong>按「键名 ↔ 类公开成员」取值，键名拼错或成员 <code>readonly</code> 会不报错、值直接丢失</strong> ⇒ 必须专门查「成员可写性」。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>Skill 235 / Warrior 21 / NPC 1460 / Buffer 6 / Effect 4 行全部匹配；2597 项行为输出逐条一致。三处无害差异已逐一说明：<code>[]</code> vs <code>[0]</code> 最终均收敛 null、Par/Pen 两列全同、AttackNpc 未读列。⚠ <strong>唯一回滚源是工程外的 <code>ConfigCsvBackup_2026-09-28</code></strong>。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 可玩性闭环 ============ -->
+<section id="s12">
+  <div class="section-header">
+    <span class="section-num">12</span>
+    <h2 class="section-title">可玩性闭环（流血 Buff / 收尾契约）</h2>
+    <span class="section-when">2026-09-29</span>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">10002「天诛」流血 Buff：第一次真正跑通 DoT</span>
+      <span class="evo-date">09-29</span>
+      <span class="badge badge-ok">[AddBuff] 39 / [BuffTick] 58</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>Buff 框架本身已经完整（Bleeding/DoT/按 Id 叠加/<code>OnBuffTickDamage</code> 走完整管线/驱动链齐全），但<strong>没有任何技能在用它</strong> —— 12 个配了效果 2 的技能 <code>BuffID</code> 全空 ⇒ AddBuff 空转。框架不通电，就等于没验证过。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p><code>BufferData.json</code> 1003 流血改为 <code>MaxStack=3</code> / <code>Stackable=true</code> / <code>EffectValue=12</code>；<code>SkillData.json</code> 10002 三段改为 <code>[0,2] / [0,2,22] / [0,2,22]</code>、<code>BuffID=[1003]</code>；新增 <code>ValidateBuffBindings()</code>（配了效果 2 却无 BuffID → LogError）；加 <code>[AddBuff]</code>/<code>[BuffTick]</code> 诊断日志。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>复用既有 Bleeding/DoT 管线，不重造 Buff</strong>（这条已写进长期记忆防止将来重复造轮子）。加载期校验是为了堵住「配了作用号但没有 Buff」这类<strong>静默失败</strong> —— 这正是 09-24 那个「BuffID 全空」坑的制度化防线。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>离线推演：3 层 × 12 = 每跳 36，5 秒 4 跳（第 5 秒先过期再 Tick），总 DoT 144，占直伤 240 的 60%。Play 实锤 <code>[AddBuff]</code> 39（三段全挂）、<code>[BuffTick]</code> 58（层数 3、单跳 12 → 伤害 36），<code>Exception</code> = 0。改回 10003 后二者归零，三链 21/21/21。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><ul>
+          <li>★ <strong>UnitySkills 端口是 8091，不是 8090</strong> —— 此前一直用错的 8090（在 LISTEN 但不响应），导致误判「必须手动点 Unity 才能编译」。8091 正常时<strong>不需要 Editor 获焦</strong></li>
+          <li><code>WarrorController.cs:84</code> <strong>硬编码 <code>GetSkill(10003)</code></strong> ⇒ 10002 打不出来，<code>[AddBuff]</code>=0；用 <code>set_debug_skill.py</code> 临时切 10002 实锤后还原</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">收尾契约 OnSkillCastFinished：一次按键 = 一次释放</span>
+      <span class="evo-date">09-29</span>
+      <span class="badge badge-ok">A/B：15 轮 → 1 轮</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户反馈：<em>「玩家开始释放了一个技能后，因为 <code>m_SelectSkill</code> 变量并没有置空，会持续不断的攻击敌人」</em>。用户选择：<strong>只改玩家 + 段数打完就结束</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>基类新增 <code>public virtual void OnSkillCastFinished() { }</code>（<strong>空实现</strong>），<code>WarrorController</code> override 清空 <code>m_CurSelectedSkill</code>。<code>AttackState</code> 新增 <code>_segmentsDone</code>/<code>_castFinished</code> + 统一 <code>FinishCast()</code>，三条路径谁先到谁触发：<strong>① 段数打完</strong>（须同时满足 <code>_castCursor &gt;= _castCount</code>）、<strong>② 动画播完</strong>（233 个 <code>SegCount=0</code> 的技能靠它兜底）、<strong>③ 被打断</strong>（P1① 补）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>⚠⚠ <strong>绝不能在 AttackState 里统一清空</strong>：敌人靠「技能不空」持续攻击，而 <code>GetCanUseSkill()</code> 全 CD 时返回 null ⇒ 统一清空会让<strong>敌人站着不动</strong>。</p>
+        <p><strong>原框架为什么不清空（五层原因，用户追问后整理）：</strong>① 原框架姿态是<strong>自动战斗</strong>（<code>Input.GetKeyDown</code> 被注释，每帧无条件选技能 + 攻击），不清空在当时<strong>是对的</strong>；用户打开按键判断后 ⇒ 语义割裂 ⇒ 一次按键 = 无限连击。② 状态机只管动画（<code>IdleState.OnEnter</code> 的 <code>View.ResetSkillId()</code> 清的是 <strong>Animator 参数</strong>，不是决策层对象 <code>m_CurSelectedSkill</code>）。③ <code>CurSelectedSkill</code> 只有 getter、没有清空钩子。④ 敌人靠「技能不空」持续攻击（同上）。⑤ 写入权被收紧却没留出口 ⇒ 所以加的是<strong>时机回调</strong>而不是公开 setter。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label proof">验证</span>
+        <div class="evo-text"><p>A/B 对照实锤：<strong>A 组</strong>（停用清空）30 秒 <code>[SegEffect]</code> = 45 ⇒ <strong>15 轮</strong>；<strong>B 组</strong>（启用清空）<code>[SegEffect]</code> = 3 ⇒ <strong>1 轮</strong>。脚手架已移除，编译 0 Error。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">踩坑</span>
+        <div class="evo-text"><p>基类回调初版写 <code>protected virtual</code> ⇒ <strong>CS0122</strong>（<code>AttackState</code> 不是 Controller 子类）⇒ 改 <code>public</code>；子类 <code>protected override</code> ⇒ <strong>CS0507</strong>（override 不得改访问修饰符）⇒ 必须同步改 <code>public override</code>。<strong>改基类可见性时务必同步查所有 override。</strong></p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">P1①：打断路径补清空（只回调、不切状态）</span>
+      <span class="evo-date">09-29</span>
+      <span class="badge badge-ok">编译 0 Error / 运行时 0</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>转换表里 <code>Attack → Stun / Silence / Knockback / Dead</code> 全部合法，这几条路径<strong>只走 <code>OnExit</code>、不走 <code>FinishCast</code></strong> ⇒ 技能残留。玩家被眩晕 → 恢复回 Idle → <strong>没按 A 也会自动再打一次</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p><code>AttackState.OnExit()</code> 里补一段：<code>if (!_castFinished) { _castFinished = true; Owner.OnSkillCastFinished(); }</code>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>只回调、不切状态</strong> —— <code>OnExit</code> 是 <code>ChangeState</code> 在切换过程中<strong>同步</strong>调的，此刻再 <code>RequestState</code> 属于<strong>嵌套切换</strong>（状态机不支持）。回到 Idle 由打断方自己负责。正常结束时 <code>_castFinished</code> 已为 true，不会重复触发。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">遗留</span>
+        <div class="evo-text"><p>① <strong>尚未做打断路径的 Play 实锤</strong> —— 工程里没有现成硬控来源，需要临时探针在技能释放中途强制 <code>RequestState(Stun)</code>，属额外脚手架，等用户点头。② <code>OnExit</code> 里那条 P17 fail-fast「仍有 N 个出手特效未播出」在<strong>打断分支会照常触发</strong>，但那时特效没播完是打断的正常结果 ⇒ 会被<strong>误报成配置错</strong>。彻底修法是改成 <code>if (_castFinished &amp;&amp; ...)</code>，或引入 <code>CastEndReason{Completed,Interrupted,Cancelled}</code>。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 13 当前议题 ============ -->
+<section id="s13">
+  <div class="section-header">
+    <span class="section-num">13</span>
+    <h2 class="section-title">当前议题与下一步</h2>
+    <span class="section-when">2026-09-30 → 10-10</span>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">UnitBuffComponent 形态改造（调研完成，未实施）</span>
+      <span class="evo-date">09-30</span>
+      <span class="badge badge-warn">待拍板 A / A+B</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>用户的直觉：<em>「这个方式我感觉不太好，是否可以抽离出来一个接口的方式？」</em>。硬证据支持这个直觉 —— <strong>它是整个项目里唯一还挂着的 MonoBehaviour 战斗协作者</strong>：</p>
+        <ul>
+          <li><code>UnitView</code>：<strong>普通类</strong>，<code>new UnitView(this, m_Animator)</code></li>
+          <li><code>UnitHitReaction</code>：<strong>普通类</strong>，<code>new UnitHitReaction(this, m_View)</code></li>
+          <li><code>UnitBuffComponent</code>：<strong>MonoBehaviour</strong>，<code>gameObject.AddComponent&lt;&gt;()</code></li>
+        </ul>
+        <p>v5 P13 那次重构已经把另外两个都改成普通类了，<strong>这个是漏网的</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>它继承了 MonoBehaviour，但<strong>一个 Unity 特性都没用到</strong>：没有 Awake/Update/OnEnable、没有序列化字段、不进 Inspector、生命周期完全由 Controller 手动驱动（<code>Setup → Tick → Shutdown</code>）。</p>
+        <p>三档方案：<strong>A</strong>（去掉 MonoBehaviour 改普通类）/ <strong>B</strong>（A + 抽 <code>IUnitBuff</code> 接口）/ C（保持组件只做接口，不推荐）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p><strong>反查表该放哪（用户追问后定案）：独立静态类，由被注册的 Controller 自己注册/注销，Buff 模块只做查询。</strong>核心原则一句话：<strong>谁被注册，谁负责维护索引</strong>。现在是反过来的 —— Buff 组件在 <code>Setup</code> 里替所有 Controller 建索引，Controller 自己压根不知道自己被登记了，这正是「感觉不好」的第二层病因。</p>
+        <p>四个好处：① 生命周期最可靠（Controller 是 MonoBehaviour，<code>Start</code>/<code>OnDestroy</code> 天然成对，P14 那颗「没有 OnDestroy 兜底」的雷自动消失）；② 与数据重绑解耦（<code>CurCombatUnit</code> 换人触发 <code>Rebind</code>，但实例 ID 不变 ⇒ 表项压根不用动）；③ Buff 模块变纯读方 ⇒ 换实现/上服务器/做 NullBuff 都不再牵动全局；④ 换网络 ID 只改一处。</p>
+        <p><strong>两步走</strong>：先做静态类 + 自注册（项目里确实还没有「战斗上下文」这一层，静态不是妥协）；等 S2 联网或需要多沙盒单测时，再升格为 <code>interface IUnitRegistry</code> + 实例注入 —— 因为读写职责已分清，升级时<strong>调用点一行不改</strong>。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">必须知道</span>
+        <div class="evo-text"><p>反查表的作用 = <strong>「身份证号 → 人」的翻译器</strong>：Buff 里只存施加者的 <code>int</code> 编号，DoT 每跳结算时要把它翻译回 Controller，否则这刀伤害不知道算在谁头上。它决定五件事：击杀归属、仇恨与反击、受击朝向、伤害统计、生命周期安全。<br>
+        ⚠ <strong>三颗雷</strong>：① <code>GetInstanceID()</code> 不能跨端（接状态同步必然失效，得换 entityId）；② 注销只挂在 <code>OnDestroy</code> 上；③ 全局静态表跑不了两个独立战斗沙盒。</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="evo">
+    <div class="evo-head">
+      <span class="evo-title">Animancer 接入可行性（方案阶段，未实施）</span>
+      <span class="evo-date">10-10</span>
+      <span class="badge badge-warn">等用户拍板三件事</span>
+    </div>
+    <div class="evo-body">
+      <div class="evo-row">
+        <span class="evo-label pain">痛点</span>
+        <div class="evo-text"><p>项目已经分离了战斗显示层，显示层能否接入动画插件 Animancer。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label how">做法</span>
+        <div class="evo-text"><p>三条好消息已核实：① 装的是 <strong>Animancer v7.4.2 Lite</strong>；② <code>Animancer.asmdef</code> 写了 <code>"autoReferenced": true</code>，项目脚本走默认 Assembly-CSharp ⇒ <strong>直接 <code>using Animancer;</code> 就能编过，不用改任何程序集引用</strong>；③ prefab/场景里<strong>零接入</strong>，迁移是纯新增。工程里还带了官方的 <code>HybridAnimancerComponent</code>（与 AnimatorController 共存）。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label why">为什么</span>
+        <div class="evo-text"><p>★ <strong>最关键的一条：09-28 抽的 <code>ICastClock</code>，正好就是 Animancer 的接入点。</strong>当时注释写的是「服务器没有 Animator，一次施法永远不会推进段号」，现在同一个接口换用途即可 —— 全工程只有 <code>AnimatorCastClock</code> 一处读 <code>View.StateInfo</code>，<strong>换时钟，<code>AttackState</code> 一行都不用改</strong>。这就是当初那次「提前付定金」的回报。</p>
+        <p>⚠ <strong>Lite 版三道硬门槛</strong>：无 <code>AnimancerState.Speed</code>（顿帧大概率保不住）、无 Layers/Mask（受击无法只播上半身）、无 Mixers（八向移动混合做不了）、自定义淡入恒 0.25s。最狠的一条是官方明示的：<strong>Lite 在 Editor 里全部功能都能跑，运行时构建才退回默认行为</strong> ⇒「我测了没问题」这句话在这里不成立。</p>
+        <p><strong>顿帧的救法（应顺势升级）</strong>：现在顿帧是 <code>Animator.speed = 0</code>，Animancer 接管后很可能不再生效，Lite 又没有 <code>state.Speed</code> ⇒ 建议把顿帧升级成<strong>时钟层的概念</strong>（顿帧 = <code>ICastClock</code> 不推进），这样与底层动画系统<strong>都无关</strong>，联网时也天然正确。</p>
+        <p>🚫 <strong>明确不建议</strong>：拿 Lite 自带的 <code>Animancer.FSM</code> 替换战斗 FSM —— 战斗 FSM 里塞了 Buff 仲裁、段号推进、打死 Arch 等语义，与 <code>CanEnterState/CanExitState</code> 是两套转换哲学，换过去等于把稳定的东西重做一遍。</p></div>
+      </div>
+      <div class="evo-row">
+        <span class="evo-label trap">待拍板</span>
+        <div class="evo-text"><p>① 顿帧能不能让步？② 这个框架要不要打包（教学演示 Lite 够，出包则运行时降权是硬伤）？③ 从哪条线切（建议「玩家一个技能 + <code>AnimancerCastClock</code>」做最小闭环）？<br>⚠ v7 命名坑：手册按 v8.4 写 <code>.Graph</code>，<strong>这版是 v7，得写 <code>.Playable</code></strong>，照抄手册编译不过。</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14 七条设计原则 ============ -->
+<section id="s14">
+  <div class="section-header">
+    <span class="section-num">14</span>
+    <h2 class="section-title">七条设计原则的诞生</h2>
+    <span class="section-when">贯穿全程</span>
+  </div>
+
+  <p>这些原则<strong>不是事先定好的</strong>，每一条都是某次事故或某次返工之后才被总结出来的。括号里是它的诞生场景。</p>
+
+  <div class="principle">
+    <div class="idx">01</div>
+    <div>
+      <h4>单一真相源</h4>
+      <div class="born">诞生于：P6 SegCount（时机点个数 ≠ 段数）、P5 定稿（Str2IntList 假告警）、Buff Id 主键</div>
+      <p>同一个事实只能有一个地方定义。<code>SegTimings.Length</code> 不能兼当段数，<code>CastEffectIds</code> 与 <code>AttackEffectID</code> 不能两列并存，Buff 的「身份」不能既是 Type 又是 Id。<strong>每次发现「两个地方都能回答同一个问题」，就意味着其中一个必然是错的。</strong></p>
+    </div>
+  </div>
+
+  <div class="principle">
+    <div class="idx">02</div>
+    <div>
+      <h4>显式优于隐式</h4>
+      <div class="born">诞生于：P5 用户拍板删 −5% 推算、P10 删 m_CurSkill 反查、P16 段号显式传参</div>
+      <p>用户那句话是最好的注解：<em>表现缺位一眼可见，时机错位要逐帧比对才能发现。</em>同理，「靠注释守护的调用顺序」（P16）、「靠反查攻击者字段拿段号」（P10）、「靠 Animator 残留参数判断状态」（v4 根因 B）—— <strong>凡是只能靠注释或巧合成立的东西，迟早会错。</strong></p>
+    </div>
+  </div>
+
+  <div class="principle">
+    <div class="idx">03</div>
+    <div>
+      <h4>结构优化 ≠ 性能优化，不许混着报</h4>
+      <div class="born">诞生于：P11（性能 ≈ 0）、P9（装箱仅 24B）、索敌 NonAlloc（当前零收益）</div>
+      <p>删 <code>object context</code>、删 owner 形参、把 OverlapSphere 改 NonAlloc —— 每一次都<strong>如实标注真实收益</strong>。P11 明写「性能 ≈ 0，这是结构优化不是性能优化」；NonAlloc 改造后明写「改的三个方法零调用点，是预埋」。这条自保机制让后来每一次「要不要做」的判断都有真实依据，而不是被「听起来很厉害」带跑。</p>
+    </div>
+  </div>
+
+  <div class="principle">
+    <div class="idx">04</div>
+    <div>
+      <h4>fail-fast 优于静默降级（工程铁律第 5 条）</h4>
+      <div class="born">诞生于：09-03 缺陷分级判据「会不会静默出错」；09-18 契约校验前移；P20 ValidateEffectIdContract</div>
+      <p>资产漏配 → 构造期 LogError 指名；特效 id 撞车 → 加载期 LogError；配了效果 2 却没有 BuffID → LogError；缓冲区溢出 → LogError。<strong>禁止为「资产不一致」写运行时静默降级</strong> —— 静默降级会把「配错了」伪装成「打了没反应」，让排查成本暴涨（2003 撞车就是这句话的反面教材）。</p>
+    </div>
+  </div>
+
+  <div class="principle">
+    <div class="idx">05</div>
+    <div>
+      <h4>需要注释守护的顺序 = 内聚不足</h4>
+      <div class="born">诞生于：P16 SkillHit(segIdx)</div>
+      <p>「先写 <code>SegIdx</code> 再调 <code>SkillHit()</code>，顺序绝不能颠倒」—— 这句话在四个文件里各写了一遍，本身就是病。正确做法是把顺序收进类型系统：<code>SkillHit(int segIdx)</code> 唯一入口 + <code>{ get; private set; }</code>，<strong>让「顺序错了」编译不过</strong>。</p>
+    </div>
+  </div>
+
+  <div class="principle">
+    <div class="idx">06</div>
+    <div>
+      <h4>转换表只定义「允许怎么走」，不保证运行时真这么走</h4>
+      <div class="born">诞生于：v4 根因 A（全工程零个 RequestState(Attack)）</div>
+      <p>v3 把「段号归零」寄托在 <code>IdleState.OnEnter</code>，而它从来没被触发过 —— 因为根本没人切进 Attack。<strong>验证设计假设时，要顺着 <code>RequestState</code> 的调用方 grep 一遍，而不是只读转换表。</strong>同理可推广到任何「规则表 + 运行时」的组合。</p>
+    </div>
+  </div>
+
+  <div class="principle">
+    <div class="idx">07</div>
+    <div>
+      <h4>视觉 bug 先枚举现场对象，不许翻译成时序假设</h4>
+      <div class="born">诞生于：2003 撞车（五轮排查全打在时序上）</div>
+      <p>用户原话：<em>「你给我描述问题的时候你没有真正理解我的问题」</em>、<em>「你不会识别游戏画面，你仅仅靠日志来进行分析」</em>。<br>
+      <strong>铁律</strong>：① 视觉描述不许自行翻译，先复述确认；② 我看不到画面，必须<strong>主动要截图</strong>（我读得了图片）；③ 拿不到图就跑「Dump Effect Objects」看对象归属（画面上现在有几个对象、各自叫什么、挂在谁身上）；④ 最后才碰日志与时序。<br>
+      配套：<strong>探针里任何「不该出现却出现了」的字段就是主因</strong>，优先级高于任何推理。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 15 工程纪律 ============ -->
+<section id="s15">
+  <div class="section-header">
+    <span class="section-num">15</span>
+    <h2 class="section-title">工程纪律：每条都对应一次事故</h2>
+    <span class="section-when">血的教训汇总</span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>纪律</th><th>对应事故</th></tr></thead>
+      <tbody>
+        <tr><td><strong>无 git ⇒ 破坏性改动前物理备份</strong><br><code>.bak.YYYY-MM-DD-&lt;标签&gt;</code>，标签写「改动<strong>后</strong>的状态」</td><td>09-24 拿错备份（用了加 Tags 列<strong>之前</strong>的备份），Tags 列差点丢失</td></tr>
+        <tr><td><strong>改 .cs 一律 Python 脚本</strong><br>old 命中数断言 + 写回后重读复验 + 延迟数秒二次复验 + 幂等（判据 = new 已存在即跳过）</td><td>09-03 行尾被写成双 <code>\r\r\n</code>；09-22 Edit 回报 success 却误删 8 行；09-28 Edit 后磁盘静默回退报 CS1729 —— <strong>同类共 4 次</strong></td></tr>
+        <tr><td><strong>同一文件多个 Edit 必须串行</strong></td><td>09-15 并行发 3 个 Edit，后写的基于旧内容 ⇒ 3 处改动静默丢失，靠冒烟脚本才发现</td></tr>
+        <tr><td><strong>删/移 .cs 一律走 <code>asset_delete</code></strong></td><td>09-19 用 PowerShell 移走 .cs，Unity 脚本清单感知不到 ⇒ 连续 3 次 recompile 仍报 <code>CS2001: Source file could not be found</code></td></tr>
+        <tr><td><strong>grep 被 <code>head_limit</code> 截断不得下「死代码」结论 ⇒ 用 <code>scan_refs.py</code></strong></td><td>09-16 <code>m_CurSkill</code> 被 <code>.bak.*</code> 备份文件占满命中列表，误判为无引用</td></tr>
+        <tr><td><strong>编译判据 = <code>Assembly-CSharp.dll</code> mtime 晚于源 .cs</strong></td><td>09-15 Roslyn 编译耗时 8 分钟（期间所有请求返回 503 COMPILING）；09-18 recompile 不真编译 ⇒ 菜单跑的一直是旧程序集</td></tr>
+        <tr><td><strong>回归顺序必须 stop → start_capture → play</strong></td><td>09-24 先 play 后 capture ⇒ Error 数假性显示 0（加载期告警抓不到）；CSV 改动后 <code>Already in play mode</code> 会导致完全不生效</td></tr>
+        <tr><td><strong>不能用 Error 总数变化判回归</strong>；判据 = <code>Exception</code> 恒 0 + 三链 1:1</td><td>特效类 <code>LogError</code> 按命中次数累加 ⇒ 总数随时长线性增长，「基准 229」是错的</td></tr>
+        <tr><td><strong>必须区分「既有配置/资产告警」与「代码回归」</strong></td><td>09-14 首次对 7 条 Warning 做分类（3 条 Move 参数 + 4 条 Transition 无 Exit Time）</td></tr>
+        <tr><td><strong>CSV 列号：用户说「第 N 列」= 下标 N−1</strong></td><td>09-28 曾答成 idx25，用户当场纠正；删列后后续列下标前移，且<strong>不能用旧下标裸值当残留判据</strong></td></tr>
+        <tr><td><strong>配置 / 动画 / 资产归用户，AI 只做契约校验 + fail-fast 指名</strong></td><td>09-18 曾把 FBX meta 改坏（Die 状态 Motion 变 Missing 且不报错）；用户拍板「这个工作我手动完成，你别乱猜乱写了」</td></tr>
+        <tr><td><strong>改 HTML 用内容锚点，不要按行号区间替换</strong>；写完跑 <code>smoke_html.js</code> + <code>check_html_tags.py</code></td><td>09-15 按行号倒序替换 ⇒ <code>&lt;pre&gt;</code> 包装被吃掉、<code>&lt;tbody&gt;</code> 被误删</td></tr>
+        <tr><td><strong>环境：UnitySkills 端口 <code>8091</code>（不是 8090）；本机 <code>.cs</code> 是 LF 无 BOM（HTML 是 CRLF）</strong></td><td>8090 在 LISTEN 但不响应 ⇒ 曾误判「必须手动点 Unity」；两类文件行尾不能共用一套处理</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout ok">
+    <div class="callout-title">一条反复出现的元教训</div>
+    <p><strong>「看起来改对了其实没生效」</strong>是这个项目最高频的失败模式：改了磁盘 YAML 但 Unity 不认识（HitType）、改了 CSV 但在 Play 中不重载、写了校验但被 <code>Str2IntList("")</code> 的 <code>[0]</code> 骗过、加了探针但日志被缓冲区挤掉。所以每一轮验证都必须回到<strong>可观测的运行时证据</strong>：三链 1:1、计数吻合、A/B 对照。</p>
+  </div>
+</section>
+
+<!-- ============ 16 现状地图 ============ -->
+<section id="s16">
+  <div class="section-header">
+    <span class="section-num">16</span>
+    <h2 class="section-title">现状地图与遗留待办</h2>
+    <span class="section-when">截至 2026-10-10</span>
+  </div>
+
+  <div class="tl-wrap">
+    <svg viewBox="0 0 1100 320" role="img" aria-label="当前四层架构">
+      <defs>
+        <linearGradient id="lg1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient>
+        <linearGradient id="lg2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#a855f7"/></linearGradient>
+        <linearGradient id="lg3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#c084fc"/></linearGradient>
+        <linearGradient id="lg4" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#feb67e"/></linearGradient>
+      </defs>
+
+      <rect x="60" y="24" width="980" height="58" rx="10" fill="#161b40" stroke="#6366f1" stroke-width="1.2"/>
+      <text x="80" y="48" font-size="14" font-weight="700" fill="#818cf8">配置层</text>
+      <text x="80" y="68" font-size="12" fill="#9ca3af">Resources/Config/*.json（Skill / Warrior / AttackNpc / Buffer / Effect）+ JsonConfigLoader + 加载期契约校验</text>
+
+      <rect x="60" y="98" width="980" height="58" rx="10" fill="#161b40" stroke="#8b5cf6" stroke-width="1.2"/>
+      <text x="80" y="122" font-size="14" font-weight="700" fill="#a78bfa">数据层</text>
+      <text x="80" y="142" font-size="12" fill="#9ca3af">CombatUnit / Skill / SkillData / BuffSystemPooled（对象池 + ulong 位图 + Id 主键 + Tags）</text>
+
+      <rect x="60" y="172" width="980" height="58" rx="10" fill="#161b40" stroke="#a855f7" stroke-width="1.2"/>
+      <text x="80" y="196" font-size="14" font-weight="700" fill="#c084fc">控制层</text>
+      <text x="80" y="216" font-size="12" fill="#9ca3af">CombatUnitController（1152 行 Facade）+ 7 状态 FSM + ICastClock + ISkillEffect 注册表 + IHitReceiver</text>
+
+      <rect x="60" y="246" width="980" height="58" rx="10" fill="#161b40" stroke="#f59e0b" stroke-width="1.2"/>
+      <text x="80" y="270" font-size="14" font-weight="700" fill="#feb67e">表现层</text>
+      <text x="80" y="290" font-size="12" fill="#9ca3af">UnitView（画面端唯一出口）+ UnitHitReaction（受击编排）+ EffectManager + Animator</text>
+
+      <path d="M 550 82 L 550 98" stroke="#6366f1" stroke-width="2" marker-end="url(#ar)"/>
+      <path d="M 550 156 L 550 172" stroke="#8b5cf6" stroke-width="2"/>
+      <path d="M 550 230 L 550 246" stroke="#a855f7" stroke-width="2"/>
+    </svg>
+  </div>
+
+  <h3>核心契约（改任何一处前必读）</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>契约</th><th>内容</th><th>违反后果</th></tr></thead>
+      <tbody>
+        <tr><td>段号（SegIdx）</td><td>1-based，只在 Skill 内流转；对外唯一入口 <code>Skill.SkillHit(int segIdx)</code>；归零在 <code>AttackState.OnEnter</code></td><td>特效错位、伤害重复结算</td></tr>
+        <tr><td>受击特效</td><td>唯一真相源 = <code>HitEffect</code>；<code>segIdx &lt;= 特效数</code> 取对应位，<strong>超出复用最后一个</strong>；硬约束「特效数 ≤ 生效段数」</td><td>配了不播 / 越界</td></tr>
+        <tr><td>出手特效</td><td><strong>没配 <code>CastEffectTimings</code> 就不播</strong>；播放条数 = min(有效 id 数, 时机数)</td><td>静默失效（已无隐式推算兜底）</td></tr>
+        <tr><td>逐段效果</td><td>列 13 <code>SkillEffectTypes</code>，<code>|</code> 分段、<code>;</code> 分效；<strong>无 <code>|</code> 则只在第 1 段生效</strong></td><td>后两段效果丢失</td></tr>
+        <tr><td>状态实例 ↔ 单位</td><td><strong>1:1</strong>，禁止跨单位共享（AttackState 有 8 个跨帧字段）</td><td>串台</td></tr>
+        <tr><td>Buff ↔ FSM</td><td>Buff 是控制效果唯一真相源，状态只是投影；<code>AddBuff</code> 先写数据再通知 FSM</td><td>眩晕/沉默失效</td></tr>
+        <tr><td>可观测性</td><td><code>[HitEffectCalc]</code> ↔ <code>[HitEffect]</code> 1:1、<code>[SegEffect]</code> ↔ <code>[HitReact]</code> 1:1（差额只在死亡后出现）</td><td>无法判断回归</td></tr>
+        <tr><td>判「晚点」</td><td>只用绝对阈值 <code>overshoot = c - T</code>，不用「step × 倍数」（数学上恒成立不了）</td><td>告警一条都不出</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>遗留待办（按优先级）</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th class="num">档</th><th>事项</th><th>归属</th></tr></thead>
+      <tbody>
+        <tr><td class="num">P1</td><td>打断路径 A/B 实锤（临时探针强制 Stun，验「恢复后是否自动再放」）</td><td>待用户点头</td></tr>
+        <tr><td class="num">P1</td><td>P17 fail-fast 改为只在 <code>_castFinished</code> 时报；或引入 <code>CastEndReason</code> 三态</td><td>代码</td></tr>
+        <tr><td class="num">P1</td><td>按键意图剥离（<code>m_AttackRequested</code>），兼解「动画期间吃键」</td><td>代码</td></tr>
+        <tr><td class="num">P2</td><td><code>UnitBuffComponent</code> A 档（去 MonoBehaviour）+ 反查表挪为独立静态类</td><td>待拍板</td></tr>
+        <tr><td class="num">P2</td><td>敌人是否每轮清空技能；<code>SelectedEnemy</code> 分支补 <code>m_Target == null</code> 短路（会改变行为）</td><td>待拍板</td></tr>
+        <tr><td class="num">P2</td><td>19 个效果空桩待填（<strong>填补时必须从 <code>KnownStubIds</code> 移除该号</strong>），顺序：① 1 ImmedHeal / 5·14·21 击退三兄弟 / 23 Silence ② 4 Rigor / 19 Frozen ③ 6·7·8·11·15 位移族（需新 FSM 状态）</td><td>代码</td></tr>
+        <tr><td class="num">P2</td><td><code>SetDead</code>：Animator 为空时整体 return，连 <code>IsDead</code> 都不赋值</td><td>代码</td></tr>
+        <tr><td class="num">P2</td><td>既有每帧 NRE：<code>DoAutoFight()</code> → <code>AutoFightUpdate</code> 读 <code>CanAttack</code> 时 <code>CurCombatUnit</code> 为 null</td><td>代码</td></tr>
+        <tr><td class="num">P3</td><td>Animancer 接入（先 <code>AnimancerCastClock</code> + 玩家一个技能做最小闭环）</td><td>待拍板</td></tr>
+        <tr><td class="num">—</td><td><strong>配置补配（归用户）</strong>：11 个技能 <code>BuffID</code> 仍空 ⇒ AddBuff 空转；效果 3（Sneer）零配置；<strong>233 个技能 <code>SegCount=0</code></strong> ⇒ 动画照播不结算；<code>EffectData</code> 缺大量引用 id</td><td>用户</td></tr>
+        <tr><td class="num">—</td><td><code>ani_IdleState="Idle"</code> 而敌人 GBL 状态名是 <code>idle</code> ⇒ 敌人 <code>IsInIdleState</code> 恒 false（未修）</td><td>用户/代码</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <p>战斗框架演化全史 · BttleFreamwork-v1 · 2026-09-03 → 2026-10-10</p>
+  <p>史料来源：<code>Assets/.workbuddy/memory/</code> 全部工作日志与 MEMORY 归档 · 交付语言：简体中文</p>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var nodes = document.querySelectorAll('.tl-node');
+  for (var i = 0; i < nodes.length; i++) {
+    (function (node) {
+      node.addEventListener('click', function () {
+        var id = node.getAttribute('data-target');
+        var el = document.getElementById(id);
+        if (!el) { return; }
+        for (var j = 0; j < nodes.length; j++) { nodes[j].classList.remove('active'); }
+        node.classList.add('active');
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    })(nodes[i]);
+  }
+})();
+</script>
+
+</body>
+</html>

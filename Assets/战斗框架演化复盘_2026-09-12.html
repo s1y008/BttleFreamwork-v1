@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="DgCKrSY4XhokDvbTL32Yfd">
+<head data-page-node-id="VorHAGT1G1drFQBmLvDQIQ">
+<meta charset="UTF-8" data-page-node-id="sATZ3HUormZPQF7oGuGNMT">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="r2KEof4u4azcj4MvA5mzZ9">
+<title>战斗框架演化复盘 · 2026-09-12</title>
+<style>
+  :root {
+    --bg-primary: #0a0e27;
+    --bg-card: #0f1535;
+    --bg-elevated: #161b40;
+    --border: rgba(99, 102, 241, 0.15);
+    --border-hover: rgba(99, 102, 241, 0.4);
+    --text-primary: #e8eaf6;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    --code-bg: #1a1f3a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    font-size: 15px;
+    background-image:
+      radial-gradient(at 20% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+      radial-gradient(at 80% 70%, rgba(168, 85, 247, 0.06) 0%, transparent 50%);
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 48px 32px; }
+  /* Cover */
+  .cover { text-align: center; padding: 80px 0 60px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+  .cover-tag {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 1px solid var(--border-hover);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--accent-light);
+    background: rgba(99, 102, 241, 0.05);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .cover h1 {
+    font-size: 48px;
+    font-weight: 700;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+  .cover-subtitle { font-size: 18px; color: var(--text-secondary); margin-bottom: 32px; }
+  .cover-meta { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; color: var(--text-muted); font-size: 14px; }
+  .cover-meta span { display: flex; align-items: center; gap: 8px; }
+  .cover-meta .dot { width: 4px; height: 4px; background: var(--accent); border-radius: 50%; }
+  /* TOC */
+  .toc {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 32px;
+    margin-bottom: 48px;
+  }
+  .toc h2 { font-size: 16px; color: var(--accent-light); margin-bottom: 16px; letter-spacing: 0.5px; }
+  .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 32px; }
+  .toc-grid a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 4px 0;
+    transition: color 0.2s;
+    border-left: 2px solid transparent;
+    padding-left: 12px;
+  }
+  .toc-grid a:hover { color: var(--accent-light); border-left-color: var(--accent); }
+  .toc-grid .num { color: var(--text-muted); margin-right: 8px; font-family: 'JetBrains Mono', monospace; }
+  /* Section */
+  section { margin-bottom: 64px; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent-light);
+    background: rgba(99, 102, 241, 0.1);
+    padding: 4px 12px;
+    border-radius: 6px;
+  }
+  h2.section-title { font-size: 28px; font-weight: 600; letter-spacing: -0.5px; }
+  h3 { font-size: 20px; font-weight: 600; margin: 32px 0 16px; color: var(--accent-light); }
+  h4 { font-size: 16px; font-weight: 600; margin: 24px 0 12px; color: var(--text-primary); }
+  p { margin-bottom: 12px; color: var(--text-secondary); }
+  /* Card */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border-hover); }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--accent-light); margin-bottom: 12px; letter-spacing: 0.3px; text-transform: uppercase; }
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    background: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 14px;
+  }
+  th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+  th {
+    background: var(--bg-elevated);
+    color: var(--accent-light);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td { color: var(--text-secondary); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(99, 102, 241, 0.04); }
+  /* Code */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--accent-light);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  pre code { background: none; padding: 0; color: var(--text-primary); }
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-right: 6px;
+  }
+  .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+  .badge-warn { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+  .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge-info { background: rgba(99, 102, 241, 0.15); color: var(--accent-light); border: 1px solid rgba(99, 102, 241, 0.3); }
+  /* 4-Element grid */
+  .four-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .element-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .element-card.pain { border-left-color: var(--danger); }
+  .element-card.resolve { border-left-color: var(--success); }
+  .element-card.why { border-left-color: var(--warning); }
+  .element-card.origin { border-left-color: var(--accent-light); }
+  .element-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent-light);
+    margin-bottom: 12px;
+  }
+  .element-card.pain .element-label { color: var(--danger); }
+  .element-card.resolve .element-label { color: var(--success); }
+  .element-card.why .element-label { color: var(--warning); }
+  .element-card.origin .element-label { color: var(--accent-light); }
+  .element-card p { color: var(--text-primary); font-size: 14px; margin: 0; }
+  /* Timeline */
+  .timeline { position: relative; padding-left: 32px; margin: 24px 0; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent-light) 50%, var(--success));
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 24px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -28px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    border: 3px solid var(--bg-primary);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .timeline-item.done::before { background: var(--success); box-shadow: 0 0 12px var(--success); }
+  .timeline-item.in-progress::before { background: var(--warning); box-shadow: 0 0 12px var(--warning); }
+  .timeline-date { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px; }
+  .timeline-title { font-size: 16px; font-weight: 600; color: var(--accent-light); margin-bottom: 8px; }
+  .timeline-desc { font-size: 14px; color: var(--text-secondary); }
+  /* SVG Container */
+  .svg-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 24px 0;
+    overflow-x: auto;
+  }
+  .svg-title { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; text-align: center; }
+  /* Stats grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-value { font-size: 32px; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 4px; }
+  .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+  /* Quote */
+  .quote {
+    border-left: 3px solid var(--accent);
+    background: rgba(99, 102, 241, 0.05);
+    padding: 16px 20px;
+    margin: 16px 0;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+  .quote .who { display: block; margin-top: 8px; font-style: normal; color: var(--accent-light); font-size: 13px; }
+  /* Mermaid-like flow */
+  ul { margin: 12px 0 12px 24px; }
+  li { margin-bottom: 6px; color: var(--text-secondary); }
+  li strong { color: var(--text-primary); }
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .comparison-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .comparison-card.bad { border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05); }
+  .comparison-card.good { border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.05); }
+  .comparison-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .comparison-card.bad .comparison-title { color: var(--danger); }
+  .comparison-card.good .comparison-title { color: var(--success); }
+  /* Footer */
+  footer { text-align: center; padding: 48px 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 13px; }
+  .footer-line { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600; }
+  @media (max-width: 768px) {
+    .container { padding: 24px 16px; }
+    .cover h1 { font-size: 32px; }
+    .toc-grid, .four-grid, .comparison-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    pre { font-size: 12px; }
+  }
+</style>
+</head>
+<body data-page-node-id="mZAicNru6rrcSdiB78YLIF">
+<div class="container" data-page-node-id="doHiKvTbQgcIl24PzTemw3">
+
+<!-- 封面 -->
+<div class="cover" data-page-node-id="l81U3ynCPLZdnVrL2tSOMc">
+  <div class="cover-tag" data-page-node-id="VK46UAQd0tM20Ki75s86LY">Battle Framework Evolution Review</div>
+  <h1 data-page-node-id="24ku1qQmK5NmwSR3hw7Xrr">战斗框架演化复盘</h1>
+  <div class="cover-subtitle" data-page-node-id="CKLJYFkN3NhvHTaOzMAVAU">从组件化 P3 收敛到段号驱动的完整演化路径</div>
+  <div class="cover-meta" data-page-node-id="m7m7J3hdyiuBdPE0tHD3z1">
+    <span data-page-node-id="0WI4IEzCt6xFxkQhedEs3u"><span class="dot" data-page-node-id="5Q0dM2hio0aIcoRrsFzY9n"></span>Unity 2022.3.62f2c1</span>
+    <span data-page-node-id="uEg74IEJxx0mRENsb86gFI"><span class="dot" data-page-node-id="CKjM8Ea6y6NLUuAivJqNCx"></span>蔡振立 · Unity 实训主任</span>
+    <span data-page-node-id="jbwtE3DBm8TfWyG29UimVh"><span class="dot" data-page-node-id="ebJnqr0bNBVbZeuQzy7tdu"></span>2026-09-12 沉淀</span>
+    <span data-page-node-id="Bo5rPhiJcqHF6ZWltCd2p6"><span class="dot" data-page-node-id="XVkh9ArIISLjLolIKSS12s"></span>v1.0 · 643 行</span>
+  </div>
+</div>
+
+<!-- 目录 -->
+<div class="toc" data-page-node-id="ky0tV9XqZMMV57OrBPJUR8">
+  <h2 data-page-node-id="AJ0OlhN8iHR9n9GyQkrDA0">目录 / Contents</h2>
+  <div class="toc-grid" data-page-node-id="Pg5jxYV9kw7Y6Bns9rLrx4">
+    <a href="#s1" data-page-node-id="WKeLHff8k54SAWBTVKKQWC"><span class="num" data-page-node-id="uGkxNOh3wnDRQhmjUXrrvi">01</span>现状评估 · 成熟度评分</a>
+    <a href="#s2" data-page-node-id="BWPTEf71ZddBGLoqWmIy6V"><span class="num" data-page-node-id="9UqLsMvgUa4NfSyKfnWeBV">02</span>演化历史 · 五阶段时间线</a>
+    <a href="#s3" data-page-node-id="MAnezgDwUugge9eQRuKPJ5"><span class="num" data-page-node-id="FGNkcUaJZkLdIb3wE2LGEU">03</span>核心议题 · 段号驱动问题</a>
+    <a href="#s4" data-page-node-id="w1Nh6OJANZ09wbEE5PBt4o"><span class="num" data-page-node-id="62PnrVQjFHMbwAm3FvYP8G">04</span>核心议题 · 特效分层演进</a>
+    <a href="#s5" data-page-node-id="6AgXEatUhjh9NnMIFN38oH"><span class="num" data-page-node-id="Qei7UwKOKwwGG7rePN0HNp">05</span>当前架构地图</a>
+    <a href="#s6" data-page-node-id="8RHtA5iQzYKoTVkKylEniV"><span class="num" data-page-node-id="D3Vn9ZjlFf8dhMeGuAhFJT">06</span>后续演化路线图</a>
+    <a href="#s7" data-page-node-id="XWVjtxvVfwatHjvK80Uvqk"><span class="num" data-page-node-id="y9IV4qDcgJwcfaW3ILDjoa">07</span>教训沉淀 · 给未来的自己</a>
+    <a href="#s8" data-page-node-id="dM2dc5BfvxbTIcBZte7K2B"><span class="num" data-page-node-id="KWny9NH3mI6BQ9poIBPJLx">08</span>附录 · 完整代码与回滚</a>
+  </div>
+</div>
+
+<!-- §1 现状评估 -->
+<section id="s1" data-page-node-id="pSH8n9fECFnaEARuPkVvVx">
+  <div class="section-header" data-page-node-id="1JUCcLxN6HJsswXLJDY9Z9">
+    <span class="section-num" data-page-node-id="gIQeDvSA6qQRby4DwiWGSJ">§ 01</span>
+    <h2 class="section-title" data-page-node-id="v09Rl3v4mnYld9ONAs1Utf">现状评估 · 成熟度评分</h2>
+  </div>
+
+  <div class="stats-grid" data-page-node-id="hinHBB8iAgujkWejc9gTnv">
+    <div class="stat-card" data-page-node-id="Evxq0I2FbiAT95JNQwFnkh">
+      <div class="stat-value" data-page-node-id="SDKkTVskiu3r2YkEeR89EZ">5.4</div>
+      <div class="stat-label" data-page-node-id="JNfKGJ7JJeozLeNyULRUoX">整体成熟度 / 10</div>
+    </div>
+    <div class="stat-card" data-page-node-id="5Ct05t4vhOlsISPmdhCB8s">
+      <div class="stat-value" data-page-node-id="9Jr8ZrG4xl4we3GnGFNYZP">14/14</div>
+      <div class="stat-label" data-page-node-id="DKFF3DLkJRM8Wk4Ax6gInR">事件总线闭环</div>
+    </div>
+    <div class="stat-card" data-page-node-id="V6syhs8GEj6QUBTTrVdxj3">
+      <div class="stat-value" data-page-node-id="JDjVNxj1jxl8UokC0l0GBA">3</div>
+      <div class="stat-label" data-page-node-id="YzEF8ClGSlJZb16K5YQ2dk">待办 P1 缺陷</div>
+    </div>
+    <div class="stat-card" data-page-node-id="YfZ2Qm9eZ36Eqk579yWECo">
+      <div class="stat-value" data-page-node-id="oD68A944MCLRdBt8cHBEYn">4</div>
+      <div class="stat-label" data-page-node-id="XR7w1RQ3N9E8j2YgWDilCh">演化迭代轮次</div>
+    </div>
+  </div>
+
+  <div class="card" data-page-node-id="iBdDOO5IArEuN9YIiz6GzG">
+    <div class="card-title" data-page-node-id="ws2OMbHgXhED5avWAw0Y2C">架构总览</div>
+    <table data-page-node-id="vhTfe4ZMUBNB0Yuy9iAqSx">
+      <thead data-page-node-id="nEFaZgrgYsl7r5JqKx68ey"><tr data-page-node-id="lBfXUcalWMJCxoHafg7aLw"><th data-page-node-id="ZnZTJkuAiKFDdP95nMvHRt">层级</th><th data-page-node-id="RsbPl8iPcJqeXqoLSmIGGL">模块</th><th data-page-node-id="Dp7C6gEK9jsi3dAn316Amd">状态</th><th data-page-node-id="SO0CSRFbCFu4BeDorrKn9J">备注</th></tr></thead>
+      <tbody data-page-node-id="kWlp4TdtbziBZBOnLgIVy1">
+        <tr data-page-node-id="nva6dJD3csf1Pxzroang3A"><td data-page-node-id="uvNOlm6C8pb19ZQJbW1Osw">数据层</td><td data-page-node-id="4IYcBfyICk1EWsQwI2xuq8">BattleData / Skill / CombatUnit</td><td data-page-node-id="3wrBn7EfYRNpGmjBOjPmWe"><span class="badge badge-success" data-page-node-id="X5GC5RS0EzEejE10q81WUs">已组件化</span></td><td data-page-node-id="B0TJrE4LJrVYEAh4oQHcbn">BattleEntity 接口统一,Legacy 已删</td></tr>
+        <tr data-page-node-id="mErHZ7HSK8DoV5FaTPG93Y"><td data-page-node-id="ptl2SSDzhswdfr6SSZJmAF">控制层</td><td data-page-node-id="vxHgHegGlt56dSwmZ0fCEB">CombatUnitController / AttackNpcController / WarrorController</td><td data-page-node-id="6oYSOtE6pjcx9su7cg70xL"><span class="badge badge-success" data-page-node-id="rhIf8lkMaNUA5UzXPBwM3q">已统一</span></td><td data-page-node-id="Dzsq79pfhrraDUVax50Qmy">三个 Controller 共用同一基类</td></tr>
+        <tr data-page-node-id="jKFkYpxQdmuT6vKkfSFjOp"><td data-page-node-id="ttWnAtwKsFbkHHKQg6mW19">状态机</td><td data-page-node-id="J88BdKmllqX4c4saCWwE2v">CombatState / CombatStateMachine / CombatStates</td><td data-page-node-id="UDsepFFBI9wrbOBB0Ltrst"><span class="badge badge-success" data-page-node-id="E9zS2PTeIsaFTf1o8VXwh1">FSM 已落地</span></td><td data-page-node-id="ek8dTleWlvCaf0DOV0O8hb">7 状态:Idle/Move/Attack/Stun/Silence/Knockback/Dead</td></tr>
+        <tr data-page-node-id="Ux4l3vk6JXXNOnAosuHsGH"><td data-page-node-id="dxS9oLBwVWND1YVbV5wru1">事件总线</td><td data-page-node-id="Yu4oFVzDEEE2C9ae0daT1k">BattleEventBus (14/14)</td><td data-page-node-id="1vnOvaTwKeDAFdVrK4g2OB"><span class="badge badge-success" data-page-node-id="VPh9H9016gw4U9uh0fB0Of">全闭环</span></td><td data-page-node-id="1nLBH2EEsllVFg9uIeKUFT">订阅/发布/解订阅链路完整</td></tr>
+        <tr data-page-node-id="6Rf6YVAUKYUvnfHFzB7M9v"><td data-page-node-id="eSHsE2OJ4vg0dGmGfwRO3y">Buff 系统</td><td data-page-node-id="ZmMIZaCnYjddVenGDu8RxP">UnitBuffComponent / BufferSystem</td><td data-page-node-id="09affL4lbBUZX9DUb9sytO"><span class="badge badge-warn" data-page-node-id="rqWlYyaXBap9yudAV4HTCB">集成中</span></td><td data-page-node-id="RVbM8KMPBZavbxSxmfxs5J">HasHardControlBuff 已接,但 P1 待修</td></tr>
+        <tr data-page-node-id="TQEojaZAWqqYegqHnNaTn8"><td data-page-node-id="99R9iNCU9wC4fRsCMEfKbT">特效层</td><td data-page-node-id="MPiqmPW5vjaC49WJoYE9AK">EffectManager / EffectDot</td><td data-page-node-id="vZFio2iFHr00ZHBOmuhKke"><span class="badge badge-warn" data-page-node-id="68KG9kmarqbm8h9NX7UVoi">分层缺失</span></td><td data-page-node-id="HcPEeDpERu6CBuWt9jLMev">无"出手特效"层,无 HitStop</td></tr>
+        <tr data-page-node-id="AvFtVniH16B1uqu7IiFeWV"><td data-page-node-id="aj5ba42GrCGgUikBopVSG5">段号驱动</td><td data-page-node-id="9pwK3DlPLZfFSVDVvH3zJU">Skill.m_SegIdx / BeginNextSegment</td><td data-page-node-id="tmFynn4pElHDSOHzHO0W2N"><span class="badge badge-danger" data-page-node-id="rAxZFiGhL48M4V2jqHjhwY">重构中</span></td><td data-page-node-id="u9tkMwl40SdDyIG7Dq5Hmr">Animation Event 方案失败,待迁移到 FSM.OnUpdate</td></tr>
+        <tr data-page-node-id="uEEwBCqF59t9hpUApx2rao"><td data-page-node-id="7hmiSwGwrSDHcCydFGl919">配置驱动</td><td data-page-node-id="kImwEvNJeSRBf5RtbPOwKw">CSV / ScriptableObject</td><td data-page-node-id="STHge0R43dWFX3LCqiV4ue"><span class="badge badge-warn" data-page-node-id="8O40l4LdCuZJ7RUx5qGaUq">字段不全</span></td><td data-page-node-id="Fev7HTh6D2ItJsBmVQQ6vZ">待加 SegTimings / CastEffectIds 字段</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 data-page-node-id="Dy1fmCEeFmtFhAFbTf9Jsd">关键缺陷清单(P1 · 必须解决)</h3>
+  <table data-page-node-id="A9b3DDZCPdksyQwtiPTEDp">
+    <thead data-page-node-id="2tPgIFMvThnI2vIG0DFtsF"><tr data-page-node-id="cO15A4sXuDgtmemlkq73Vi"><th data-page-node-id="eMXOJ4bKxD5Q7xt9baiCPn">编号</th><th data-page-node-id="ejGzHUk1wGL7IY11xWz0Z9">缺陷</th><th data-page-node-id="5iMDkywecxKuGtlx4Voys9">影响</th><th data-page-node-id="FEIr10V922yLif7D7S5E4I">当前状态</th></tr></thead>
+    <tbody data-page-node-id="enhJ6hBr7YLKEON8DfPDrf">
+      <tr data-page-node-id="dIwfOgGctq1OvnrEqLt3WX"><td data-page-node-id="v3fP1e1YBG7ZH0tulCtvfq">P1-01</td><td data-page-node-id="YTYnVTvz2ZoJxGO5mTEwzZ">CombatStateComponent 未注册 Stun 状态</td><td data-page-node-id="gmJzTZBvCUGgQxICuwuCKc">眩晕 Buff 无视觉反馈</td><td data-page-node-id="P2jTZt6GmS2MP2DSMQjIXN"><span class="badge badge-warn" data-page-node-id="4ohHxlYgA2TDmqO5FqTM0M">待修</span></td></tr>
+      <tr data-page-node-id="6Dbg5tnoJ5uYbVAsTyDs1h"><td data-page-node-id="3iRlXwHjvxFZeCns57pCLy">P1-02</td><td data-page-node-id="WjoFP8L7dBuzjXPlrHE5zn">CombatStateComponent 未注册 Silence 状态</td><td data-page-node-id="F221E06FUkYB9YW5RuRbQo">沉默 Buff 无法阻断技能</td><td data-page-node-id="7h4nP1jYvBW1IasCLCdbX7"><span class="badge badge-warn" data-page-node-id="dw0FqiEcI4oBNQvWnASTTv">待修</span></td></tr>
+      <tr data-page-node-id="JxJYFQYQgEiVtU7AO1rNvC"><td data-page-node-id="usEVHwzcoxAhbKxkban1sj">P1-03</td><td data-page-node-id="18RKaC8i4oFNFcBsv5Hjf3">CombatStateComponent 未注册 Knockback 状态</td><td data-page-node-id="ZaUKgy8LlPtVObkO4HVXo1">击退效果穿模</td><td data-page-node-id="WsBxyKUMF2GJY2rrx4a5eB"><span class="badge badge-warn" data-page-node-id="kCsqHl6pw8upHEvswNwipI">待修</span></td></tr>
+      <tr data-page-node-id="NUSn4Ue4A4GkiVuhECf09y"><td data-page-node-id="atIv5pKYpH7L9Xp5b2780b">P1-04</td><td data-page-node-id="jjEWRVzf2fqN7b0SWXbOB5">段号驱动机制存在竞态 bug</td><td data-page-node-id="M2A0OyuSPDMNRYxhoYUF3d">多段技能特效错位</td><td data-page-node-id="4JBKo0aI0T0aLfnDXwt5M0"><span class="badge badge-danger" data-page-node-id="ZgjkRGRri3SaXynAbHw3eO">本文档核心议题</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §2 演化历史 -->
+<section id="s2" data-page-node-id="Lf2KF994oNQzr6J699ZBoU">
+  <div class="section-header" data-page-node-id="xl4UFhTMiOgpQ641OsCbKT">
+    <span class="section-num" data-page-node-id="AlYHKLysCBxG2et28Tj4Ay">§ 02</span>
+    <h2 class="section-title" data-page-node-id="mY0OWpxzrlcZTbJn0lqiOw">演化历史 · 五阶段时间线</h2>
+  </div>
+
+  <p data-page-node-id="q25pke8bTscMobUfl85ZCL">战斗框架不是一次性设计出来的,而是在一次次"原状 → 痛点 → 解决"的循环里长出来的。下面这张时间线把过去 9 天的演化分成 5 个阶段。</p>
+
+  <div class="timeline" data-page-node-id="6ZR5iLUGDLKgf3xSBec0sF">
+    <div class="timeline-item done" data-page-node-id="Bj8eIbrHgOrWe5JXwvUqva">
+      <div class="timeline-date" data-page-node-id="VrfFq6cfF3PmgdUD3QmBYG">2026-09-03 → 09-07</div>
+      <div class="timeline-title" data-page-node-id="f7e27bGJVLB6z0eFArHDJC">阶段 0 · 旧框架盘点(基准线)</div>
+      <div class="timeline-desc" data-page-node-id="PxxqYTT8EFKUZmDfhIx61w">代码全在 CombatUnitController.cs(单文件 1500+ 行),Skill / Buff / State 三个系统耦合在一起。新增任何功能都要改这个文件。深度评估报告打分 4.6/10,列出 20 个缺陷。</div>
+    </div>
+
+    <div class="timeline-item done" data-page-node-id="lng3kT7KlGOBOaDf8QO7iE">
+      <div class="timeline-date" data-page-node-id="DuAUVXI3CyqiTrLntBRkS4">2026-09-08 → 09-09</div>
+      <div class="timeline-title" data-page-node-id="r2PGkvVuG8tHCjJ7NtkgZ5">阶段 1 · P3 收敛 · 组件化拆分</div>
+      <div class="timeline-desc" data-page-node-id="MtYyFq5P6wcO4dveHkeHBG">
+        把单文件 CombatUnitController.cs 拆成 4 层:
+        <ul data-page-node-id="pzuvbjgBozJnEA8V8MaGTP">
+          <li data-page-node-id="6jo6RGpMHeYWEnRbKPa0Cl"><strong data-page-node-id="SdxZFNMDaE7n2uEsyxty74">BattleData</strong>:数据层(Skill / CombatUnit / Warrior / AttackNpc)</li>
+          <li data-page-node-id="bPkhofrvR1BDPeZDfEPqk3"><strong data-page-node-id="rbYpwAV2ATfkIz3bcxasK7">Controller</strong>:控制层(3 个 Controller + UnitBuffComponent)</li>
+          <li data-page-node-id="ZUtHIp6h7l6WMI6bO4qMrt"><strong data-page-node-id="KKGMcOZDZ2KxHsz4dBw4YG">StateMachine</strong>:状态机(CombatState / CombatStateMachine / CombatStates)</li>
+          <li data-page-node-id="HQC2jo9C7VHOO8iM8a5Iu1"><strong data-page-node-id="cOBrF0wT5XPoLkz4YMKgSM">BufferSystem</strong>:Buff 系统</li>
+        </ul>
+        BattleEntity 接口统一,14/14 事件总线闭环,<strong data-page-node-id="cb1iXTgqBTUxlRsGCIziEC">Legacy 代码于 2026-09-19 全部删除</strong>。
+      </div>
+    </div>
+
+    <div class="timeline-item done" data-page-node-id="0RKydjMIJNAN56t1UJOyl2">
+      <div class="timeline-date" data-page-node-id="KfegNd3Zol16zKzlCNvH2L">2026-09-10 → 09-11</div>
+      <div class="timeline-title" data-page-node-id="dIu6X6dWCmLbhWf1vyQFti">阶段 2 · P1 部分修复 · Buff↔FSM 集成</div>
+      <div class="timeline-desc" data-page-node-id="QY0CJ1vDT3PnpTC7KKBVwQ">
+        Phase C 完成:
+        <ul data-page-node-id="hyPli08HtfHmwQ4cKgaXE1">
+          <li data-page-node-id="xFkL70MFPJQJ6UQeC3Gfq1">Controller 加 <code data-page-node-id="mxAMflQYBNrzwk3GlTeiK0">HasHardControlBuff()</code> / <code data-page-node-id="9B0jDdXBPDn4rKnLDBhpRd">SyncControlStateFromBuffs()</code></li>
+          <li data-page-node-id="YGZwV9w5jangLHtqLjlRhH">各状态查询 BuffSystem 决定是否允许转换</li>
+          <li data-page-node-id="QHmmuTYc1Iob6WRDqR1vTK">BufferData.csv 加 Stunned / Silenced 字段</li>
+          <li data-page-node-id="4qALVPkA71xGIeNCMn8jhY">成熟度从 4.6 → 5.4,缺陷从 20 → 17</li>
+        </ul>
+        <strong data-page-node-id="E7B4sK3C9YEaTw6YAv4V51">遗留 3 个 P1 缺陷</strong>(Stun/Silence/Knockback 状态未注册)本文 §1 已列。
+      </div>
+    </div>
+
+    <div class="timeline-item in-progress" data-page-node-id="CMeDiJFG3PumLvVjT0IPSi">
+      <div class="timeline-date" data-page-node-id="CDL0YKs4d2VGYBbGlx9zsF">2026-09-11 → 09-12</div>
+      <div class="timeline-title" data-page-node-id="p83gNfsNHEqp4RcS6V5oa4">阶段 3 · 段号驱动问题演化(本文核心)</div>
+      <div class="timeline-desc" data-page-node-id="4o3ZQyNLqk60Ojq7Ezj9yC">
+        蔡振立提出"每段攻击对应不同特效"的需求,经过 4 轮方案迭代:
+        <ul data-page-node-id="gFEHni7PqtuoqhqU1PIAdo">
+          <li data-page-node-id="fLGvJGT83iTwJ7D7meTaOG"><strong data-page-node-id="YAN2WvqhDz3DVnjDLH1stl">v1 失败</strong>:Animation Event + 反射 + 计数器自增(2 个 bug)</li>
+          <li data-page-node-id="5BvOwqONVerRv8wUd3rBVA"><strong data-page-node-id="7t6QqBL4ZXiEa3wPmyEdLA">v2 失败</strong>:isNewExecution + 30 帧阈值(阈值 bug)</li>
+          <li data-page-node-id="JNrs4wOkI1gTNlDlgZODbQ"><strong data-page-node-id="u4f7FB2nqUZc2w0xxbA8KC">v3 部分成功</strong>:删除 30 帧阈值,改 Time.time 兜底</li>
+          <li data-page-node-id="68prc5d0PkdMopK6qpr2XP"><strong data-page-node-id="VGPFPg1p2f4I88F0cuwVt9">v4 最终方案</strong>:AnimatorStateInfo.normalizedTime + FSM.OnUpdate 主动推进(本文 §3 详解)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item" data-page-node-id="BkzCu8wNaXxQEXm9Hhumdt">
+      <div class="timeline-date" data-page-node-id="zGDVIcR4XrTsj7Er43ke3G">未来 · 待启动</div>
+      <div class="timeline-title" data-page-node-id="eQmLMS5G5G7cQEsiyLmWUo">阶段 4 · 特效分层 + 配置驱动</div>
+      <div class="timeline-desc" data-page-node-id="gFvTiRisJpNAOor8ulxb0P">
+        在段号驱动落地后,推进:
+        <ul data-page-node-id="RJkU2FamA3FoVHJpEDlaec">
+          <li data-page-node-id="EAwiwsIRGVlAOnJZcqk4OJ">特效三层分离:castEffect / impactEffect / reactionEffect</li>
+          <li data-page-node-id="loocdvMCPxHRzsuHcTnB5m">CSV 加 SegTimings / CastEffectIds 字段</li>
+          <li data-page-node-id="eEIj8cCqAsgqAS8b1PkCmB">Animator Animation Event 数量从 500 个降到 0 个</li>
+          <li data-page-node-id="WORuyywTKAsdnAotAK2xyu">HitStop / Reaction 系统</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 核心议题:段号驱动 -->
+<section id="s3" data-page-node-id="gaHRC93Xj3ejZCSIYLwdDn">
+  <div class="section-header" data-page-node-id="hmc20n3L1Zc79cYoXB00yo">
+    <span class="section-num" data-page-node-id="9dM14oGAXvCQY4rxwIFe0L">§ 03</span>
+    <h2 class="section-title" data-page-node-id="wlKOgdh1pGBbIjts5FqzWf">核心议题 · 段号驱动问题</h2>
+  </div>
+
+  <p data-page-node-id="JoNxbs1mp6Ch4H0aBL3VA3">这一节是整篇文档的核心,按你要求的"原状 / 痛点 / 解决 / 为什么演化"四要素组织。</p>
+
+  <h3 data-page-node-id="lJ1TYN3F6htu1AkLoa723n">3.1 原状 · 演化起点是什么样</h3>
+  <div class="card" data-page-node-id="i9vPq56YfcLHYal49FeMo0">
+    <div class="card-title" data-page-node-id="uX6lYEeJ9uRQY6FKrHnVEA">改造前 · 攻击流程</div>
+    <pre data-page-node-id="3FzcugVc9qrSxth5rjKCLr"><code data-page-node-id="KqxCmuDcypKBzZh8BNDxCW">// 动画师在 AnimationClip 中手动配置 OnSkillCase Event
+// 玩家攻击动画的"判定帧"放一个 Event,Function=OnSkillCase, String="10002,0.5,200"
+
+// CombatUnitController.cs - 反射入口
+private void OnSkillCase(string args)
+{
+    int skillId = int.Parse(args.Split(',')[0]);
+    var skill = CurCombatUnit.GetSkill(skillId);
+    skill.SetSkillCaster(this, m_Target);
+    skill.SkillHit();          // → ImmedDamage → OnDamaged → OnAttackEffect(hitEffects[0])
+}
+
+// Skill.cs - 受击特效配置
+public List<int data-page-node-id="DLya6i3sGL414RMMwZeCE2"> hitEffects = new List<int data-page-node-id="1eHdbs2HaNoRnKWdQHssoJ"> { 3001, 3002, 3003 };</code></pre>
+    <p style="margin-top:12px" data-page-node-id="S28rgWmkoyK4K65awl5G5g">改造前所有特效都用 <code data-page-node-id="zp3jVEoATy3GkJpFBKZR5a">hitEffects[0]</code>(永远是第 0 个),因为"按段号索引"这件事根本没建模。</p>
+  </div>
+
+  <div class="comparison-grid" data-page-node-id="lM1fpsEbb9cJ8Orz44D3iN">
+    <div class="comparison-card good" data-page-node-id="uBH9lYhuRhPSz300eQ5CiP">
+      <div class="comparison-title" data-page-node-id="l7ywf34FklIh6ogasoVay7">✓ 改造前能跑</div>
+      <ul data-page-node-id="zhWatMLk7qpVRMuO7p0WJs">
+        <li data-page-node-id="AWwp0ViGUY9kH0ZaCxaY5S">单段技能:火花能正常播放</li>
+        <li data-page-node-id="5ScbkojZdbjwOBJP2nU44y">伤害计算无问题</li>
+        <li data-page-node-id="3BUVd17zZtgQOWtU2R9UHx">AnimationClip Event 配置后能触发</li>
+      </ul>
+    </div>
+    <div class="comparison-card bad" data-page-node-id="GWIriL5fZd6Fv9uFTJ3Ibl">
+      <div class="comparison-title" data-page-node-id="ndDkYAf89IqxLg3LctQzob">✗ 改造前的局限</div>
+      <ul data-page-node-id="yMrEwDS9TGBuQbW2KBlvg1">
+        <li data-page-node-id="XDpGtYlxugjaIAX9KxNEjb">多段技能全部用同一个特效</li>
+        <li data-page-node-id="uHjADiWGqccJDFYfBeYe7Y">刀光(挥刀视觉)和火花(判定视觉)没分开</li>
+        <li data-page-node-id="sZaguQkgxwcZjxakoRucHY">玩家/技能/段数的乘积增长,工作量爆炸</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 data-page-node-id="GnxyirEXKf3y1cHJwsi16e">3.2 痛点 · 哪里不对劲</h3>
+  <div class="four-grid" data-page-node-id="6qt4ozXNDcXykNHyqHM0id">
+    <div class="element-card pain" data-page-node-id="NHzgDVDMz9k5Yssnp6iXYj">
+      <div class="element-label" data-page-node-id="Q6LBBn27Kw88AfHqREEbtn">痛点 01</div>
+      <p data-page-node-id="fEOuYCAoBXYBgClB1YR1lw">技能需要"第 1 段火花 + 第 2 段爆炸 + 第 3 段终结"的递进感,但当前所有段共用 <code data-page-node-id="mKPV1kkxxj2AeW4lgEqPSc">hitEffects[0]</code>。</p>
+    </div>
+    <div class="element-card pain" data-page-node-id="ANcYAH7fqCMFEf9t1cwJtq">
+      <div class="element-label" data-page-node-id="2ZPduxKNZpBzVSyAM7m5Qs">痛点 02</div>
+      <p data-page-node-id="xqujDTWCZm8B1H63rkw7A3">玩家挥刀需要"刀光跟随武器运动",但当前 <code data-page-node-id="vQHYhJ9HxlLpH8MNioUw4m">OnSkillCase</code> 只挂受击特效到敌人身上,玩家身上没有自己的特效。</p>
+    </div>
+    <div class="element-card pain" data-page-node-id="4OIhGnDuSoik2pvBMzxYL8">
+      <div class="element-label" data-page-node-id="KJRgfAzkNoWvBexfc1GmpC">痛点 03</div>
+      <p data-page-node-id="cPaDDt8dcCRArnyHXjj4Rs">规模化问题:10 玩家 × 5 技能 × 5 段 = 250 段伤害,每段至少 1 个 Event = <strong data-page-node-id="t91dofR7rPQXfohsnwAE3O">250~500 个 Animation Event</strong>需要动画师手动配置。</p>
+    </div>
+    <div class="element-card pain" data-page-node-id="53KYQfc3uhVCYTkd4aiVTV">
+      <div class="element-label" data-page-node-id="idGfdFb59GvcDBFQKCTiBH">痛点 04</div>
+      <p data-page-node-id="YDvp4DRxm1CKU1WGj69pCu">教学层面:学员改技能必须找动画师改 FBX,改帧时机要重开 Maya/Blender,门槛太高。</p>
+    </div>
+  </div>
+
+  <div class="quote" data-page-node-id="RKUjU3OpXTwtxxa4Pjq3kV">
+    "我现在做的游戏又不仅仅是一个玩家一个技能,我要做的游戏有可能有多个玩家。比如我现在有 10 个玩家,每个玩家的技能有 5 个,每个技能有 5 段以上的伤害……你还有没有更好的解决方案?可以加速开发的"
+    <span class="who" data-page-node-id="znowD66Q6KYpzUDIFJxFHv">— 蔡振立 · 2026-09-12 关键追问</span>
+  </div>
+
+  <h3 data-page-node-id="SERb9NrV2UsdfB2rtqISTH">3.3 解决 · 4 轮失败方案的演进</h3>
+
+  <table data-page-node-id="EGM4MrNAD4X2ThLyME9Yya">
+    <thead data-page-node-id="jHsDG7lV24uf3fIZVJ4LCx"><tr data-page-node-id="fQW79UbZp5k67Uns5ggGAC"><th data-page-node-id="2LDx4F3nZkCMFY9oPddNu4">版本</th><th data-page-node-id="j4KZ0dxDQZWe5OzJQnfEJC">方案</th><th data-page-node-id="uZMsgqOdgHkDMJMQrZieaJ">问题</th><th data-page-node-id="mzr9Ajtmb1XlwDegwCkdOc">失败原因</th></tr></thead>
+    <tbody data-page-node-id="OsNCWDRKCKFRewEbOtDP15">
+      <tr data-page-node-id="BDeOuddiYLXeaIaUcFxEmB">
+        <td data-page-node-id="VzeTUgDHV1BmTKjENjw08F"><span class="badge badge-danger" data-page-node-id="kV4HHNX1bREg650DXX9yBp">v1</span></td>
+        <td data-page-node-id="XSbo9olgnqAQ1KCot3XSws">Animation Event + 反射 + 计数器自增</td>
+        <td data-page-node-id="AnvdlX3IT6g4Lt7B1nrMgh">自测发现"释放一次技能计数器始终为 1"</td>
+        <td data-page-node-id="73inhlmpMeBTIFb58cKRkG"><code data-page-node-id="CIKUHGB9KulXGkVFrqXWvz">OnSkillCase</code> 内部多次调用 <code data-page-node-id="dDm3YcZLA5wTrb0MbsmFlT">SetSkillCaster</code>,每次都触发 <code data-page-node-id="wRC9KrGncgO406KCJaBoQc">ResetSegIdx()</code>,计数器永远归零</td>
+      </tr>
+      <tr data-page-node-id="ZRM5NGPH2ZFDkffx92GfoQ">
+        <td data-page-node-id="h2LUBCYkK1QKeSpBdqiqa2"><span class="badge badge-danger" data-page-node-id="8iAWOpu46hwHG7BAcu55G1">v2</span></td>
+        <td data-page-node-id="G16cmx4LeSy6E1cv1hCAQt">v1 + isNewExecution 30 帧阈值</td>
+        <td data-page-node-id="HLPwCZwFjaMoInOXy1AGK1">实测仍输出 1</td>
+        <td data-page-node-id="xN2n2kAQdUT7KuRJtmB9R7">段间隔超过 0.5 秒(典型 RPG 技能),<code data-page-node-id="E49bVL2CKk1JxsUyKIwLFs">isNewExecution</code> 被反复误判成 true,每次都 <code data-page-node-id="CoKHfqlXBfdzH6dFhWf2bf">ResetSegIdx</code></td>
+      </tr>
+      <tr data-page-node-id="De7xdSElgBsWRBAldRWwTQ">
+        <td data-page-node-id="2HrkK6fOnMtFI8cL6vDwtD"><span class="badge badge-warn" data-page-node-id="sY20Vsc255n1QfxuT8xzVK">v3</span></td>
+        <td data-page-node-id="KCda3FsuGGu7hBKERjufog">删除 30 帧阈值,改 Time.time 兜底 3 秒</td>
+        <td data-page-node-id="fxyZ2IGCN9QoE80VAh0eme">机制上可行但架构仍有问题</td>
+        <td data-page-node-id="FRB1VDapu9VDqBAEJSYFOX">仍依赖 Animation Event,500 个 Event 的规模化问题没解决</td>
+      </tr>
+      <tr data-page-node-id="2HRxOsHGuphoMCrsMdy15M">
+        <td data-page-node-id="VIHb0PD2S2XPGAQFl4AAya"><span class="badge badge-success" data-page-node-id="GAyBV8INEzCnZt6GRgyffu">v4</span></td>
+        <td data-page-node-id="6G26tnw17B2fgxXEwLsHEp"><strong data-page-node-id="bO6lArJ53g1WfcWJV6DT6r">AnimatorStateInfo.normalizedTime + FSM.OnUpdate 推进 + CSV 配置驱动</strong></td>
+        <td data-page-node-id="ySgfLLuBejaYtGvAX1xuqP">— 验证中 —</td>
+        <td data-page-node-id="USxxm5B5VK2wXjKIHbncIN">无 Animation Event,无反射,无计数器自增。段号由归一化时间跨过配置阈值触发。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4 data-page-node-id="yfiZlaauH2UwMeQFZREfha">v1 失败 · 根因分析</h4>
+  <div class="card" data-page-node-id="d7CnNnfGuhjJaOWYQUVud7">
+    <div class="card-title" data-page-node-id="WecxYk7AwHHBiMFwCDJZhK">反射入口内部多次调用 SetSkillCaster</div>
+    <pre data-page-node-id="isogp9civPGUoVyGs9dChr"><code data-page-node-id="EwKwK6238oDhxkiyLBdb4X">// OnSkillCase 内部(简化)
+private void OnSkillCase(string args)
+{
+    int skillId = int.Parse(args.Split(',')[0]);
+    var skill = CurCombatUnit.GetSkill(skillId);
+    
+    // ★ 错误源头:OnSkillCase 内部被调了 3~4 次 SetSkillCaster
+    //   每次 SetSkillCaster 又调 ResetSegIdx()
+    //   → 计数器永远从 0 开始,自增 1 次后被重置
+    skill.SetSkillCaster(this, m_Target);  // 第1次 ResetSegIdx
+    skill.SetSkillCaster(this, m_Target);  // 第2次 ResetSegIdx
+    // ...
+    
+    // 最后 BeginNextSegment() 自增 1 → 输出"1"
+    skill.BeginNextSegment();
+}</code></pre>
+  </div>
+
+  <h4 data-page-node-id="SmNQhTXgn7hi9x6IR1uDrk">v2 失败 · 阈值 bug</h4>
+  <div class="card" data-page-node-id="NFUwl9mKGHFlgvDkdWe04y">
+    <div class="card-title" data-page-node-id="s4dj5kOEOcFKFxOigHByig">30 帧阈值 ≈ 0.5 秒,典型 RPG 段间隔更长</div>
+    <pre data-page-node-id="Ha0eggDFok8dUtiEJn3Hxf"><code data-page-node-id="zEGUH9ClSfMOEPbhHMdEOZ">// v2 修复:在 OnSkillCase 入口判断 isNewExecution
+bool isNewExecution = skillId != m_LastOnSkillCaseSkillId
+    || Time.frameCount - m_LastOnSkillCaseFrame > 30;
+
+if (isNewExecution && m_CurSkill != null)
+    m_CurSkill.ResetSegIdx();   // ← 误判时反复归零
+
+m_LastOnSkillCaseSkillId = skillId;
+m_LastOnSkillCaseFrame = Time.frameCount;</code></pre>
+    <p style="margin-top:12px" data-page-node-id="gz15aYAi6UwSb3CZ1sDrQ8"><strong data-page-node-id="Ku6b2GIIaQ022Sk7oFCGg8">问题</strong>:典型 RPG 技能段间隔 ≥ 1 秒(动画蓄力 + 攻击 + 收招),30 帧阈值让"同一段内的多个反射调用"被误判成"新一轮",每次都归零,BeginNextSegment 永远从 0 → 1。</p>
+  </div>
+
+  <div class="quote" data-page-node-id="4xfksLUfFACN9rj71Eobc5">
+    "段间隔 > 阈值"不是"新一轮执行"的可靠信号。真正的"新一轮"信号是 FSM 状态机的转换点(Attack→Idle)。同一"重置职责"在多处冗余实现 = 必然有 bug。
+    <span class="who" data-page-node-id="MLaBxiGo52HWHpJPtfpoDP">— 沉淀教训</span>
+  </div>
+
+  <h3 data-page-node-id="HmZIH3I0B8wuRGRtuKgcNE">3.4 解决方案 · v4 最终方案</h3>
+  <div class="card" data-page-node-id="5EbcG8VyXhGxmVDkpeqBTn">
+    <div class="card-title" data-page-node-id="kZbCRYG24wClX3cItv5iqG">核心思路 · 三句话</div>
+    <ol data-page-node-id="X3W9D2biCRjrb7psCRwHoN">
+      <li data-page-node-id="kyno4tys2NcKlvCBRrsbcb"><strong data-page-node-id="xQEsEA7uHYK3HTJfUzL3It">段号不由 Animation Event 决定</strong>,而由 AttackState.OnUpdate 每帧检查 <code data-page-node-id="N4rVJc95ThQNeC9CXcBdt1">AnimatorStateInfo.normalizedTime</code> 推进</li>
+      <li data-page-node-id="FHeKN1EOmeyM8Yz3sfeOnH"><strong data-page-node-id="8rETeDxojTkGUiwuNKGjFx">段数 / 时机从 CSV 读取</strong>,策划配表而不是改 FBX</li>
+      <li data-page-node-id="lHgKDRsRIfMwdAqGhH1D2v"><strong data-page-node-id="0co0ePBtr5ToBIvzmy9Naw">重置职责唯一化</strong>:IdleState.OnEnter 是唯一主重置点,AttackState 只负责推进</li>
+    </ol>
+  </div>
+
+  <h4 data-page-node-id="8fEBr2tgptMPdaBaoOecMN">v4 数据流图</h4>
+  <div class="svg-container" data-page-node-id="ktfR58pyciwvtOrRWXAnRs">
+    <div class="svg-title" data-page-node-id="j9GDbW7ecMjLC4PSD3KyL4">图 1 · 段号驱动数据流(从玩家按技能到敌人受击)</div>
+<svg viewBox="0 0 1100 540" xmlns="http://www.w3.org/2000/svg" data-page-node-id="zlaFxe7uVwQi1wemVGcyjc">
+  <defs data-page-node-id="LXCU6FClWcmEs1T6c4S8CC">
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%" data-page-node-id="Ho03Osx7sTYBOnxknYf5CR">
+      <stop offset="0%" style="stop-color:#6366f1" data-page-node-id="b3rFBhATfUvp0KDvLhqdLA"/>
+      <stop offset="100%" style="stop-color:#a855f7" data-page-node-id="uCrIIDzj0qVYAJ3vX73Mmn"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" data-page-node-id="DNNapbjLETLK8j6m440zRZ">
+      <path d="M0,0 L0,6 L8,3 z" fill="#818cf8" data-page-node-id="j1LO62ErdoD5kvaZHClnzy"/>
+    </marker>
+  </defs>
+
+  <!-- 顶部:CSV 配置 -->
+  <rect x="50" y="20" width="280" height="60" rx="8" fill="#161b40" stroke="#10b981" stroke-width="2" data-page-node-id="ty6c1WS5oWmNdPdkc6m4D7"/>
+  <text x="190" y="45" text-anchor="middle" fill="#10b981" font-size="13" font-weight="bold" data-page-node-id="Z7ByEo4397OxUEex2wrsDj">CSV 配置</text>
+  <text x="190" y="65" text-anchor="middle" fill="#9ca3af" font-size="11" data-page-node-id="YsHBJvSVmb3eDL6xr52Srg">SkillId=10002 | SegTimings=0.3;0.6;0.9</text>
+
+  <!-- 中间:FSM 推进 -->
+  <rect x="450" y="20" width="280" height="60" rx="8" fill="#161b40" stroke="#6366f1" stroke-width="2" data-page-node-id="gUY2ldUUafnDc5ESxW0lfC"/>
+  <text x="590" y="45" text-anchor="middle" fill="#818cf8" font-size="13" font-weight="bold" data-page-node-id="OMg0XI9g6cC0RMTnaBlmQp">AttackState.OnUpdate</text>
+  <text x="590" y="65" text-anchor="middle" fill="#9ca3af" font-size="11" data-page-node-id="1aSIxgkzHEU8IOlzxgSh7p">每帧检查 normalizedTime</text>
+
+  <!-- 顶部右侧:Animator -->
+  <rect x="850" y="20" width="200" height="60" rx="8" fill="#161b40" stroke="#f59e0b" stroke-width="2" data-page-node-id="XJcZAnI2oFRs4YpPQZ6adQ"/>
+  <text x="950" y="45" text-anchor="middle" fill="#f59e0b" font-size="13" font-weight="bold" data-page-node-id="kxExIIZadwhuvIkqcArlHc">Animator</text>
+  <text x="950" y="65" text-anchor="middle" fill="#9ca3af" font-size="11" data-page-node-id="Dz6z2KL5oSEvnUhXgdokfk">N_Guardian@Att</text>
+
+  <!-- 中部:Tick 循环 -->
+  <rect x="50" y="120" width="1000" height="180" rx="8" fill="#0f1535" stroke="#6366f1" stroke-width="1" opacity="0.6" data-page-node-id="oixmSAEScp7oL15Fhe2nrL"/>
+  <text x="60" y="142" fill="#818cf8" font-size="12" font-weight="bold" data-page-node-id="VdQynwRBOVwujzJjEJ8pV5">每帧 Tick 循环</text>
+
+  <rect x="80" y="160" width="220" height="40" rx="6" fill="#161b40" stroke="#6366f1" data-page-node-id="fcfu7Zn1eXRRbAJExh4d0Q"/>
+  <text x="190" y="185" text-anchor="middle" fill="#e8eaf6" font-size="12" data-page-node-id="k9ThRQM60S4FM5jyBECq7Q">info = GetCurrentAnimatorStateInfo</text>
+
+  <rect x="80" y="215" width="220" height="40" rx="6" fill="#161b40" stroke="#6366f1" data-page-node-id="O7M26V9kHa30EMgcFFo8A8"/>
+  <text x="190" y="240" text-anchor="middle" fill="#e8eaf6" font-size="12" data-page-node-id="4eSGLOTFKIlg3TNc4rrwjf">info.normalizedTime >= 0.3?</text>
+
+  <rect x="340" y="160" width="220" height="40" rx="6" fill="#161b40" stroke="#10b981" data-page-node-id="9Y6uRboolpCWGgMQloJOcr"/>
+  <text x="450" y="185" text-anchor="middle" fill="#10b981" font-size="12" font-weight="bold" data-page-node-id="jiCuUrH7mHhHBGZUaG6nRW">是 → 段号=1</text>
+
+  <rect x="340" y="215" width="220" height="40" rx="6" fill="#161b40" stroke="#10b981" data-page-node-id="dAf8jBnROQohGANqGFC2kw"/>
+  <text x="450" y="240" text-anchor="middle" fill="#10b981" font-size="12" font-weight="bold" data-page-node-id="A9gkavhBhDnMeoYC7GqFth">是 → 段号=2</text>
+
+  <rect x="340" y="270" width="220" height="40" rx="6" fill="#161b40" stroke="#10b981" data-page-node-id="1ZmwWMHaqseY2DRzARHnxI"/>
+  <text x="450" y="295" text-anchor="middle" fill="#10b981" font-size="12" font-weight="bold" data-page-node-id="FQ5ICf8LnMmnCF7Rx5KM6Y">是 → 段号=3</text>
+
+  <rect x="620" y="215" width="220" height="40" rx="6" fill="#161b40" stroke="#ef4444" data-page-node-id="G4WzoqkoxQH3KXDcstvcjJ"/>
+  <text x="730" y="240" text-anchor="middle" fill="#ef4444" font-size="12" font-weight="bold" data-page-node-id="vBHDvzTKnxCkSX8mD0TCgA">否 → 等待下一帧</text>
+
+  <!-- 下部:触发 -->
+  <rect x="50" y="330" width="1000" height="180" rx="8" fill="#0f1535" stroke="#a855f7" stroke-width="1" opacity="0.6" data-page-node-id="jldm6FSvwGhdxM4P1UUwS2"/>
+  <text x="60" y="352" fill="#c084fc" font-size="12" font-weight="bold" data-page-node-id="D2cCOYxDZXOWT4i8YWdKOc">段号触发链路</text>
+
+  <rect x="80" y="370" width="200" height="40" rx="6" fill="#161b40" stroke="#a855f7" data-page-node-id="oQDyISPuceON6U2KmaLDco"/>
+  <text x="180" y="395" text-anchor="middle" fill="#e8eaf6" font-size="12" data-page-node-id="AqVP8C8ooLaBhOid2yEnqr">TriggerSegmentHit(skill, segIdx)</text>
+
+  <rect x="80" y="425" width="200" height="40" rx="6" fill="#161b40" stroke="#a855f7" data-page-node-id="ZuVq32J0MWLSATAyk7EAJP"/>
+  <text x="180" y="450" text-anchor="middle" fill="#e8eaf6" font-size="12" data-page-node-id="fIUssunBoQB8PTQJX4lmJZ">skill.SkillHit()</text>
+
+  <rect x="320" y="370" width="200" height="40" rx="6" fill="#161b40" stroke="#10b981" data-page-node-id="EVtIsy4UC6aKBauyNXcwHk"/>
+  <text x="420" y="395" text-anchor="middle" fill="#10b981" font-size="12" data-page-node-id="lCtaBkPI4xzfrbwaPxilZ7">m_SegIdx = segIdx</text>
+
+  <rect x="320" y="425" width="200" height="40" rx="6" fill="#161b40" stroke="#10b981" data-page-node-id="2VGp3kW1HqskYnBpPMN7LQ"/>
+  <text x="420" y="450" text-anchor="middle" fill="#10b981" font-size="12" data-page-node-id="KtoxMSWBxqTBdAe5AOFR4b">SetSkillCaster</text>
+
+  <rect x="560" y="370" width="200" height="40" rx="6" fill="#161b40" stroke="#f59e0b" data-page-node-id="A5vuXFqCgZXcmUS1a2Irge"/>
+  <text x="660" y="395" text-anchor="middle" fill="#f59e0b" font-size="12" data-page-node-id="adA3s48Y9agFjY1tM6HfXr">ImmedDamage(target)</text>
+
+  <rect x="560" y="425" width="200" height="40" rx="6" fill="#161b40" stroke="#f59e0b" data-page-node-id="UcTw92LzHsdnhx2v3sSwZq"/>
+  <text x="660" y="450" text-anchor="middle" fill="#f59e0b" font-size="12" data-page-node-id="Y28PwGFIzojyAnz7rN8jCH">target.OnDamaged</text>
+
+  <rect x="800" y="395" width="220" height="60" rx="6" fill="#161b40" stroke="#ef4444" data-page-node-id="Obl26nqcpQEP996iLeajX0"/>
+  <text x="910" y="420" text-anchor="middle" fill="#ef4444" font-size="12" font-weight="bold" data-page-node-id="ta5YMVFzmGxAgA18ELOlmd">hitEffects[segIdx-1]</text>
+  <text x="910" y="440" text-anchor="middle" fill="#9ca3af" font-size="10" data-page-node-id="ZQyFE8yOnzKJCqDns5E6Lk">火花特效</text>
+
+  <!-- 箭头 -->
+  <line x1="190" y1="80" x2="190" y2="160" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrow)" opacity="0.5" data-page-node-id="RP7mLwiLs7hYwgJX3Kw52P"/>
+  <line x1="590" y1="80" x2="190" y2="160" stroke="#6366f1" stroke-width="1.5" marker-end="url(#arrow)" opacity="0.5" data-page-node-id="s5JtWsNmktXiDAJ03sRIrI"/>
+  <line x1="190" y1="200" x2="340" y2="180" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow)" data-page-node-id="IU4f63RvPTgYlhJpjHNR1x"/>
+  <line x1="190" y1="255" x2="340" y2="235" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow)" data-page-node-id="MSs5Zjzd97JZ8Cp8jXjrm4"/>
+  <line x1="190" y1="255" x2="620" y2="235" stroke="#6366f1" stroke-width="1" marker-end="url(#arrow)" opacity="0.4" data-page-node-id="PCD4pPqCEgDKEeADHjW6R5"/>
+  <line x1="180" y1="410" x2="180" y2="425" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arrow)" data-page-node-id="8LMrN4CDozfEw80BgrJEkV"/>
+  <line x1="280" y1="390" x2="320" y2="390" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arrow)" data-page-node-id="JiuG1rFloVGPVcJ7FPnwr5"/>
+  <line x1="280" y1="445" x2="320" y2="445" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arrow)" data-page-node-id="aUR8Gg8HvtxEE4WWp0FX0B"/>
+  <line x1="520" y1="390" x2="560" y2="390" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow)" data-page-node-id="mCD7a090pwtqTb2NrNI27K"/>
+  <line x1="520" y1="445" x2="560" y2="445" stroke="#10b981" stroke-width="1.5" marker-end="url(#arrow)" data-page-node-id="5hPbhitZjTOHCM5VqYs7Vp"/>
+  <line x1="760" y1="445" x2="800" y2="425" stroke="#a855f7" stroke-width="1.5" marker-end="url(#arrow)" data-page-node-id="nGXfmHDCvIztD2NvwXTJZB"/>
+</svg>
+  </div>
+
+  <h4 data-page-node-id="mXa0deOCCCqhuVI7SvLMmO">v4 完整代码 · AttackState.OnUpdate 推进</h4>
+  <div class="card" data-page-node-id="2i60RLS0SELhiHlBcF9kNu">
+    <div class="card-title" data-page-node-id="ECLiHTWa53ljVchuPnoBYB">CombatStates.cs · AttackState 段号推进</div>
+    <pre data-page-node-id="Y5rbbIGYZuImZooMHgA7hH"><code data-page-node-id="xQI8rU2NAANc6Bmjy6EUXA">public class AttackState : ICombatState
+{
+    private const float LEAVE_IDLE_GUARD_SECONDS = 5f;
+    private bool _leftIdle;
+    private float _elapsed;
+    
+    // ★ 新增:段号推进字段
+    private Skill _currentSkill;
+    private int _firedSegIdx;     // 已触发的段号(0 表示尚未触发)
+    private int _segCount;        // 本次技能总段数
+    private float[] _segTimings;  // 段时机(归一化 0~1)
+    private bool _castFired;      // 刀光是否已播(避免重入多次)
+    
+    public CombatState StateType { get { return CombatState.Attack; } }
+    
+    public void OnEnter(CombatUnitController owner, object context)
+    {
+        _leftIdle = false;
+        _elapsed = 0f;
+        _firedSegIdx = 0;
+        _castFired = false;
+        _currentSkill = null;
+        _segCount = 0;
+        _segTimings = null;
+        
+        // 从 context 拿 skillId,加载技能
+        if (context is int skillId && skillId > 0)
+        {
+            _currentSkill = owner.CurCombatUnit.GetSkill(skillId);
+            if (_currentSkill != null)
+            {
+                _currentSkill.SetSkillCaster(owner, owner.m_Target);
+                _segCount = _currentSkill.BaseData.SegTimings?.Length ?? 0;
+                _segTimings = _currentSkill.BaseData.SegTimings;
+            }
+        }
+    }
+    
+    public void OnUpdate(CombatUnitController owner, float deltaTime)
+    {
+        if (!_leftIdle)
+        {
+            if (!owner.IsAnimatorInIdleState)
+                _leftIdle = true;
+            else
+            {
+                _elapsed += deltaTime;
+                if (_elapsed >= LEAVE_IDLE_GUARD_SECONDS)
+                {
+                    owner.RequestState(CombatState.Idle);
+                    return;
+                }
+            }
+        }
+        else if (owner.IsAnimatorInIdleState)
+        {
+            // 动画播完 → 回 Idle (IdleState.OnEnter 兜底 ResetSkillSegIdx)
+            owner.RequestState(CombatState.Idle);
+            return;
+        }
+        else
+        {
+            // ★ 段号推进:normalizedTime 跨过 SegTimings[i] 就触发第 i+1 段
+            if (_currentSkill != null && _segTimings != null && _firedSegIdx < _segCount)
+            {
+                var info = owner.GetCurrentAnimatorStateInfo();
+                if (info.normalizedTime >= _segTimings[_firedSegIdx])
+                {
+                    _firedSegIdx++;
+                    owner.TriggerSegmentHit(_currentSkill, _firedSegIdx);
+                }
+            }
+            
+            // ★ 刀光特效:在第一段伤害触发前 5% 时播(挂到武器,自然消亡)
+            if (!_castFired && _segTimings != null && _segCount > 0)
+            {
+                var info = owner.GetCurrentAnimatorStateInfo();
+                if (info.normalizedTime >= Mathf.Max(0, _segTimings[0] - 0.05f))
+                {
+                    _castFired = true;
+                    _currentSkill.PlayCastEffect();
+                }
+            }
+        }
+        
+        owner.DoAutoFight();
+    }
+    
+    public void OnExit(CombatUnitController owner)
+    {
+        _leftIdle = false;
+        _currentSkill = null;
+        _segTimings = null;
+    }
+}</code></pre>
+  </div>
+
+  <h3 data-page-node-id="j5AujxvhOcsdo65eFP6qRz">3.5 为什么演化 · 三个错误认识</h3>
+  <div class="four-grid" data-page-node-id="qVrGSnRAYMyELCw8VJhQH1">
+    <div class="element-card why" data-page-node-id="SV2HxqxKDxn6r8AFItNseu">
+      <div class="element-label" data-page-node-id="Gl5QmHOS10MfdsNDSb6m82">错误认识 01</div>
+      <p data-page-node-id="5HnN1nmvIc73dftmFO7f1h">把"出手特效"等同于"OnSkillCase 同帧的爆发"。其实刀光是挥刀过程的持续视觉,应该挂在武器上跟随运动,在 OnSkillCase <strong data-page-node-id="K1n6rdTCqHI5yBmF3Lycpp">之前</strong>的动画预备帧创建。</p>
+    </div>
+    <div class="element-card why" data-page-node-id="nXCg7ZRmB0yumV5tBOPwUB">
+      <div class="element-label" data-page-node-id="bF3Ocx1OdOgsvzQ0jDzM5t">错误认识 02</div>
+      <p data-page-node-id="HeWBfIZE70i125AtnGGpY2">给"OnSkillBegin 新增动画事件"的方案时,没考虑 10×5×5=500 个 Event 的规模化问题。任何方案都要先过"规模化压力测试"。</p>
+    </div>
+    <div class="element-card why" data-page-node-id="DPUiSmssMIKMLI52s43XmR">
+      <div class="element-label" data-page-node-id="dlmW6A4O50m8Ho1LFNtkc5">错误认识 03</div>
+      <p data-page-node-id="IUYaZ0kZLA5wnsDubX0fd7">用"OnSkillCase 同帧干伤害+特效两件事"的耦合设计。判定与表现必须分离,逻辑层不应该关心"刀光要不要现在爆"。</p>
+    </div>
+    <div class="element-card why" data-page-node-id="8b2GMmERzTxqunFRRJ5d8C">
+      <div class="element-label" data-page-node-id="u9DVNmQh9vdKbvGmGcI6u2">错误认识 04</div>
+      <p data-page-node-id="q0QYO5yMHsx5IqmWZu4fSv">试图用"30 帧阈值"判断"新一轮执行"。段间隔是动画师决定的,代码层不应该猜。真正的"新一轮"信号是 FSM 状态转换点(Attack→Idle)。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 特效分层演进 -->
+<section id="s4" data-page-node-id="B6b1AFH7uNdlDLTfNMNMN5">
+  <div class="section-header" data-page-node-id="hHMnJmg88CD3gH8jJm5C4b">
+    <span class="section-num" data-page-node-id="5GBqtrjlQRsw3Th5H4Fjss">§ 04</span>
+    <h2 class="section-title" data-page-node-id="tFycbTFd7YEl74W4ZQDi5e">核心议题 · 特效分层演进</h2>
+  </div>
+
+  <p data-page-node-id="PTjwgMBiqFaSVpk6fGxr8z">在段号驱动的演化过程中,蔡振立的 3 轮追问把"特效应该在哪个时机播"这件事从模糊拉到清晰。</p>
+
+  <h3 data-page-node-id="TcFhHIrMH1RpAwJQxSalOK">4.1 三轮追问的演化过程</h3>
+
+  <table data-page-node-id="mbK5HXYAcGKf9ETBmtoyeS">
+    <thead data-page-node-id="SlvAx3cvfsEB42GGs9Cjev"><tr data-page-node-id="7dObaawEpdjF8xvkJssgdB"><th data-page-node-id="kLuweSJoqCF0pouhWAWRS2">追问轮次</th><th data-page-node-id="50FIy6AIkiBkxaP1P9SgC0">蔡振立的判断</th><th data-page-node-id="WdgIVdqzYslfatdiTiwmKP">我的错误</th><th data-page-node-id="HKmQBbnGLQEIFIlv27HZx1">修正方向</th></tr></thead>
+    <tbody data-page-node-id="ZXcJIFmqTSmMXoWKriL2JL">
+      <tr data-page-node-id="GEIafphBkbssslDF4TusHB">
+        <td data-page-node-id="3VQ7frSQhxom83iLfkTnrn">第 1 轮</td>
+        <td data-page-node-id="D5nYrvH9At2HQp7MQiMyvr">"OnSkillCase 是关键帧,这时播刀光时机不对"</td>
+        <td data-page-node-id="zHDFHuol5qz2znGuL9LqHW">我之前画的时序图把"出手特效"画在 T-150ms(那是蓄力,不是出手)</td>
+        <td data-page-node-id="XuFCq65yDTPNTCv0MZMEUr">刀光应该是"挥刀过程的持续视觉",在 OnSkillCase <strong data-page-node-id="MJYp3ZtEv4kZtDhCsTDe06">之前</strong>的动画预备帧创建</td>
+      </tr>
+      <tr data-page-node-id="uFokDAF8GZHwopv1H8T50U">
+        <td data-page-node-id="tg2uEL1WSbHCQsPoX9vJjl">第 2 轮</td>
+        <td data-page-node-id="948NfVvsZYXwsbtNpEhQv5">"我现在战斗框架中已经有这些了,你还是没有回答刀光应该怎么做"</td>
+        <td data-page-node-id="zDEThnE7wergsbGwMgB7YY">我给的"下一步行动清单"全是错的,忽略了现有 CastEffectIds 字段</td>
+        <td data-page-node-id="SZK0qLE8XVqvueoW7bHySg"><strong data-page-node-id="NWYjPaGIbiYcuJf9aSyyPC">先读现有架构再下结论</strong>,补刀光层的具体实现而不是补一个空架构</td>
+      </tr>
+      <tr data-page-node-id="PBOw7J2F9GUSZFl1zHCkC0">
+        <td data-page-node-id="GmbuYw5EAbMx6YbbDHfF8z">第 3 轮</td>
+        <td data-page-node-id="w6mXrpWgQOtaKZDgjIebjU">"10 玩家 × 5 技能 × 5 段,你还有没有更好的方案加速开发"</td>
+        <td data-page-node-id="fHztzZM93uyYvS3FGJ8g2q">我给的 OnSkillBegin 方案要配 500 个 Animation Event</td>
+        <td data-page-node-id="S83Xsbk4jzXNWuShX4q24c">用 AnimatorStateInfo.normalizedTime + CSV 配置驱动,Animation Event 数量降到 0</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 data-page-node-id="5EVY9Rw8aOIvgBYD6LkTNw">4.2 特效三层架构(最终方案)</h3>
+  <div class="svg-container" data-page-node-id="D1Dmu4usu02fLftJNRyLmE">
+    <div class="svg-title" data-page-node-id="nO4DaAbvchB5rCj1JhdcZH">图 2 · 特效三层时序 + HitStop(未来可选)</div>
+<svg viewBox="0 0 1100 360" xmlns="http://www.w3.org/2000/svg" data-page-node-id="V2CEShuzLGRbDufG6hOJGK">
+  <defs data-page-node-id="xTMRisANo0AcGkES3RG2AI">
+    <linearGradient id="playerGrad" x1="0%" y1="0%" x2="100%" y2="0%" data-page-node-id="Rpo1TQuapya4CPEMiwbnHk">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0.3" data-page-node-id="gnXhbiIOPuP3EjzRYBR4dh"/>
+      <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.1" data-page-node-id="wdS3OfYF0IT8bHl47mnK36"/>
+    </linearGradient>
+    <linearGradient id="enemyGrad" x1="0%" y1="0%" x2="100%" y2="0%" data-page-node-id="4bTFLj1b1GXyYpF30SxBVD">
+      <stop offset="0%" style="stop-color:#ef4444;stop-opacity:0.3" data-page-node-id="h86zAyBq9WHBLcjiElsnTI"/>
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:0.1" data-page-node-id="errW0RP4SKz4x7jXWGZVCa"/>
+    </linearGradient>
+    <marker id="a2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" data-page-node-id="8R6RdtoaSixE9BGnursHs1">
+      <path d="M0,0 L0,6 L8,3 z" fill="#818cf8" data-page-node-id="mnLDuokgwwK3pEKjYEid0F"/>
+    </marker>
+  </defs>
+
+  <!-- 时间轴 -->
+  <line x1="50" y1="200" x2="1050" y2="200" stroke="#6366f1" stroke-width="2" data-page-node-id="BMXLgT5z1GalhJs40H9tWZ"/>
+  <line x1="50" y1="195" x2="50" y2="205" stroke="#6366f1" stroke-width="2" data-page-node-id="axPRbZldDywiUQsVCQUrDN"/>
+  <line x1="1050" y1="195" x2="1050" y2="205" stroke="#6366f1" stroke-width="2" data-page-node-id="CHX9buFLKOXqpcrwwFBZ8A"/>
+  <text x="40" y="225" text-anchor="end" fill="#9ca3af" font-size="11" data-page-node-id="eRgr7Fgm4qkbCOSZdkKoMm">T-200ms</text>
+  <text x="280" y="225" text-anchor="end" fill="#9ca3af" font-size="11" data-page-node-id="ZKw5j9DEIOGL5vpRPXNWew">T-50ms</text>
+  <text x="540" y="225" text-anchor="middle" fill="#10b981" font-size="12" font-weight="bold" data-page-node-id="49Z1xhw1wWrURRU3sjj4zA">T=0 (OnSkillCase)</text>
+  <text x="800" y="225" text-anchor="start" fill="#9ca3af" font-size="11" data-page-node-id="0ghjBq8afXzG4XsyB3qU8Q">T+100ms</text>
+  <text x="1040" y="225" text-anchor="start" fill="#9ca3af" font-size="11" data-page-node-id="7L2NvGN3Q4wgerMQjE8HL2">T+200ms</text>
+
+  <!-- 玩家区域 -->
+  <rect x="50" y="60" width="500" height="120" fill="url(#playerGrad)" stroke="#6366f1" stroke-width="1" rx="6" data-page-node-id="qwWpulkW5S4rEwnkyUd8ll"/>
+  <text x="60" y="80" fill="#818cf8" font-size="11" font-weight="bold" data-page-node-id="6SSEcscG7Q13NtOghYzFeH">玩家 (Player)</text>
+
+  <!-- 刀光 bar -->
+  <rect x="50" y="100" width="480" height="40" fill="#6366f1" stroke="#a855f7" stroke-width="2" rx="4" opacity="0.4" data-page-node-id="bMZEqhPotoxry6KNLqK8lD"/>
+  <text x="290" y="125" text-anchor="middle" fill="#e8eaf6" font-size="12" font-weight="bold" data-page-node-id="CbOirVCTaaQ15JdY82BvBK">刀光跟随武器运动(挂武器Anchor)</text>
+
+  <!-- 敌人区域 -->
+  <rect x="540" y="60" width="500" height="120" fill="url(#enemyGrad)" stroke="#ef4444" stroke-width="1" rx="6" data-page-node-id="DeVYQrTKrAktLStxmtvX30"/>
+  <text x="550" y="80" fill="#ef4444" font-size="11" font-weight="bold" data-page-node-id="HEFDCDJt4dpyjaddpDrQeB">敌人 (Target)</text>
+
+  <!-- 火花 bar -->
+  <rect x="540" y="100" width="120" height="40" fill="#ef4444" stroke="#f59e0b" stroke-width="2" rx="4" opacity="0.4" data-page-node-id="LzWEgznF296zqapoi58pOA"/>
+  <text x="600" y="125" text-anchor="middle" fill="#e8eaf6" font-size="12" font-weight="bold" data-page-node-id="yVqakSf1Q1NElU5EVmyudk">火花</text>
+
+  <!-- 反馈 bar -->
+  <rect x="780" y="100" width="240" height="40" fill="#a855f7" stroke="#c084fc" stroke-width="2" rx="4" opacity="0.4" data-page-node-id="mhGJUVCwExZxWPOyOyXzbf"/>
+  <text x="900" y="125" text-anchor="middle" fill="#e8eaf6" font-size="12" font-weight="bold" data-page-node-id="ljqSF0bjBzLM87bstMfuyv">浮空 / 击退 / Reaction</text>
+
+  <!-- 节点圆 -->
+  <circle cx="50" cy="200" r="6" fill="#6366f1" data-page-node-id="UdvyetY0IO6x6aT7eGoTgV"/>
+  <text x="50" y="180" text-anchor="middle" fill="#818cf8" font-size="10" data-page-node-id="HECr2f4vcC2qlEUwCcRBkX">OnSkillBegin</text>
+  <circle cx="540" cy="200" r="8" fill="#10b981" stroke="#fff" stroke-width="2" data-page-node-id="IZvMoP1y2aEhuLAOAPPbWz"/>
+  <text x="540" y="245" text-anchor="middle" fill="#10b981" font-size="10" font-weight="bold" data-page-node-id="8LqqVGvF0ogbJEyDg8XYXv">OnSkillCase</text>
+  <circle cx="800" cy="200" r="6" fill="#f59e0b" data-page-node-id="ABuOsFxo9dRA5Wpfp1oupp"/>
+  <text x="800" y="180" text-anchor="middle" fill="#f59e0b" font-size="10" data-page-node-id="nGiXpAPs0rHiasDSo2KUqK">HitBack</text>
+
+  <!-- HitStop 区间(可选) -->
+  <rect x="535" y="250" width="20" height="40" fill="#f59e0b" opacity="0.4" data-page-node-id="kypdiEcJw3Ts5xNK6F1pUu"/>
+  <text x="545" y="305" text-anchor="start" fill="#f59e0b" font-size="10" data-page-node-id="3IMIfXd7WQpaaxpCoLGDaI">HitStop 50~80ms</text>
+
+  <!-- 数据流箭头 -->
+  <text x="50" y="320" fill="#9ca3af" font-size="11" data-page-node-id="088Ex0o7X7369fbm4SrZXZ">· 动画预备帧触发 OnSkillBegin → CreateEffect(castEffectId, weaponAnchor) → 刀光跟随</text>
+  <text x="50" y="338" fill="#9ca3af" font-size="11" data-page-node-id="6SDDiMfdmsHXkH3NOk6XNP">· normalizedTime 跨过 SegTimings[i] → TriggerSegmentHit → SkillHit → ImmedDamage → OnDamaged → 火花</text>
+  <text x="50" y="356" fill="#9ca3af" font-size="11" data-page-node-id="0QBQJ8Asl7PZElhe16WKzB">· IsAnimatorInIdleState=true → RequestState(Idle) → HitBack/HitOut 状态机驱动 → 反馈特效</text>
+</svg>
+  </div>
+
+  <h3 data-page-node-id="avII7J82tK2Rp8dDwyEk2g">4.3 CSV 配置字段规范</h3>
+  <div class="card" data-page-node-id="5CK3oqfLLs2Lvw4X4kSH8X">
+    <div class="card-title" data-page-node-id="5y49pHL7u511jKiGsxnldt">SkillData.csv 扩展字段</div>
+    <pre data-page-node-id="bxjPCTvWMBWcvDMLBgSuPJ"><code data-page-node-id="NwOU1DHukTcAFB1XVGDNQC">SkillId,SegCount,SegTimings,CastEffectIds,HitEffectIds
+10002,   3,      0.3;0.6;0.9, 2001;2002;2003, 3001;3002;3003   ← 三段技能
+10003,   5,      0.2;0.4;0.55;0.75;0.9, 2010;2011;2012;2013;2014, 3010;3011;3012;3013;3014
+10004,   1,      0.5,           2020,        3020                ← 单段技能
+10005,   2,      0.4;0.7,       2030;2031,   3030;3031            ← 双段技能</code></pre>
+    <p style="margin-top:12px" data-page-node-id="JVZbOllmSnF6GbmX0PtRJW"><strong data-page-node-id="mQYOKGxZBtdFy0rlr9OW5L">字段说明</strong>:</p>
+    <ul data-page-node-id="lJOdWvCJ7TRkWRbb2e8ClU">
+      <li data-page-node-id="paFuur1wakx5olAPvRBVEO"><code data-page-node-id="6bgh5081QwdZD7rQnVesye">SegTimings</code>:分号分隔,每个值为归一化时间(0~1),表示该段触发的动画进度</li>
+      <li data-page-node-id="lGRsE2UD9WvEE2cuOSXUv0"><code data-page-node-id="b8kNXC5JTWEtxIfz8LLKf2">CastEffectIds</code>:分号分隔,按段索引,与 <code data-page-node-id="FsyKOB4Fup9hjB6V68lbzp">SegTimings</code> 一一对应,挂武器 Anchor</li>
+      <li data-page-node-id="0xe3fGylKMuHyC2crqh7Qe"><code data-page-node-id="GO4RUAkiNCmiVm2ywTyLD6">HitEffectIds</code>:分号分隔,按段索引,挂敌人受击点(替代当前的 hitEffects)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- §5 当前架构地图 -->
+<section id="s5" data-page-node-id="yLzGN0dRUrVqUSmMinVK1f">
+  <div class="section-header" data-page-node-id="nkiuF983zGRV5rpXNsGwcf">
+    <span class="section-num" data-page-node-id="2i0SuAj8V4JOKFsHnIVIXr">§ 05</span>
+    <h2 class="section-title" data-page-node-id="JrLQevv13HvJC3PKjxexA4">当前架构地图</h2>
+  </div>
+
+  <div class="svg-container" data-page-node-id="J3DlNiCWQFpqABGV56bZhS">
+    <div class="svg-title" data-page-node-id="NEjTZ8H1nmuxD4qy5lGSFk">图 3 · 当前战斗框架架构总览</div>
+<svg viewBox="0 0 1100 480" xmlns="http://www.w3.org/2000/svg" data-page-node-id="Bl1BBR9CdlxEmBzl6JDL7C">
+  <defs data-page-node-id="6vxCMCGTD8oRaLXCiKVMZP">
+    <marker id="a3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" data-page-node-id="uA9NTsiTVfwjcjizXYxeGK">
+      <path d="M0,0 L0,6 L8,3 z" fill="#818cf8" data-page-node-id="82ru0xDjR6xRTQ5hHBHqCT"/>
+    </marker>
+  </defs>
+
+  <!-- 顶层 -->
+  <rect x="50" y="20" width="1000" height="40" rx="6" fill="#161b40" stroke="#6366f1" stroke-width="2" data-page-node-id="qpZYdK31T3dWjbfQ0JVNla"/>
+  <text x="550" y="45" text-anchor="middle" fill="#818cf8" font-size="14" font-weight="bold" data-page-node-id="Dqrn7BhDp0XlRYwEYsszaL">Battle Framework · 战斗框架</text>
+
+  <!-- 第二层:3 个 Controller -->
+  <rect x="50" y="100" width="300" height="50" rx="6" fill="#0f1535" stroke="#10b981" stroke-width="1.5" data-page-node-id="6kqEAJN5S72mMVEjwSEdbQ"/>
+  <text x="200" y="130" text-anchor="middle" fill="#10b981" font-size="13" font-weight="bold" data-page-node-id="dZcB7SbAva6iYWdNnUbY6i">WarrorController</text>
+
+  <rect x="400" y="100" width="300" height="50" rx="6" fill="#0f1535" stroke="#10b981" stroke-width="1.5" data-page-node-id="sVJAhFOnSJtgFrCQKmBJWi"/>
+  <text x="550" y="130" text-anchor="middle" fill="#10b981" font-size="13" font-weight="bold" data-page-node-id="DparAPF3AW0VrqvFJfiUg9">AttackNpcController</text>
+
+  <rect x="750" y="100" width="300" height="50" rx="6" fill="#0f1535" stroke="#10b981" stroke-width="1.5" data-page-node-id="Y2xwJ5BgtHyEDyJ25XwDoM"/>
+  <text x="900" y="130" text-anchor="middle" fill="#10b981" font-size="13" font-weight="bold" data-page-node-id="eaIualcfqGUs0jnJcUUGVo">CombatUnitController (基类)</text>
+
+  <!-- 第三层:Component -->
+  <rect x="100" y="190" width="250" height="40" rx="6" fill="#0f1535" stroke="#f59e0b" stroke-width="1" data-page-node-id="Gu8xewkDAeoGG3LYnk7Uze"/>
+  <text x="225" y="215" text-anchor="middle" fill="#f59e0b" font-size="12" data-page-node-id="kaVIyzvQtHaNzYDwSuP8XC">UnitBuffComponent</text>
+
+  <rect x="450" y="190" width="200" height="40" rx="6" fill="#0f1535" stroke="#f59e0b" stroke-width="1" data-page-node-id="fpA9N3M7LWmURPRCAIV2Ae"/>
+  <text x="550" y="215" text-anchor="middle" fill="#f59e0b" font-size="12" data-page-node-id="Q3IHFbrzoCI6VjaVtMQcjk">CombatStateMachine</text>
+
+  <rect x="750" y="190" width="250" height="40" rx="6" fill="#0f1535" stroke="#f59e0b" stroke-width="1" data-page-node-id="TrUDKlI2jIs11Yy424ywqe"/>
+  <text x="875" y="215" text-anchor="middle" fill="#f59e0b" font-size="12" data-page-node-id="3X34pDjdmDBEKsZWUSpKfM">BattleEventBus (14/14 闭环)</text>
+
+  <!-- 第四层:数据 -->
+  <rect x="50" y="270" width="200" height="40" rx="6" fill="#161b40" stroke="#a855f7" stroke-width="1" data-page-node-id="sXy5CXE8GpnbIxEWR2TUA7"/>
+  <text x="150" y="295" text-anchor="middle" fill="#c084fc" font-size="12" data-page-node-id="RtFlG7XmlIUvdvLfc510Jx">Skill</text>
+
+  <rect x="300" y="270" width="200" height="40" rx="6" fill="#161b40" stroke="#a855f7" stroke-width="1" data-page-node-id="EbOXgY6RLFxxyWCFcIIdAn"/>
+  <text x="400" y="295" text-anchor="middle" fill="#c084fc" font-size="12" data-page-node-id="sRU7O87pgasTtm7hqRqvNw">CombatUnit</text>
+
+  <rect x="550" y="270" width="200" height="40" rx="6" fill="#161b40" stroke="#a855f7" stroke-width="1" data-page-node-id="NL8YakMSf9Izhw6RWDk0ap"/>
+  <text x="650" y="295" text-anchor="middle" fill="#c084fc" font-size="12" data-page-node-id="1Ne72HckQZjGbICMEe27Wa">Warrior / AttackNpc</text>
+
+  <rect x="800" y="270" width="200" height="40" rx="6" fill="#161b40" stroke="#a855f7" stroke-width="1" data-page-node-id="PsB281oOaqO8k0ia0nQ5Lf"/>
+  <text x="900" y="295" text-anchor="middle" fill="#c084fc" font-size="12" data-page-node-id="YkIOfQH7Em6rI4yIqogTdm">BaseUnit</text>
+
+  <!-- 第五层:状态机 -->
+  <rect x="50" y="350" width="1000" height="80" rx="6" fill="#0f1535" stroke="#6366f1" stroke-width="1" opacity="0.7" data-page-node-id="pQwqvGDtoBK8yJ8eKCZBDe"/>
+  <text x="60" y="372" fill="#818cf8" font-size="12" font-weight="bold" data-page-node-id="4ir5lNbyUn4Jdd4I4aG4Ut">FSM · 7 状态</text>
+
+  <rect x="80" y="385" width="120" height="35" rx="4" fill="#161b40" stroke="#6366f1" data-page-node-id="AS9AsTdftQolkCNbuyNwEn"/>
+  <text x="140" y="408" text-anchor="middle" fill="#e8eaf6" font-size="11" data-page-node-id="dBnsh6WpV5LtccoGlAcFPq">Idle</text>
+
+  <rect x="220" y="385" width="120" height="35" rx="4" fill="#161b40" stroke="#6366f1" data-page-node-id="uCcutyO5DH4kT3rxZEAle8"/>
+  <text x="280" y="408" text-anchor="middle" fill="#e8eaf6" font-size="11" data-page-node-id="RDH7cQJMC5AlJMWDVDWsj7">Move</text>
+
+  <rect x="360" y="385" width="120" height="35" rx="4" fill="#161b40" stroke="#10b981" stroke-width="2" data-page-node-id="6R7x7iZXIFEPgAjFzAkn07"/>
+  <text x="420" y="408" text-anchor="middle" fill="#10b981" font-size="11" font-weight="bold" data-page-node-id="28KsJjURZPWR689M5CBEbB">Attack</text>
+
+  <rect x="500" y="385" width="120" height="35" rx="4" fill="#161b40" stroke="#ef4444" data-page-node-id="RBnf3OlGeV0DNGb2VA9D6a"/>
+  <text x="560" y="408" text-anchor="middle" fill="#ef4444" font-size="11" data-page-node-id="yoVTsPwR4Wv87LdkxwJXFi">Stun ⚠</text>
+
+  <rect x="640" y="385" width="120" height="35" rx="4" fill="#161b40" stroke="#ef4444" data-page-node-id="lXbvccNoFQtDpZDa6AJSgd"/>
+  <text x="700" y="408" text-anchor="middle" fill="#ef4444" font-size="11" data-page-node-id="Xn44fsztqNtUw21tJar12O">Silence ⚠</text>
+
+  <rect x="780" y="385" width="120" height="35" rx="4" fill="#161b40" stroke="#ef4444" data-page-node-id="nmQXEuqLx6kF1vtv8h14sO"/>
+  <text x="840" y="408" text-anchor="middle" fill="#ef4444" font-size="11" data-page-node-id="bO5Lr1H3CAI5hHo2OUOD1W">Knockback ⚠</text>
+
+  <rect x="920" y="385" width="120" height="35" rx="4" fill="#161b40" stroke="#6b7280" data-page-node-id="P90GmeNBy1xUeFj6tldU0O"/>
+  <text x="980" y="408" text-anchor="middle" fill="#9ca3af" font-size="11" data-page-node-id="c3YQkeM8bx2mXiS1JD0NBR">Dead</text>
+
+  <!-- 连接线 -->
+  <line x1="200" y1="150" x2="225" y2="190" stroke="#10b981" stroke-width="1" marker-end="url(#a3)" opacity="0.5" data-page-node-id="fGUaG7QzWgg6LHPpbtProX"/>
+  <line x1="550" y1="150" x2="550" y2="190" stroke="#10b981" stroke-width="1" marker-end="url(#a3)" opacity="0.5" data-page-node-id="bXcNcKs6neFJwml1NT53lT"/>
+  <line x1="900" y1="150" x2="875" y2="190" stroke="#10b981" stroke-width="1" marker-end="url(#a3)" opacity="0.5" data-page-node-id="zP5aq4MDMOjoH687YjoAFB"/>
+  <line x1="225" y1="230" x2="150" y2="270" stroke="#f59e0b" stroke-width="1" marker-end="url(#a3)" opacity="0.5" data-page-node-id="s5laClsOtfEtP2dH39qu6i"/>
+  <line x1="550" y1="230" x2="400" y2="270" stroke="#f59e0b" stroke-width="1" marker-end="url(#a3)" opacity="0.5" data-page-node-id="1dCGVyS7za9XiHQFUbOzN4"/>
+  <line x1="875" y1="230" x2="900" y2="270" stroke="#f59e0b" stroke-width="1" marker-end="url(#a3)" opacity="0.5" data-page-node-id="iLSk146IFwVghEFrGIxoA0"/>
+
+  <!-- 图例 -->
+  <text x="50" y="455" fill="#9ca3af" font-size="10" data-page-node-id="HXwqeSkbaNqDukgGKFIrtx">图例:</text>
+  <rect x="100" y="445" width="12" height="12" fill="#10b981" data-page-node-id="CiGp3PyZOoZjhSBzhrbN4n"/>
+  <text x="118" y="455" fill="#9ca3af" font-size="10" data-page-node-id="Ip51wRrRgtooSgqYrIaVCL">控制层</text>
+  <rect x="180" y="445" width="12" height="12" fill="#f59e0b" data-page-node-id="zwTUtAhxSgQnFuoZAEqNjH"/>
+  <text x="198" y="455" fill="#9ca3af" font-size="10" data-page-node-id="lu7T7WODosSD4iyFbQts4J">Component</text>
+  <rect x="280" y="445" width="12" height="12" fill="#a855f7" data-page-node-id="afiQXYrzp8ZUibJBHNl18O"/>
+  <text x="298" y="455" fill="#9ca3af" font-size="10" data-page-node-id="mAJAwBMibiOVQX4idBBP3g">数据层</text>
+  <rect x="360" y="445" width="12" height="12" fill="#ef4444" data-page-node-id="RJGLtSObJKUbAzXyFZ1h8n"/>
+  <text x="378" y="455" fill="#9ca3af" font-size="10" data-page-node-id="VZqaoboV9ytgKIdyx9u6l0">P1 缺陷(待修)</text>
+</svg>
+  </div>
+
+  <h3 data-page-node-id="U3jdMFNk5PUbeZS9giF9q6">当前文件清单(去重后)</h3>
+  <table data-page-node-id="FSVCkPX7DqW9gAGryosDyA">
+    <thead data-page-node-id="beqKoENZmeBblLeiQiJALh"><tr data-page-node-id="BB3flLNlLBb87DBgZTfI36"><th data-page-node-id="hhqDdoDo9UEBQz1qGMNCgB">目录</th><th data-page-node-id="hxdPMyAmMauJTABI0iDqzY">文件</th><th data-page-node-id="EFFPFxF20JHGpobVHPHAZ1">角色</th><th data-page-node-id="NGA7k5YTsieNgXUiESMY3v">状态</th></tr></thead>
+    <tbody data-page-node-id="Ggcj23tTFydqMmBg74slOf">
+      <tr data-page-node-id="tJ3OJL9jpZgFmOGImanj4K"><td data-page-node-id="8seALSTwupewhxd8Oq7Y6l">BattleData/</td><td data-page-node-id="3X67PsulDpdCJASUGqSeFo">BaseUnit.cs</td><td data-page-node-id="BA4CYWNjA2DqqiamAG5Uwo">基础实体</td><td data-page-node-id="QvT4xzg15llP0itVQutSan"><span class="badge badge-success" data-page-node-id="ZrK7YcL3q15lQ9lV7NWHVj">已统一</span></td></tr>
+      <tr data-page-node-id="ep12qwNlM0QrXAvQO6rhiP"><td data-page-node-id="WKsgg03g1ypIKJ7aFsdzBc">BattleData/</td><td data-page-node-id="mo6T0IEKClp13cYUr01ztP">CombatUnit.cs</td><td data-page-node-id="fsbbCL9NkoKJtoH2AL85Z2">战斗单位</td><td data-page-node-id="CND4KV4MnsP7fKegplqpwB"><span class="badge badge-success" data-page-node-id="VlnH0GxEyIlUzLnMAlMemI">已统一</span></td></tr>
+      <tr data-page-node-id="iV3rkx2h0dWFB39E9mFaBN"><td data-page-node-id="QcbMClgAjpZo9tE3DoGU6U">BattleData/</td><td data-page-node-id="OIxf4OWDqtqci0I9B0bFTO">Warrior.cs / AttackNpc.cs</td><td data-page-node-id="a5J64ep9r7ukzROxovTArq">玩家/敌人</td><td data-page-node-id="PdhH47Ea8x6YEaarbw2jMf"><span class="badge badge-success" data-page-node-id="61qqJF4wiUoikUaSqwqDXy">已统一</span></td></tr>
+      <tr data-page-node-id="YikDz9Iqwh47uSXIHL95PE"><td data-page-node-id="lgdNEVABTic8uoIAIWHBvN">Controller/</td><td data-page-node-id="Qh71eIBFIl2gHvFUobm278">CombatUnitController.cs</td><td data-page-node-id="OpN9Pgq0VVV0Ie1zFClo89">控制层基类</td><td data-page-node-id="4VhmdEedZrulzSdDYNCn4C"><span class="badge badge-warn" data-page-node-id="vfGc9EcOiRFxbXNtZtFNiO">段号方案 v3</span></td></tr>
+      <tr data-page-node-id="IZfZ5K10gVBz13dYx9RSZG"><td data-page-node-id="oZoBdjudaprHLlTWItrmLI">Controller/</td><td data-page-node-id="7tVsJazjfRCFnpkq2jVdzi">WarrorController.cs</td><td data-page-node-id="vCDv9IRnxFHf17Mt46peF6">玩家控制</td><td data-page-node-id="wF8lCZuooMMuojvEp81M1t"><span class="badge badge-success" data-page-node-id="n3YxSQzIP1HinrhOJZwkhq">已收敛</span></td></tr>
+      <tr data-page-node-id="HTip2XfdoCDDWv3emNPjDp"><td data-page-node-id="4M2RZvdZGY7qlYjUNIErYG">Controller/</td><td data-page-node-id="kFfAmKnVi50HPHMcjOhhnb">AttackNpcController.cs</td><td data-page-node-id="Ik4GtVKgAtMMaJK7UsBv7O">敌人控制</td><td data-page-node-id="3DBfPmHbqUj88EHNuHZEEE"><span class="badge badge-success" data-page-node-id="wMLIBIsa2DoEC9RXPnna8i">已收敛</span></td></tr>
+      <tr data-page-node-id="OQ37zs8iASqUO7FyTEIuYN"><td data-page-node-id="ag6OSGGSTNUEC5nplYPgNn">Controller/</td><td data-page-node-id="B0aDFBtqwN7LKTk4GnPHKz">UnitBuffComponent.cs</td><td data-page-node-id="B1s7oNL7SJTk7nwvTWGPx6">Buff 组件</td><td data-page-node-id="BcNMoXjCYMziWR40MyVHc8"><span class="badge badge-success" data-page-node-id="BaWr1UFZmjpQ4JHyJFGRvT">已接</span></td></tr>
+      <tr data-page-node-id="XMOkHS4BB3x0hLrNrOFumF"><td data-page-node-id="PMAmaGhfoxd8FJm0h2JCIy">StateMachine/</td><td data-page-node-id="4tm0EilzJXNzAj11z8czGX">CombatState.cs</td><td data-page-node-id="dVtAXyRgedtlgVOuPCCq5m">状态枚举</td><td data-page-node-id="FwCsH5taEQRgft8pGEXPVj"><span class="badge badge-success" data-page-node-id="6CSV8hjsmRkZedYepoLRpU">7 状态</span></td></tr>
+      <tr data-page-node-id="FWXKBduF4UPHvMkuKG6Cdy"><td data-page-node-id="4UV107d6u2AKka1GAD2S2N">StateMachine/</td><td data-page-node-id="PTRaiV4RSLwxqbIcQ1h3gr">CombatStateMachine.cs</td><td data-page-node-id="ozTslvzixS6A81L9SYbczr">状态机引擎</td><td data-page-node-id="LM64pURGWJPRvWlVAAd33Z"><span class="badge badge-success" data-page-node-id="XnN0SEFxrLfN8GDxuxE9pG">已闭环</span></td></tr>
+      <tr data-page-node-id="jkjrHQRQKRd2HGliZEyWF5"><td data-page-node-id="B0EJiJzf1vIWndwT4pJBWa">StateMachine/</td><td data-page-node-id="tmFM4cnjIlgr2DKjyxZz37">CombatStates.cs</td><td data-page-node-id="DrBO6ufCK3KnUchynU3Lmu">7 状态实现</td><td data-page-node-id="YWWpxGfdue0Vq5TduPQlPZ"><span class="badge badge-warn" data-page-node-id="ozKy3MMWGuR15XiOu2SPc9">待段号改造</span></td></tr>
+      <tr data-page-node-id="81UDA8rAJV7y4vRFjokzVR"><td data-page-node-id="d66inUG75HniVPGj6NH7Fn">BufferSystem/</td><td data-page-node-id="jzIJvi5XbOP44ECwxixiKK">BufferSystem.cs</td><td data-page-node-id="ws3syTM9EEGESTHCxg2phj">Buff 系统</td><td data-page-node-id="E2LagV07uh3BkaPZ2bCLED"><span class="badge badge-success" data-page-node-id="pCk59KSoDH9UkDmyFNDhUM">已接 FSM</span></td></tr>
+      <tr data-page-node-id="eJUiodXw7LJYesNlBBCtHB"><td data-page-node-id="28lEEgb47K9slJENMfVPZn">根/</td><td data-page-node-id="1Du6GNqbphmBVOkAityPEp">Skill.cs</td><td data-page-node-id="zdr5xBEaVSWItzwB3F9uIt">技能核心</td><td data-page-node-id="wX21VTIOnaFBFi6uHWGR52"><span class="badge badge-warn" data-page-node-id="zXNlhoiXg9x6ce6iNE14J6">待段号方案迁移</span></td></tr>
+      <tr data-page-node-id="FaRVqjoFwdd9OJFA6JTXBp"><td data-page-node-id="Hl8NRA0rciLhexfzEnFOLZ">根/</td><td data-page-node-id="RQPmoAd6D48v9RpmOxvE3t">CommonHelper.cs</td><td data-page-node-id="VAqzmH6ZFGfjt6ih5wd4kI">工具类</td><td data-page-node-id="H0OgGzOhPBBH5ikrOtuekz"><span class="badge badge-success" data-page-node-id="2LajF2byT6e9TQwdBhvQjO">RollCrit 已加</span></td></tr>
+      <tr data-page-node-id="Vp4xzBvfbEZA4iBvAEesrX"><td data-page-node-id="Unn82Ia5yTfZRSbI1LaUAk">根/</td><td data-page-node-id="hdk1qgCTXGY0lKx7cqqGS2">BattleConst.cs</td><td data-page-node-id="69UAndjJ74JRSdiKAvYCKH">常量</td><td data-page-node-id="05teSRCcrY9U2mqcGLgK69"><span class="badge badge-success" data-page-node-id="q29cdQcETof2cY2qvdUm1U">已收敛</span></td></tr>
+      <tr data-page-node-id="jiWAUXl7S2OEUADqrIFcAG"><td data-page-node-id="LGKjwtYviaS8EOlBD3TReI">根/</td><td data-page-node-id="Rqu0pv6C2srnntZu16JFiP">EffectDot.cs</td><td data-page-node-id="G8cvshmUW8pChKiRjhdCss">持续伤害</td><td data-page-node-id="46z6s5blVpCeHSHG5M9YTN"><span class="badge badge-success" data-page-node-id="nfV80kMC1nhyFwQbkuPNPt">DoT 已支持</span></td></tr>
+      <tr data-page-node-id="x6HwGxyU8rPL8aDPcTuz6Z"><td data-page-node-id="MMjDgJSvVyLH4Wlr5Ml4gC">根/</td><td data-page-node-id="F0BlKL7ORckcoAyzWG5g16">ClassObjectPool.cs</td><td data-page-node-id="0PehXdibifm7zb1dIapT13">对象池</td><td data-page-node-id="2L6FjTAMxn2LZ657WYoz7m"><span class="badge badge-success" data-page-node-id="XfKFN5bwsJFykQHrzaAniX">已统一</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §6 后续演化路线图 -->
+<section id="s6" data-page-node-id="csgeee048SxahTxCsWVyio">
+  <div class="section-header" data-page-node-id="hfghJ8v8gawGBUf3C8qIE3">
+    <span class="section-num" data-page-node-id="LUAIRtCvFXKP7a3wizyQUF">§ 06</span>
+    <h2 class="section-title" data-page-node-id="e1QxiumG2sBiByq95hEJH9">后续演化路线图</h2>
+  </div>
+
+  <h3 data-page-node-id="OBJAw5rbdg7Fb2wSXwCHep">6.1 短期(本周 · 必须完成)</h3>
+  <div class="card" data-page-node-id="v9nfw1uNPrFAvrkfOHIdrT">
+    <div class="card-title" data-page-node-id="nR9QXkuWYhunU0PAuDQuju">P0 · 段号驱动 v4 落地</div>
+    <table data-page-node-id="Nt4Pi6UX1hsRq9MmKJq36e">
+      <thead data-page-node-id="BwaF9OR670f9DvUBBe9K5r"><tr data-page-node-id="St0XhdVTGFaQ3DpewfBGED"><th data-page-node-id="VeCpjjGBnb6UP3ViGJh7rt">步骤</th><th data-page-node-id="pSyG2IHeeVetsd73HcK2Mt">内容</th><th data-page-node-id="h0RJdalOYVHhhKSXxq6FSS">验证标准</th><th data-page-node-id="MJi5aEpGp9B4DPshXaI5N8">回滚方法</th></tr></thead>
+      <tbody data-page-node-id="Nw9bBn9f6GRWGqNT0B8LEr">
+        <tr data-page-node-id="04GCaUE3YlOZfRu0fSyxBl"><td data-page-node-id="7672gYmnZE8IXM2HtKA3QG">1</td><td data-page-node-id="PM5IqJs004gc3HcXv9uZuq">备份 4 个代码文件为 <code data-page-node-id="t5ILSvUEhrFlBb60H7nrTH">.bak.2026-09-12-fsm-driven</code></td><td data-page-node-id="n7oCCFP7Wbw1IyNTrweiNH">备份存在</td><td data-page-node-id="7GboTN5jb87BudxqQ8fiiT">—</td></tr>
+        <tr data-page-node-id="BudHnZYqU6dFJQvgjtkyBH"><td data-page-node-id="Cp1k69UvqTxkRMomhme5p4">2</td><td data-page-node-id="CLkUdUHUmEADcGA0r4MDIL">CSV 加 <code data-page-node-id="Bv36h3FEsIxxR5anyzSHju">SegTimings</code> / <code data-page-node-id="zbMDndLQGzsd4RRQBShJcd">CastEffectIds</code> 字段(扩展解析器支持多值)</td><td data-page-node-id="smnbGif1w3Dhk6mMHbbwC4">CSV 解析无误</td><td data-page-node-id="OmPnHGty5OLeKchpHXOgV1">还原 CSV 文件</td></tr>
+        <tr data-page-node-id="pn17ScfAcfpYmpx9OoOSeD"><td data-page-node-id="Cp9SgpHVZ7vAlgCrkExaMD">3</td><td data-page-node-id="lbJq02tEqBGtaLQSjWdEZn">替换 AttackState(本文 §3.4 完整代码)</td><td data-page-node-id="2MwvzpeRxMBSE5cAOciK5B">编译通过 0 错误</td><td data-page-node-id="rKFa6p2jyumQgmhhB27Gj9">还原 .bak 文件</td></tr>
+        <tr data-page-node-id="UbgQTFSHpBTGN5xjlg2m0c"><td data-page-node-id="LnZNsrL7CzuuVHv2BFiR9r">4</td><td data-page-node-id="AzIGFX7paOJqGU4t4LXIBN">Controller 加 TriggerSegmentHit + GetCurrentAnimatorStateInfo</td><td data-page-node-id="oWg3TEODJkqIif3I6elBQ5">编译通过</td><td data-page-node-id="zLlg7zoqXXd9gsbQ7JvMNw">还原 .bak 文件</td></tr>
+        <tr data-page-node-id="mwnalPNAcOupwETF5Pwyy4"><td data-page-node-id="NtnDfPJgbWE5FHUkvdmoGw">5</td><td data-page-node-id="GLG5tKBPqCvITec4aDstpt">Skill 加 PlayCastEffect</td><td data-page-node-id="7tddvkEazAYPzqTuN0TOAS">编译通过</td><td data-page-node-id="ya3lgPSjwuWYguCNP3FWgG">还原 .bak 文件</td></tr>
+        <tr data-page-node-id="Mwel8eolruGJbm4xUZ4uhB"><td data-page-node-id="LBIjQqmQyH5yNzBzMCB2Sr">6</td><td data-page-node-id="lOt3j6nvgRZ8bW1PQwEpM8">Play 验证:<code data-page-node-id="7SiG9WlmEqHLJGwKeODY8T">[AttackState] skill=10002 seg=1 t=0.302 seg=2 t=0.601 seg=3 t=0.901</code></td><td data-page-node-id="TBmdTny0x0491afhd5CfUK">日志正常输出</td><td data-page-node-id="vIKCVUWCygX60vwA5hyHeh">逐步回滚到上一步</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" data-page-node-id="4PWB7hgWCFjoiAGnLsfalS">
+    <div class="card-title" data-page-node-id="8YPQtmmY7aUvzJSNIoKNyz">P1 · 修复 3 个状态未注册缺陷</div>
+    <ul data-page-node-id="sNyQ1P3Mwh5iuF3ibzFlEO">
+      <li data-page-node-id="JoYhocVXezFgJK6cGJfGqN"><strong data-page-node-id="J6S9DSIofhENlLS69ZvekK">Stun</strong>:Buff 触发 → <code data-page-node-id="gwNrU2uHSgV78AORtNftqw">SyncControlStateFromBuffs</code> → <code data-page-node-id="ASPLxH1u083qyzRUJTW3Qk">RequestState(Stun)</code> → 视觉眩晕效果</li>
+      <li data-page-node-id="GVoA8SdUnFoxg5g1nu73rB"><strong data-page-node-id="4CDiJgPhJM1wajgXmQOMwc">Silence</strong>:Buff 触发 → <code data-page-node-id="fT3WBSVeY7lucrV9ZWcUde">IsSilenced</code> 阻断 <code data-page-node-id="ukELcrp09THFIoF1fSK80y">TryCastSkill</code> → 状态机显示沉默图标</li>
+      <li data-page-node-id="HX5d8rEsfUpT5E1eys0Thc"><strong data-page-node-id="jNpGmPOgirbrjmbA0xHv7E">Knockback</strong>:Buff 触发 → <code data-page-node-id="IIOE96kSLPHiBYPRVBTB4M">RequestState(Knockback)</code> → 击退动画 + 位移协程</li>
+    </ul>
+  </div>
+
+  <h3 data-page-node-id="ASmBnEDmUbkhkt7gP5IbBV">6.2 中期(本月 · 必修)</h3>
+  <table data-page-node-id="aVIda6gTX5rzGxG9erL7is">
+    <thead data-page-node-id="utiUwtkQLlCM08PG9DUOew"><tr data-page-node-id="MoxS6TCo3pDx4Ujwl7dU3b"><th data-page-node-id="mxqFFjANW1pUsHe4DMqwat">目标</th><th data-page-node-id="VxGawF0FCwihQ0U1dv2Ctt">价值</th><th data-page-node-id="0FnEqBbeJl4JnNZXLDREdu">工作量</th><th data-page-node-id="OuRObil9ImLpmyAOeYMUFj">风险</th></tr></thead>
+    <tbody data-page-node-id="vnf3WUycwcG4Zv9fTFTvuw">
+      <tr data-page-node-id="MECUxk4dS0Y9zVThhNiPSb"><td data-page-node-id="x27gRljuuFPW8KpLA2DiIH">特效三层完全分离(Cast / Impact / Reaction)</td><td data-page-node-id="NvSxcKZULdTysrsDPq1e3s">策划可独立配置,改帧不动代码</td><td data-page-node-id="CVAFbOHGL666uNKA4TUOhP">3 人天</td><td data-page-node-id="SUImlDryi9NZpnmf2PFXX4">低</td></tr>
+      <tr data-page-node-id="YvePqDeLINVE5gmXUKWeUN"><td data-page-node-id="0aCTiHDUplRh9mELxGo5QN">HitStop 系统(Time.timeScale 顿帧)</td><td data-page-node-id="7oxyquqikni9tdLLw6NhIF">打击感核心</td><td data-page-node-id="dSumO3n8pmYXKya17EUrj3">0.5 人天</td><td data-page-node-id="FKPZPCRfTgUsPtHA0yGmv4">低</td></tr>
+      <tr data-page-node-id="hDEO3jz9yHyRFrFH1BHc21"><td data-page-node-id="gj4VuKnbytzjTky54VDSZF">Animation Event 全部删除</td><td data-page-node-id="KAceuPfqHPZwaLXBMLfVMo">500 → 0,缩到 1/500</td><td data-page-node-id="wwhmjqftn9PxD0m6SCCRVV">1 人天</td><td data-page-node-id="PMzXUqxN1HhGZwlWATUa2u">中</td></tr>
+      <tr data-page-node-id="lc2OwUAke80p2ApIj8qBIr"><td data-page-node-id="JJBKJTCebdhonKduCvuZBk">技能预览(技能编辑器 / CSV GUI)</td><td data-page-node-id="4kEq2FxofSjNv2yfJSz1zb">教学 + 实战两用</td><td data-page-node-id="8De6Q3QFkGXxLrb2XEpIQc">5 人天</td><td data-page-node-id="SESw3cb1ch6UcgsBjvsLiT">中</td></tr>
+      <tr data-page-node-id="1ejwA8TalPJ3hxtxp3Q5LP"><td data-page-node-id="Pf17zrlSAJQZA8s23bSe3l">Combo 系统(连招检测)</td><td data-page-node-id="COVsQZAQZbLi511xcIJ3O3">玩家操作深度</td><td data-page-node-id="2CFJwovg34gcH8kJ4lMqVw">3 人天</td><td data-page-node-id="4BLrRASu2iSYgauwFWexhW">中</td></tr>
+    </tbody>
+  </table>
+
+  <h3 data-page-node-id="okmKNuM3IIyA1ewATF7ZoE">6.3 长期(本季度 · 战略)</h3>
+  <table data-page-node-id="woGRBqj0jnaLXgpIGgVAz4">
+    <thead data-page-node-id="kgtxRFsse2ZqnT5xkhhC5P"><tr data-page-node-id="Z9HrpoMg6EJUIMIy8j7zLq"><th data-page-node-id="UTI1tXHIbCR4VtaBO6IRXv">方向</th><th data-page-node-id="xj54MSEBOhXcyJWbTSKGZ3">目标</th><th data-page-node-id="WtqnPESUbJS7ucoe0KLhFm">关键产出</th></tr></thead>
+    <tbody data-page-node-id="6K10SKncOKFxYLbb9930Rm">
+      <tr data-page-node-id="p9SxGs4vrRIK4jTFOmRKmJ"><td data-page-node-id="wFHGNVUv7g38EIwoaIkXuf">技能图编辑器</td><td data-page-node-id="RFc2LjRGkhs9j4Er6uEoKD">可视化配置 SegTimings / 特效 / 触发条件</td><td data-page-node-id="m97fs1Nyl55HRmLk8qdbA9">Editor Window + JSON 导出</td></tr>
+      <tr data-page-node-id="pYyxEJDF4blpAChOmFHI9H"><td data-page-node-id="RO5xVzHL5O1WJfLpXwO9Bn">网络同步</td><td data-page-node-id="lgoABOMZSnN6kYCakO0Oas">段号驱动适配 Lockstep / 帧同步</td><td data-page-node-id="Fc8dCYhoBxr0kwDChuKUVf">确定性段号协议</td></tr>
+      <tr data-page-node-id="5fdmRisDdIGziLGhtmNVIJ"><td data-page-node-id="5ga6fkrsJcZ7eA6z7tvO45">行为树接入</td><td data-page-node-id="q90nLgod06vQZbHp91Ajhz">敌人 AI 段号化决策</td><td data-page-node-id="vgOPAHiJknh466lupThzNK">BTNode + 黑板</td></tr>
+      <tr data-page-node-id="Td5uCS32a53QLOBIJfsQIW"><td data-page-node-id="ZNf6JXhe6Yeh7qs20xZDoA">导出教学包</td><td data-page-node-id="qdLWLTkL6QPSpS1SX6KhW6">Unity 实训标准化案例(10 个)</td><td data-page-node-id="B54qraCBY0xVo0SC8EgQgr">课程教案 + 配套源码</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §7 教训沉淀 -->
+<section id="s7" data-page-node-id="W1MPFTHWewlqFOYWUCfjFy">
+  <div class="section-header" data-page-node-id="F55f28pWimq32ZABlFjUuT">
+    <span class="section-num" data-page-node-id="CEyXY9zLxm49bsmVLEEVUY">§ 07</span>
+    <h2 class="section-title" data-page-node-id="zNQkCmAYsKBb7bytnV5aCY">教训沉淀 · 给未来的自己</h2>
+  </div>
+
+  <h3 data-page-node-id="I6pXG7AW0Yzu42kXEpBsPN">7.1 4 个方法论教训</h3>
+  <div class="four-grid" data-page-node-id="gwBSEYhPW1EtFRZoGBRywa">
+    <div class="element-card pain" data-page-node-id="m74R6KDngvhCtYjK5iJ7Zo">
+      <div class="element-label" data-page-node-id="EMqdoKvBaag8v51UHr7ivb">教训 01 · 用户否定</div>
+      <p data-page-node-id="FjQFJ7n2BaHndc4mJG4HQV">当用户说"你的方案是错的",<strong data-page-node-id="6Aql3AFYZOHOAduFMtg1kr">先承认错误再追问"你想要的是什么"</strong>,而不是继续推销原方案。</p>
+    </div>
+    <div class="element-card resolve" data-page-node-id="ArrA7AFOkXxmVlC40r2AdG">
+      <div class="element-label" data-page-node-id="kPFWmYsHipTBmA1CrNpAuJ">教训 02 · 现有架构</div>
+      <p data-page-node-id="p7u9VkMI4ltO0A3OsDryzC">学员/同事问"怎么做"时,<strong data-page-node-id="JV2temiHw2msWBLqp3B4Sc">先确认当前架构已有的能力</strong>,再决定是补缺还是改架构。</p>
+    </div>
+    <div class="element-card why" data-page-node-id="zVqLVt5Y5bn4B62PMgMv2N">
+      <div class="element-label" data-page-node-id="rE1rlcuMcvYQ3kmCu9aNXt">教训 03 · 规模化</div>
+      <p data-page-node-id="bQEqFozAkbDKJFLYEZVshe">用户用"10×5×5"量化痛点时,<strong data-page-node-id="EYa8kO9JiauAHXHMaoSiBZ">让规模化问题具象化</strong>,比泛泛说"工作量太大"更有力。</p>
+    </div>
+    <div class="element-card origin" data-page-node-id="jJ1KWYhSXRnEKW1vv3TcBV">
+      <div class="element-label" data-page-node-id="v2pUaOqDk5U6YthWShbs0j">教训 04 · 重置职责</div>
+      <p data-page-node-id="LuMu8CpPPvCY61iVt4GWkL">同一"重置职责"在多处冗余实现 = 必然有 bug。<strong data-page-node-id="zAhKH1wGeBAXsx7m5N557Z">唯一主重置点</strong>原则:IdleState.OnEnter 是唯一主重置点。</p>
+    </div>
+  </div>
+
+  <h3 data-page-node-id="Qu5bvLx1tFmftv9LXfmxBE">7.2 技术层面沉淀</h3>
+  <div class="card" data-page-node-id="bgQUM5VVbTOv5R1sVPQD3m">
+    <div class="card-title" data-page-node-id="VUQjhNkhA9IjgqHY5VNrd1">Unity Animation Event 的 4 个坑</div>
+    <ul data-page-node-id="Agl76PHy0dYNREWkxXasH9">
+      <li data-page-node-id="fuiZyjFhUAbg2snBgGGlEJ"><strong data-page-node-id="SAyOMLSPGkvPz8ggtcR28T">反射机制</strong>:Event 回调是 Unity 通过反射调用,C# 内 0 调用站点,grep 不到不等于没被调</li>
+      <li data-page-node-id="E8IiNYvTGJNrITJIdtiQYG"><strong data-page-node-id="08p3MPtqgrVXexzkcKuosH">无法 C# 直接调用</strong>:PlayMode 验证前必须确认 Clip 上真的绑了 Event,否则任何"计数器逻辑"都是空跑</li>
+      <li data-page-node-id="oQ8PvCDJTQqM2Jlg1SBJeR"><strong data-page-node-id="GY8cKWHRQEhG6527w1ND1E">命名敏感</strong>:Function 名拼写错误会静默失败(不报错),必须严格匹配 C# 方法签名</li>
+      <li data-page-node-id="USimZV7dd6kzUMlLZ6H044"><strong data-page-node-id="xsythubniTH7HHROuehdUy">String 参数解析</strong>:空 args 会 FormatException,逗号/分号分隔在跨语言解析时容易踩坑</li>
+    </ul>
+  </div>
+
+  <div class="card" data-page-node-id="PhBhECIDUNEgLMn2umJCpd">
+    <div class="card-title" data-page-node-id="K5FKsRtzYk3s2cEz17DUmd">FSM 状态机 vs 协程 · 选型矩阵</div>
+    <table data-page-node-id="jipzbfCD792MibYlKfMAzG">
+      <thead data-page-node-id="in4qqEERbgQFIBMnfUAcmP"><tr data-page-node-id="VSk8bnQ1Oi4X3QABTTKz0E"><th data-page-node-id="lKVNFutXXtZnSF7iG1Cug3">维度</th><th data-page-node-id="613qHSLTP3nRjz7Qsnbpln">协程 (IEnumerator)</th><th data-page-node-id="q1oNzfJBSPJ408t2kQr63j">FSM 状态 (OnUpdate)</th></tr></thead>
+      <tbody data-page-node-id="NrhJ3QKmGxNyWgcMFrWTra">
+        <tr data-page-node-id="IAjQAgFBJqheATEIcvGJGa"><td data-page-node-id="jYVOwFd8KNFLdQJaVjpO8M">生命周期管理</td><td data-page-node-id="niz2VZFBZhhTmH8Wp6opcJ">手动 StopCoroutine,易遗漏</td><td data-page-node-id="I8vbE3242zExHYw8iy3FlH">FSM 自动管,进入/退出明确</td></tr>
+        <tr data-page-node-id="ol3KCpKsxwgPrDXbNrRX2n"><td data-page-node-id="9RGXCZpPwc3RqRO7PXyL4A">与现有逻辑复用</td><td data-page-node-id="CXmaeg8DAPQ94oGqDBGMuD">协程和 Tick 逻辑并行</td><td data-page-node-id="G9aGfrESwcieSCjK7NDJI5">同处 OnUpdate,结构紧凑</td></tr>
+        <tr data-page-node-id="mHBgbG1M5velaBWcUWRc8w"><td data-page-node-id="yuF5uvH8ywPqRlXGhCvOtV">中断 / 加速</td><td data-page-node-id="7lktau70V8U6EHakUssPCP">受 Time.timeScale 影响</td><td data-page-node-id="gWCPAtUCGObGElCp6U8jpt">独立于时间缩放</td></tr>
+        <tr data-page-node-id="N4qVGefBnIP7j3l1DMkNrY"><td data-page-node-id="RyhKg97F9l4LlZPmQlckK2">学员理解成本</td><td data-page-node-id="MgZFPYOLxPpOyKKgWUXoGT">yield return 心智负担</td><td data-page-node-id="qCI85QPtTz7nTDFfm0biDl">if (info.normalizedTime >= ...)</td></tr>
+        <tr data-page-node-id="cxnqDa5FTnnCOc5tH8kVu8"><td data-page-node-id="Wm2d5ztTevxLvAs2qOqyq9">Debug 可观测性</td><td data-page-node-id="xC6vYIUfq5HkAEznHxpLQH">堆栈难追</td><td data-page-node-id="FL9P6gkdvE7hsRRwOHAz9L">每帧调,断点 / 日志直接打</td></tr>
+        <tr data-page-node-id="jdI9RIwpKzs1HwhUby4SQ6"><td data-page-node-id="VidxWoEwbeqxHAzmAUCw2N"><strong data-page-node-id="fP32sTdBLokszj7QuDQI9F">推荐场景</strong></td><td data-page-node-id="m81kNZiQDrBiLMaAT9fJ1f">异步加载 / 延迟触发</td><td data-page-node-id="0QTKBAyd99pPfS2B4Xs2y6"><strong data-page-node-id="jERbgRhkUPdaAVXShPdHsv">逐帧推进 / 状态判定</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 data-page-node-id="xPxMdIn1s5vYfc2hzZ1Qop">7.3 蔡振立的关键提示(教学价值)</h3>
+  <div class="quote" data-page-node-id="S6iTjBlxAclurtspiLbOzY">
+    "下一步可以做的事你给的建议也完全是错误的" — <strong data-page-node-id="icmsCEBvh8l2msedVGvNHB">教会我:用户否定时,先承认,再问需求,最后给方案</strong>
+    <span class="who" data-page-node-id="u7vp4DvuOeqf1CwUmtRpXw">— 蔡振立 · 2026-09-12 第 2 次否定</span>
+  </div>
+  <div class="quote" data-page-node-id="lSHtyzicY8Z0WN3oeZWDsq">
+    "对于类似 RPG 类型的游戏,一般玩家的技能特效都是怎么进行管理的,什么时机进行播放?" — <strong data-page-node-id="mYZuuRkX2Cd8W5sNs4YKQf">教会我:学员/同事问"怎么做"时,先确认当前架构已有的能力</strong>
+    <span class="who" data-page-node-id="kre2UOVUP050adP9qKQDfw">— 蔡振立 · 2026-09-12 第 1 次否定</span>
+  </div>
+  <div class="quote" data-page-node-id="47r07w7I17mfxKf6UERlwc">
+    "10 个玩家 × 5 个技能 × 5 段" — <strong data-page-node-id="PGXTqXPhQKJDFXGsa9tCpG">教会我:用具体数字量化痛点,让规模化问题具象化</strong>
+    <span class="who" data-page-node-id="RvSvjSdAcnCdstPfeGaZis">— 蔡振立 · 2026-09-12 第 3 次否定</span>
+  </div>
+
+  <h3 data-page-node-id="HCbl76u0yDNNfIWXJTSsjo">7.4 工程纪律回顾</h3>
+  <div class="card" data-page-node-id="lfWSFfBvjnz4eEjFJQdlde">
+    <div class="card-title" data-page-node-id="TGCmV4yy2HxJvU7gQedpFN">本项目铁律(违反代价 = 反复回滚)</div>
+    <ul data-page-node-id="mE1YrDUgHhAI6bUVSWGmy8">
+      <li data-page-node-id="zf1VpMsW4DGhOwRrMSuA94"><strong data-page-node-id="k75AIWtLvaGq17hPB9jcIC">破坏性操作前必须物理备份</strong>(本轮演化共产生 8 个 .bak 文件,1 个回滚)</li>
+      <li data-page-node-id="AKHHBzC5yu5wRP0JEmWGKN"><strong data-page-node-id="qC5XDVXBj6mzXXzNkEZVfP">编译/Play 验证通过 UnitySkills HTTP 服务</strong>(<code data-page-node-id="vJHVFdXco1LLgclxmNGwar">http://localhost:8090</code>),要求 0 Error / 0 Warning</li>
+      <li data-page-node-id="ZUdbREHVxqJtbppBOHSmNt"><strong data-page-node-id="bEj0ZTEKGjfOJ38xk466V3">CRLF + BOM 文件</strong>:Python 字节级 patch 必须保留 CRLF 行尾和 UTF-8 BOM,否则后续 C# 编译报错</li>
+      <li data-page-node-id="r6npo38HxnhH2fEBoO5VeB"><strong data-page-node-id="0aoxvI1JQinKnU0z4NKhP9">小步快跑、一次改一项</strong>:不一口气改 5 个文件,每步独立可验证</li>
+      <li data-page-node-id="D9hT5W1wxk4x7JMCJ5pXYR"><strong data-page-node-id="bHRHbKw9xi24sB4gAfovRL">沉淀到文档</strong>:关键技术决策必须形成 <code data-page-node-id="aryyDTc2aR2niJ8FpNRMOn">.html</code> 文档,供学员/未来自己复用</li>
+    </ul>
+  </div>
+</section>
+
+<!-- §8 附录 -->
+<section id="s8" data-page-node-id="dF56xijhO5u6F3QxvP7shl">
+  <div class="section-header" data-page-node-id="gpJmrQ3iaKFKyOx9yaDgla">
+    <span class="section-num" data-page-node-id="sCJPCnrai9m8WM1FjQfWLk">§ 08</span>
+    <h2 class="section-title" data-page-node-id="Awqciykoi3FLKBmIEHwFDK">附录 · 完整代码与回滚</h2>
+  </div>
+
+  <h3 data-page-node-id="DJ4Tjue1A4oXWbCdxYEoLM">8.1 完整代码索引</h3>
+  <table data-page-node-id="uDDw0JiGAKTZU3dzfePLpL">
+    <thead data-page-node-id="nNHt8xevubsQdGCZTWLNsV"><tr data-page-node-id="j87rgpEx6s1Dues7VqzOoE"><th data-page-node-id="AyBolTOCEL4lm3oQYQgJDO">文档</th><th data-page-node-id="EXaRMAfoHJZaRdgfdQuS3c">路径</th><th data-page-node-id="9SEHoeFDd8jNoTy1gpTnbv">角色</th></tr></thead>
+    <tbody data-page-node-id="cDSqSVTVmLdwlu7SJJtjmT">
+      <tr data-page-node-id="uk5kfrR7bIAzWb2l5yCvKr"><td data-page-node-id="flgVQYpr4EUQQeDnFu7vEm">演化复盘(本文)</td><td data-page-node-id="rWWsFNAU2ho0XpLX5H0Zpm"><code data-page-node-id="JRIQV2NY2SGX1JcJwMMAec">战斗框架演化复盘_2026-09-12.html</code></td><td data-page-node-id="61tYmcArOVnpO3KooaVsae">全景视角</td></tr>
+      <tr data-page-node-id="3QVSbXRmDBf3wvrC1n9iHq"><td data-page-node-id="VahCQzmEBRhA8Qpf7K1byn">段号驱动技术方案</td><td data-page-node-id="XSBlujCvepgWbX5rGyqTzL"><code data-page-node-id="C6T24vZ0KvsF8zvkZRPBVH">战斗框架技术文档_段号驱动与状态机推进.html</code></td><td data-page-node-id="n4OmqEEICOv5dGvCvPXcjs">可落地代码</td></tr>
+      <tr data-page-node-id="3GwVkIxeIIWFNNirmK6WL2"><td data-page-node-id="BL3gbSfwJoaBgNGZCLVrU1">战斗框架分析报告</td><td data-page-node-id="LlKJ1XQJCQyTpf1unS3RpH"><code data-page-node-id="nY0EiLiiPmQ1ihsgkzhe4F">战斗框架分析报告.md</code></td><td data-page-node-id="G3tanbDmLOrA7CVNuxOzxV">缺陷清单与改造方案</td></tr>
+      <tr data-page-node-id="yDfKHT1ucTnLLTbHe6IkOp"><td data-page-node-id="5TBTUWIosg8jQIfXDSk7m0">修改记录(段索引方案 A)</td><td data-page-node-id="n3ZUBEvusGrL7pM4oVc28i"><code data-page-node-id="UDFVKJiG3j9uKb3ahqAxbe">战斗框架修改记录_2026-09-11_段索引方案A.md</code></td><td data-page-node-id="PqMnLrcESZxX384cuZ4wta">v1 → v3 演化轨迹</td></tr>
+      <tr data-page-node-id="qAG40MjBFH4o90mVAnrz0j"><td data-page-node-id="uQ2bWIJrSyvfMgqch7ljpY">战斗框架深度评估</td><td data-page-node-id="olSQpOfp2IIxaBHgrpUZoR"><code data-page-node-id="1MjERENoEx4SzVgR3lBUmP">BattleFramework-Flow.html</code></td><td data-page-node-id="xAaONdX4ibUgXbVETvLBGd">架构图与数据流</td></tr>
+    </tbody>
+  </table>
+
+  <h3 data-page-node-id="jVFVx5cHNLEEHI4rC82lIh">8.2 备份清单(本轮演化产生)</h3>
+  <table data-page-node-id="RlJxV64rY65YuCgOYWwMZB">
+    <thead data-page-node-id="AOaHfIkbtQc5BQSfwG39iO"><tr data-page-node-id="zh97RMSI5lWZXArigyXca5"><th data-page-node-id="cjBGWpVR86ky9KywUqa8u8">备份文件</th><th data-page-node-id="peWC9rq9w8qGu8tpisZp0f">对应版本</th><th data-page-node-id="nij1sAAf7lxjF7gocRupSo">可回滚</th></tr></thead>
+    <tbody data-page-node-id="azl5gBKlFja3L3IS56sQhQ">
+      <tr data-page-node-id="VtQtmVIScgudCDZAlfmYnS"><td data-page-node-id="4CvEFmvencDsbRQkO7LnwV"><code data-page-node-id="is197HyohRXOM9qqA1pX8R">*.bak.2026-09-11-approachA</code></td><td data-page-node-id="twwfKZtKhttr1YmQFhT4a6">v1 之前(原始)</td><td data-page-node-id="mCCWlVr5tDOqOX6hlSrM6d">✓ 安全</td></tr>
+      <tr data-page-node-id="4vtYw3DMPQr2I3qZBIERBB"><td data-page-node-id="40l01X09blvGIfgHIpg26S"><code data-page-node-id="6zaOKPBxbp3npCGaWHwhxt">*.bak.2026-09-11-fix</code></td><td data-page-node-id="zuf3HPsgTT6GjRbye3FHrw">v1(失败)</td><td data-page-node-id="GAAe8XdHTHSS7iguTIVakt">✗ 不要回滚</td></tr>
+      <tr data-page-node-id="7AOaEhUjbFIpoTqlSrY9gm"><td data-page-node-id="jyRXHH2cBvlxChoOwCY4kT"><code data-page-node-id="c5Mzq7wquXIzNZpt3lssBn">*.bak.2026-09-11-diag</code></td><td data-page-node-id="pOZhM6HfywGV1m7GXvBser">v2 之前(诊断)</td><td data-page-node-id="d74QUTS7yYVlvirH4H7qOO">✓ 安全</td></tr>
+      <tr data-page-node-id="UUXw427drhr2Je6fI6wSgk"><td data-page-node-id="rWlekTCkYcDuGOV74josPb"><code data-page-node-id="p9EJ4lm8T1vYjIAettJldE">*.bak.2026-09-11-threshold-fix</code></td><td data-page-node-id="tO0qFT1xkr1BjciTBUgRu6">v3(失败)</td><td data-page-node-id="3bYmZxH0oJHgfr6M5tFePT">✓ 可回滚但需配套</td></tr>
+      <tr data-page-node-id="Z7NuDiIDke4SjjJVYEe6Y2"><td data-page-node-id="5ghRsGEe5qg8PeSxdMduiB"><code data-page-node-id="liXx06iQdd73Y84p0mWAEB">BattleConst.bak.2026-09-11-fsm-attack</code></td><td data-page-node-id="3KfrSORfJNS1FKuxkD46sR">FSM Attack 落地</td><td data-page-node-id="QbFFItuOlEmbPL8jrfMAwi">✓ 安全</td></tr>
+      <tr data-page-node-id="7lQPfF50KYK8uBsdaTfED3"><td data-page-node-id="bqPNJaNwjZg5ITzEWK2ldC"><code data-page-node-id="7gfBF3yzsGbyGEWbNRKljF">*.bak.2026-09-11-fsm-attack</code></td><td data-page-node-id="IIRIRc4QPZO56SJHKIJzPM">FSM Attack 落地</td><td data-page-node-id="rw0x53U0bplrJZJBPgBLt5">✓ 安全</td></tr>
+      <tr data-page-node-id="uRvJrC4OqNac2OYEt5uOf5"><td data-page-node-id="ZnyCDaBSbCR6TdmHpHHBrx"><code data-page-node-id="DERdni4pFD7F6BwBYSGFeQ">*_segidx_2026-09-10.bak</code></td><td data-page-node-id="ZREs5nvreMSK1QJ7UbPT1v">段索引最初版</td><td data-page-node-id="atSE4EE1fOt8RbvsjKO4JM">✓ 安全</td></tr>
+    </tbody>
+  </table>
+
+  <h3 data-page-node-id="SuBLAtF2jj1KSHiKDpdyuA">8.3 工作日志索引</h3>
+  <ul data-page-node-id="M4LXRnRDabOeSL9Ae6dLwL">
+    <li data-page-node-id="0SCasjX0Bb6jk6Wi0QzRm4"><code data-page-node-id="BXENEENgbu8He8srcnJvsW">2026-09-03.md</code> · 旧框架盘点起点</li>
+    <li data-page-node-id="6K3xx1HOJic0ucNb8upjra"><code data-page-node-id="oEiRKR9VYstaaXQaIX6DxH">2026-09-07.md</code> · 组件化方案设计</li>
+    <li data-page-node-id="1SBeDAJqtHFUIC6Tho26X4"><code data-page-node-id="a3zCQxarFbV2zKcUmGP7WC">2026-09-09.md</code> · P3 收敛日(Legacy 删除)</li>
+    <li data-page-node-id="kxw5NmTCKnENNcDxY4oovf"><code data-page-node-id="DIFHue27YR39E5bFPxJGQN">2026-09-11.md</code> · 段号驱动 v1 → v3 演化</li>
+    <li data-page-node-id="WoWhHtPlJVkvrfu7OnO8si"><code data-page-node-id="2EmCD2MaOZIT4GNG81hw1C">2026-09-12.md</code> · 特效分层 + v4 方案沉淀(本文档)</li>
+  </ul>
+</section>
+
+<footer data-page-node-id="TrWjXY0clesRDgKSG5yb1k">
+  <div data-page-node-id="3JJwweNf2ghxnMWfQkuJUA">战斗框架演化复盘 · v1.0</div>
+  <div class="footer-line" data-page-node-id="t3GjDjolqHjfqbFApuUTsv">Generated by WorkBuddy · 2026-09-12</div>
+  <div style="margin-top:8px" data-page-node-id="NJUTtbu0odA1FVUPANcOyv">蔡振立 · Unity 实训主任 · 战斗框架主理人</div>
+</footer>
+
+</div>
+</body>
+</html>

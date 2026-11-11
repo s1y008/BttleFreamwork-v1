@@ -1,0 +1,8257 @@
+[
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10001,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 0.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 1,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        2,
+        22
+      ],
+      [
+        0,
+        2,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": [
+      0.3,
+      0.6,
+      0.9
+    ],
+    "CastEffectTimings": [
+      0.25,
+      0.55,
+      0.85
+    ],
+    "ID": 10002,
+    "Name": "天诛",
+    "Icon": "cike_1",
+    "SkillThrowType": 5,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [
+      1003
+    ],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [
+      10001,
+      10002,
+      10001
+    ],
+    "SegCount": 3
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22
+      ],
+      [
+        0,
+        22
+      ],
+      [
+        0,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": [
+      0.16,
+      0.33,
+      0.63
+    ],
+    "CastEffectTimings": [
+      0.14,
+      0.33,
+      0.6
+    ],
+    "ID": 10003,
+    "Name": "三连斩",
+    "Icon": "cike_2",
+    "SkillThrowType": 3,
+    "CDTime": 20.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.0,
+    "Attack": 140,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [
+      2001,
+      2002,
+      2003
+    ],
+    "SegCount": 3
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10004,
+    "Name": "禁魂之轮",
+    "Icon": "cike_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.6,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.0,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [
+      10001,
+      10002,
+      10003
+    ],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        6
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10005,
+    "Name": "圆月斩",
+    "Icon": "cike_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.5,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 10.1,
+    "AttackAngle": 180.0,
+    "Warning": 10.0,
+    "Attack": 100,
+    "Crit": 1.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10006,
+    "Name": "瞬狱五星斩",
+    "Icon": "cike_5",
+    "SkillThrowType": 5,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.0,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10007,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 0.0,
+    "AttackDist": 9.0,
+    "HitType": 0,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        6
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10008,
+    "Name": "回旋之舞",
+    "Icon": "youxia_2",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 7.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        8
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10009,
+    "Name": "处决",
+    "Icon": "youxia_1",
+    "SkillThrowType": 5,
+    "CDTime": 5.0,
+    "AttackDist": 4.5,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        2
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10010,
+    "Name": "毒爆射击",
+    "Icon": "youxia_4",
+    "SkillThrowType": 3,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 0,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 8.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10011,
+    "Name": "爆炸箭矢",
+    "Icon": "youxia_3",
+    "SkillThrowType": 3,
+    "CDTime": 3.0,
+    "AttackDist": 10.0,
+    "HitType": 0,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 10.0,
+    "Attack": 220,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10012,
+    "Name": "流星箭矢",
+    "Icon": "youxia_5",
+    "SkillThrowType": 5,
+    "CDTime": 0.0,
+    "AttackDist": 10.0,
+    "HitType": 0,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10035
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10013,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 0.0,
+    "AttackDist": 9.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": 1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        2
+      ]
+    ],
+    "HitEffect": [
+      10038
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10014,
+    "Name": "冰冻监狱",
+    "Icon": "binshuangfashi_1",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.0,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        2
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10015,
+    "Name": "冰息术",
+    "Icon": "binshuangfashi_2",
+    "SkillThrowType": 3,
+    "CDTime": 3.0,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 11.0,
+    "Attack": 200,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        2
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10016,
+    "Name": "寒冰护盾",
+    "Icon": "binshuangfashi_3",
+    "SkillThrowType": 3,
+    "CDTime": 3.0,
+    "AttackDist": 0.0,
+    "HitType": 4,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 0,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10035
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10017,
+    "Name": "魔力冰球",
+    "Icon": "binshuangfashi_4",
+    "SkillThrowType": 3,
+    "CDTime": 3.0,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 260,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        2
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10018,
+    "Name": "冰霜尖刺",
+    "Icon": "binshuangfashi_5",
+    "SkillThrowType": 5,
+    "CDTime": 0.0,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10019,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 0.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10020,
+    "Name": "直捣黄龙",
+    "Icon": "qishi_1",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        7,
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10021,
+    "Name": "跃翔之刺",
+    "Icon": "qishi_2",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 10.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10022,
+    "Name": "飞轮斩",
+    "Icon": "qishi_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        10
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10023,
+    "Name": "钻云枪",
+    "Icon": "qishi_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 10.5,
+    "Attack": 130,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10024,
+    "Name": "黑之魅",
+    "Icon": "qishi_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10035
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10025,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 0.0,
+    "AttackDist": 9.0,
+    "HitType": 0,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        2
+      ]
+    ],
+    "HitEffect": [
+      10060
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10026,
+    "Name": "火焰炸药",
+    "Icon": "yuansushi_1",
+    "SkillThrowType": 5,
+    "CDTime": 3.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10035
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10027,
+    "Name": "火墙",
+    "Icon": "yuansushi_2",
+    "SkillThrowType": 3,
+    "CDTime": 3.0,
+    "AttackDist": 9.0,
+    "HitType": 0,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 120.0,
+    "Warning": 6.0,
+    "Attack": 150,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10035
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10028,
+    "Name": "风震",
+    "Icon": "yuansushi_3",
+    "SkillThrowType": 3,
+    "CDTime": 3.0,
+    "AttackDist": 10.0,
+    "HitType": 0,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 10.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10054
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10029,
+    "Name": "炎爆术",
+    "Icon": "yuansushi_4",
+    "SkillThrowType": 3,
+    "CDTime": 3.0,
+    "AttackDist": 10.0,
+    "HitType": 0,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 10.5,
+    "Attack": 130,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10030,
+    "Name": "台风",
+    "Icon": "yuansushi_5",
+    "SkillThrowType": 5,
+    "CDTime": 3.0,
+    "AttackDist": 10.0,
+    "HitType": 0,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 10.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10031,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 0.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        12
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10032,
+    "Name": "神圣之手",
+    "Icon": "mushi_1",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        11
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10033,
+    "Name": "十字审判",
+    "Icon": "mushi_2",
+    "SkillThrowType": 3,
+    "CDTime": 2.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10034,
+    "Name": "神圣十字",
+    "Icon": "mushi_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 150,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        1
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10035,
+    "Name": "愈合",
+    "Icon": "mushi_4",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 3.0,
+    "HitType": 3,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 4.8,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 300,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10036,
+    "Name": "神之裁决",
+    "Icon": "mushi_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10070
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10037,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.8,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10070
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10038,
+    "Name": "水牢禁锢",
+    "Icon": "shuiwuzhe_1",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10070
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10039,
+    "Name": "水幕弹",
+    "Icon": "shuiwuzhe_2",
+    "SkillThrowType": 3,
+    "CDTime": 3.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10070
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10040,
+    "Name": "水龙吟",
+    "Icon": "shuiwuzhe_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 140,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        16,
+        4,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10070
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10041,
+    "Name": "螺旋水炮",
+    "Icon": "shuiwuzhe_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 220,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10042,
+    "Name": "水龙卷",
+    "Icon": "shuiwuzhe_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10043,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4,
+        13
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10044,
+    "Name": "暴力抓取",
+    "Icon": "yemanren_1",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 7.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": 1,
+    "AttackRadius": 6.8,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10045,
+    "Name": "回旋斩杀",
+    "Icon": "yemanren_2",
+    "SkillThrowType": 3,
+    "CDTime": 3.0,
+    "AttackDist": 6.5,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.3,
+    "AttackAngle": 180.0,
+    "Warning": 7.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        16,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10046,
+    "Name": "翻滚劈砍",
+    "Icon": "yemanren_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10047,
+    "Name": "狂野撞击",
+    "Icon": "yemanren_4",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 140,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10048,
+    "Name": "屠杀之旋",
+    "Icon": "yemanren_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 7.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.8,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10049,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4,
+        14
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10050,
+    "Name": "白虎抓",
+    "Icon": "baihuwang_1",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10051,
+    "Name": "毁灭冲锋",
+    "Icon": "baihuwang_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10052,
+    "Name": "碎金锤",
+    "Icon": "baihuwang_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10053,
+    "Name": "凶猛打击",
+    "Icon": "baihuwang_4",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 180,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        11
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10054,
+    "Name": "白虎咆哮",
+    "Icon": "baihuwang_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 7.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10102
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10055,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        4,
+        10
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10056,
+    "Name": "蛮力抱摔",
+    "Icon": "baiyuanwang_1",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": 1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10057,
+    "Name": "金刚碎",
+    "Icon": "baiyuanwang_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10058,
+    "Name": "巨猿轰炸",
+    "Icon": "baiyuanwang_3",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 140,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4,
+        16,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10059,
+    "Name": "野蛮冲撞",
+    "Icon": "baiyuanwang_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 140,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10060,
+    "Name": "天崩地裂",
+    "Icon": "baiyuanwang_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 7.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.8,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10102
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10061,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4,
+        16,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10062,
+    "Name": "摄魂笛音",
+    "Icon": "shiren_1",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 7.5,
+    "AttackAngle": 180.0,
+    "Warning": 8.0,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10063,
+    "Name": "天魂打击",
+    "Icon": "shiren_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 180,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        11
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10064,
+    "Name": "极光",
+    "Icon": "shiren_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.8,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 200,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        11
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10065,
+    "Name": "音域爆破",
+    "Icon": "shiren_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 240,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        11,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10066,
+    "Name": "异界天音",
+    "Icon": "shiren_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10102
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10067,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        4,
+        17
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10068,
+    "Name": "弦外之音",
+    "Icon": "tianlai_1",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": 0,
+    "AttackRadius": 6.5,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10069,
+    "Name": "摇滚电音",
+    "Icon": "tianlai_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 130,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        11
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10070,
+    "Name": "撩音",
+    "Icon": "tianlai_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10071,
+    "Name": "圣音之刃",
+    "Icon": "tianlai_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 220,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10072,
+    "Name": "脉冲电音",
+    "Icon": "tianlai_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10073,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        16,
+        2
+      ]
+    ],
+    "HitEffect": [
+      10129
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10074,
+    "Name": "蝗虫尸爆",
+    "Icon": "shujing_1",
+    "SkillThrowType": 5,
+    "CDTime": 4.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.5,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 80,
+    "Crit": 1.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10075,
+    "Name": "荆棘之刺",
+    "Icon": "shujing_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 8.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10076,
+    "Name": "藤蔓袭击",
+    "Icon": "shujing_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 200,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10077,
+    "Name": "地狱深渊",
+    "Icon": "shujing_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 240,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10078,
+    "Name": "亡灵大军",
+    "Icon": "shujing_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10079,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        2
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10080,
+    "Name": "盾震杀",
+    "Icon": "shengqishi_1",
+    "SkillThrowType": 5,
+    "CDTime": 4.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        16,
+        4,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10081,
+    "Name": "冲锋刺刃",
+    "Icon": "shengqishi_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        16,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10142
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10082,
+    "Name": "盾冲撞击",
+    "Icon": "shengqishi_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10083,
+    "Name": "地裂斩",
+    "Icon": "shengqishi_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        9
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10084,
+    "Name": "剑盾闪击",
+    "Icon": "shengqishi_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10150
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10085,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        18,
+        16,
+        4,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10150
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10086,
+    "Name": "怒气暴打",
+    "Icon": "gedoujia_1",
+    "SkillThrowType": 5,
+    "CDTime": 4.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        22,
+        16
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10087,
+    "Name": "百裂拳",
+    "Icon": "gedoujia_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 4.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 4.5,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10150
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10088,
+    "Name": "腹拳",
+    "Icon": "gedoujia_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 240,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        18
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10089,
+    "Name": "瞬拳",
+    "Icon": "gedoujia_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        16,
+        4,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10156
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10090,
+    "Name": "拳神连击",
+    "Icon": "gedoujia_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 8.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10091,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10092,
+    "Name": "瞬影杀",
+    "Icon": "daoke_1",
+    "SkillThrowType": 5,
+    "CDTime": 4.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10093,
+    "Name": "满月斩",
+    "Icon": "daoke_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10094,
+    "Name": "飞月斩",
+    "Icon": "daoke_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 150,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        16,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10095,
+    "Name": "月光波",
+    "Icon": "daoke_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 200,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        4,
+        19
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10096,
+    "Name": "红莲一闪",
+    "Icon": "daoke_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10097,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10150
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10098,
+    "Name": "破空刺",
+    "Icon": "xiyangjianke_1",
+    "SkillThrowType": 5,
+    "CDTime": 4.0,
+    "AttackDist": 4.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10150
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10099,
+    "Name": "冲锋刺",
+    "Icon": "xiyangjianke_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10150
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10100,
+    "Name": "翔云刺",
+    "Icon": "xiyangjianke_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 140,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        16,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10101,
+    "Name": "突刺连击",
+    "Icon": "xiyangjianke_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 240,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        16,
+        4,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10156
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10102,
+    "Name": "千刃星芒刺",
+    "Icon": "xiyangjianke_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 8.5,
+    "Attack": 400,
+    "Crit": 0.8,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10103,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10104,
+    "Name": "飞空破碎",
+    "Icon": "kuangzhanshi_1",
+    "SkillThrowType": 5,
+    "CDTime": 4.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10105,
+    "Name": "熔岩炸弹",
+    "Icon": "kuangzhanshi_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 180,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10106,
+    "Name": "火焰旋风斩",
+    "Icon": "kuangzhanshi_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 240,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        2
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10107,
+    "Name": "不屈意志",
+    "Icon": "kuangzhanshi_4",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 5.0,
+    "HitType": 2,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        2
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10108,
+    "Name": "熔火神兵",
+    "Icon": "kuangzhanshi_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 8.5,
+    "Attack": 400,
+    "Crit": 1.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10109,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        20,
+        7,
+        16,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10110,
+    "Name": "饭刚落",
+    "Icon": "renzhe_1",
+    "SkillThrowType": 5,
+    "CDTime": 4.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10111,
+    "Name": "翔鹤空斩",
+    "Icon": "renzhe_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 110,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10112,
+    "Name": "毒蛇手里剑",
+    "Icon": "renzhe_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 130,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10113,
+    "Name": "疾风斩",
+    "Icon": "renzhe_4",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 8.5,
+    "Attack": 225,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10114,
+    "Name": "凤舞天岚",
+    "Icon": "renzhe_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10115,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        10,
+        7,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10116,
+    "Name": "螺旋藤蔓",
+    "Icon": "nvyao_1",
+    "SkillThrowType": 5,
+    "CDTime": 4.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 8.5,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        10,
+        4,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10117,
+    "Name": "秋叶飞刀",
+    "Icon": "nvyao_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 10.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10118,
+    "Name": "荆棘乱舞",
+    "Icon": "nvyao_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 150,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017,
+      10213
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10119,
+    "Name": "能量光球",
+    "Icon": "nvyao_4",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 9.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 16.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 180,
+    "Crit": 1.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        5
+      ]
+    ],
+    "HitEffect": [
+      10035
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10120,
+    "Name": "荆棘圆舞阵",
+    "Icon": "nvyao_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10121,
+    "Name": "普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 1,
+    "CDTime": 1.0,
+    "AttackDist": 10.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": 1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 10.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        9,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10122,
+    "Name": "念力打击",
+    "Icon": "nianshushi_1",
+    "SkillThrowType": 5,
+    "CDTime": 4.0,
+    "AttackDist": 4.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 80,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10123,
+    "Name": "能量光束",
+    "Icon": "nianshushi_2",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 8.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        2,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10124,
+    "Name": "时间缓慢",
+    "Icon": "nianshushi_3",
+    "SkillThrowType": 3,
+    "CDTime": 1.0,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 10.5,
+    "Attack": 160,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10125,
+    "Name": "重力控制",
+    "Icon": "nianshushi_4",
+    "SkillThrowType": 3,
+    "CDTime": 4.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 230,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 3,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10035
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 10126,
+    "Name": "波动明王阵",
+    "Icon": "nianshushi_5",
+    "SkillThrowType": 5,
+    "CDTime": 1.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 9.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 400,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20001,
+    "Name": "兽人战士普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10030
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20002,
+    "Name": "鳄鱼王普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 3.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        9
+      ]
+    ],
+    "HitEffect": [
+      10103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20003,
+    "Name": "鳄鱼王攻击技能",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 2.1,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.5,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20004,
+    "Name": "鳄鱼王普通技能",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20005,
+    "Name": "兽人头领技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 18.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 500,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20006,
+    "Name": "兽人头领技能攻击1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 180,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20007,
+    "Name": "狼王普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 3.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        16,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20008,
+    "Name": "狼王攻击技能",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 2.1,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20009,
+    "Name": "狼王霸体技能",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15008
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20010,
+    "Name": "小田鼠普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15008
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20011,
+    "Name": "野猪普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20012,
+    "Name": "松鼠普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 6.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20013,
+    "Name": "松鼠技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20014,
+    "Name": "哥布林普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20015,
+    "Name": "鼠王普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20016,
+    "Name": "鼠王攻击技能1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.5,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 180,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20017,
+    "Name": "鼠王技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 15.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 3.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.0,
+    "Attack": 500,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20018,
+    "Name": "树怪普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22
+      ]
+    ],
+    "HitEffect": [
+      15023
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20019,
+    "Name": "树怪技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15023
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20020,
+    "Name": "食人花普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 8.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20021,
+    "Name": "树魔普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      15028
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20022,
+    "Name": "树魔技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20023,
+    "Name": "丛林巨人普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20024,
+    "Name": "丛林巨人攻击技能1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 4.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 180,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20025,
+    "Name": "丛林巨人王技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 18.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 500,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20026,
+    "Name": "野猪人普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20027,
+    "Name": "野猪人技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 4.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20028,
+    "Name": "野猪人技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 9.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20029,
+    "Name": "兽人战士技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 4.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20030,
+    "Name": "兽人弓箭手普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      15040
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20031,
+    "Name": "兽人弓箭手技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20032,
+    "Name": "兽人弓箭手技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 9.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.5,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20033,
+    "Name": "兽人头领技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 3.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20034,
+    "Name": "猪人头领普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20035,
+    "Name": "猪人头领攻击技能1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 4.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 3.5,
+    "Attack": 180,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20036,
+    "Name": "猪人头领技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 18.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 500,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20037,
+    "Name": "瘴气羽蛇普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15023
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20038,
+    "Name": "毒蛙普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 8.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20039,
+    "Name": "飞蟹普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20040,
+    "Name": "河童普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20041,
+    "Name": "河童技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10070
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20042,
+    "Name": "鳍冠海象普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20043,
+    "Name": "鳍冠海象技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 4.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 3.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20044,
+    "Name": "火巨人普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 3.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20045,
+    "Name": "火巨人攻击技能1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 2.1,
+    "AttackDist": 4.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 3.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20046,
+    "Name": "火巨人技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20047,
+    "Name": "冰巨人普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 3.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0,
+        2
+      ]
+    ],
+    "HitEffect": [
+      15068
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20048,
+    "Name": "冰巨人攻击技能1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 2.1,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        21
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20049,
+    "Name": "冰巨人技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20050,
+    "Name": "石巨人普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20051,
+    "Name": "石巨人攻击技能1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.7,
+    "Attack": 180,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20052,
+    "Name": "石巨人技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 18.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 500,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20053,
+    "Name": "青蛙普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20054,
+    "Name": "环尾猴普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 8.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20055,
+    "Name": "松鼠头领普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20056,
+    "Name": "松鼠头领技能攻击",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20057,
+    "Name": "五彩虫普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22
+      ]
+    ],
+    "HitEffect": [
+      15080
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20058,
+    "Name": "五彩虫普通攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 6.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20059,
+    "Name": "音波怪普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20060,
+    "Name": "石角虫普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20061,
+    "Name": "蚁后普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 3.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      15089
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20062,
+    "Name": "蚁后攻击技能1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 2.1,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.7,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20063,
+    "Name": "蚁后技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20064,
+    "Name": "食花虫普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20065,
+    "Name": "食花兽普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 3.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20066,
+    "Name": "食花兽攻击技能1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 2.1,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.7,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20067,
+    "Name": "食花兽技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 4.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20068,
+    "Name": "古钟魔普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 0.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20069,
+    "Name": "古钟魔技能攻击1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 3.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20070,
+    "Name": "古钟魔技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 4.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20071,
+    "Name": "木乃伊普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20072,
+    "Name": "木乃伊技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20073,
+    "Name": "独角鳄普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20074,
+    "Name": "独角鳄技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20075,
+    "Name": "机甲守卫神普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 3.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20076,
+    "Name": "机甲守卫神攻击技能1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 2.1,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20077,
+    "Name": "机甲守卫神技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.8,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20078,
+    "Name": "雷电虫普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 8.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20079,
+    "Name": "护卫灵普通技能",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 3.0,
+    "AttackDist": 4.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20080,
+    "Name": "护卫灵攻击技能1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 2.1,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 2,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 6.0,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20081,
+    "Name": "护卫灵技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 10.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 10.0,
+    "AttackAngle": 180.0,
+    "Warning": 9.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20082,
+    "Name": "白雾怪普通攻击",
+    "Icon": "0",
+    "SkillThrowType": 0,
+    "CDTime": 0.0,
+    "AttackDist": 8.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20083,
+    "Name": "浮游怪普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20084,
+    "Name": "浮游怪技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20085,
+    "Name": "虚空恐魔普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20086,
+    "Name": "虚空恐魔技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20087,
+    "Name": "虚空恐魔技能攻击3",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20088,
+    "Name": "黑暗守卫普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20089,
+    "Name": "黑暗恶灵普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20090,
+    "Name": "黑暗恶灵技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20091,
+    "Name": "黑暗恶灵技能攻击3",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20092,
+    "Name": "黑暗魔灵普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20093,
+    "Name": "黑暗魔灵技能攻击3",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 10.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20094,
+    "Name": "黑暗魔灵技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 20.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15136
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20095,
+    "Name": "罪恶之眼普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20096,
+    "Name": "罪恶之眼技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 4.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20097,
+    "Name": "渊魂怪普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20098,
+    "Name": "渊魂怪技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20099,
+    "Name": "天渊魔女普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20100,
+    "Name": "天渊魔女技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 6.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 6.0,
+    "AttackAngle": 180.0,
+    "Warning": 5.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20101,
+    "Name": "天渊魔女普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15108
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20102,
+    "Name": "雷精普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20103,
+    "Name": "雷精技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 1,
+    "EffectTypesBySegment": [
+      [
+        0
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20104,
+    "Name": "暗魔BOSS普通攻击1",
+    "Icon": "0",
+    "SkillThrowType": 2,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        4
+      ]
+    ],
+    "HitEffect": [
+      15103
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20105,
+    "Name": "暗魔BOSS技能攻击1",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20106,
+    "Name": "暗魔BOSS技能攻击2",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        7,
+        16
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20107,
+    "Name": "暗魔BOSS技能攻击3",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 5.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        9
+      ]
+    ],
+    "HitEffect": [
+      15147
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20108,
+    "Name": "暗魔BOSS技能攻击4",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 7.0,
+    "AttackDist": 8.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 8.0,
+    "AttackAngle": 180.0,
+    "Warning": 7.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        19,
+        7
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": null,
+    "CastEffectTimings": null,
+    "ID": 20109,
+    "Name": "暗魔BOSS技能攻击5",
+    "Icon": "0",
+    "SkillThrowType": 4,
+    "CDTime": 7.0,
+    "AttackDist": 5.0,
+    "HitType": 1,
+    "SkillHitSharpType": 1,
+    "HitNum": -1,
+    "AttackRadius": 5.0,
+    "AttackAngle": 180.0,
+    "Warning": 4.5,
+    "Attack": 100,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 0
+  },
+  {
+    "SkillType": 2,
+    "EffectTypesBySegment": [
+      [
+        0,
+        22
+      ]
+    ],
+    "HitEffect": [
+      10017
+    ],
+    "SegTimings": [
+      0.45
+    ],
+    "CastEffectTimings": null,
+    "ID": 10201,
+    "Name": "魔法球",
+    "Icon": "cike_2",
+    "SkillThrowType": 3,
+    "CDTime": 5.0,
+    "AttackDist": 15.0,
+    "HitType": 0,
+    "SkillHitSharpType": 0,
+    "HitNum": -1,
+    "AttackRadius": 0.0,
+    "AttackAngle": 0.0,
+    "Warning": 20.0,
+    "Attack": 120,
+    "Crit": 0.0,
+    "BuffID": [],
+    "BackDis": 0.0,
+    "BackTime": 0.0,
+    "AriHeight": 0.0,
+    "AriTime": 0.0,
+    "AttackEffects": [],
+    "SegCount": 1,
+    "DeliveryType": 1,
+    "ProjectileId": 1
+  }
+]

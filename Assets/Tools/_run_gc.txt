@@ -1,0 +1,5 @@
+[CHECK] 鎸夐挳鐗囨鍛戒腑 = 1
+[CHECK] 鏂规硶绛惧悕鍛戒腑 = 1
+[INFO] 鍒犻櫎鍖洪棿 = 琛?775 ~ 798 (1-based)锛屽叡 24 琛?
+[OK] 澶嶉獙1 閫氳繃锛欸enerateCode 宸叉竻闄わ紝CountEdges/GenerateMarkdown 淇濈暀
+[INFO] 鍒犻櫎鍚庤鏁?= 799

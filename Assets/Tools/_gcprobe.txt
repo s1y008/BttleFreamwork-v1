@@ -1,0 +1,54 @@
+# GcAllocProbe 窗口采样（无 Console 输出）
+# 采样源=ProfilerRecorder(GC.Alloc) 窗口=120帧
+win=1	frames=120	total=31533400	mean=262778	peak=24865800	grand=31533400
+win=2	frames=120	total=1337000	mean=11141	peak=13800	grand=32870400
+win=3	frames=120	total=1353400	mean=11278	peak=13900	grand=34223800
+# 场景战斗单位数=0
+# 标定 Physics.OverlapSphere x2000 (半径5) : 0 B/次
+# 标定 空循环底噪 x2000 : 0 B/次
+win=4	frames=120	total=1523200	mean=12693	peak=187800	grand=35747000
+win=5	frames=120	total=1337700	mean=11147	peak=16500	grand=37084700
+win=6	frames=120	total=1347800	mean=11231	peak=14500	grand=38432500
+win=7	frames=120	total=1431500	mean=11929	peak=54700	grand=39864000
+win=8	frames=120	total=1350000	mean=11250	peak=14900	grand=41214000
+win=9	frames=120	total=1345900	mean=11215	peak=14000	grand=42559900
+win=10	frames=120	total=1367600	mean=11396	peak=36700	grand=43927500
+win=11	frames=120	total=1326000	mean=11050	peak=16000	grand=45253500
+win=12	frames=120	total=1398400	mean=11653	peak=39700	grand=46651900
+win=13	frames=120	total=1361600	mean=11346	peak=23500	grand=48013500
+win=14	frames=120	total=1385000	mean=11541	peak=36800	grand=49398500
+win=15	frames=120	total=1365600	mean=11380	peak=17600	grand=50764100
+win=16	frames=120	total=1338200	mean=11151	peak=14200	grand=52102300
+win=17	frames=120	total=1396800	mean=11640	peak=41900	grand=53499100
+win=18	frames=120	total=1443900	mean=12032	peak=75300	grand=54943000
+win=19	frames=120	total=1372200	mean=11435	peak=18600	grand=56315200
+win=20	frames=120	total=1347600	mean=11230	peak=15200	grand=57662800
+win=21	frames=120	total=1363700	mean=11364	peak=17100	grand=59026500
+win=22	frames=120	total=1348700	mean=11239	peak=20800	grand=60375200
+win=23	frames=120	total=1362200	mean=11351	peak=24500	grand=61737400
+win=24	frames=120	total=1352300	mean=11269	peak=16900	grand=63089700
+win=25	frames=120	total=1359500	mean=11329	peak=15500	grand=64449200
+win=26	frames=120	total=1351500	mean=11262	peak=14000	grand=65800700
+win=27	frames=120	total=1349000	mean=11241	peak=14800	grand=67149700
+win=28	frames=120	total=1357100	mean=11309	peak=16000	grand=68506800
+win=29	frames=120	total=1366800	mean=11390	peak=17200	grand=69873600
+win=30	frames=120	total=1358100	mean=11317	peak=15700	grand=71231700
+win=31	frames=120	total=1353000	mean=11275	peak=14400	grand=72584700
+win=32	frames=120	total=1429900	mean=11915	peak=60600	grand=74014600
+win=33	frames=120	total=1355400	mean=11295	peak=36800	grand=75370000
+win=34	frames=120	total=1341000	mean=11175	peak=16100	grand=76711000
+win=35	frames=120	total=1375600	mean=11463	peak=16900	grand=78086600
+win=36	frames=120	total=1563500	mean=13029	peak=41400	grand=79650100
+win=37	frames=120	total=1530900	mean=12757	peak=35700	grand=81181000
+win=38	frames=120	total=1402800	mean=11690	peak=25600	grand=82583800
+win=39	frames=120	total=1403300	mean=11694	peak=47000	grand=83987100
+win=40	frames=120	total=1424600	mean=11871	peak=29000	grand=85411700
+win=41	frames=120	total=1354500	mean=11287	peak=14800	grand=86766200
+win=42	frames=120	total=1356500	mean=11304	peak=14200	grand=88122700
+win=43	frames=120	total=1363100	mean=11359	peak=15000	grand=89485800
+win=44	frames=120	total=1336200	mean=11135	peak=13300	grand=90822000
+win=45	frames=120	total=1358200	mean=11318	peak=15000	grand=92180200
+win=46	frames=120	total=1342600	mean=11188	peak=17000	grand=93522800
+win=47	frames=120	total=1376200	mean=11468	peak=47900	grand=94899000
+win=48	frames=120	total=1350800	mean=11256	peak=14000	grand=96249800
+win=49	frames=120	total=1372200	mean=11435	peak=21200	grand=97622000

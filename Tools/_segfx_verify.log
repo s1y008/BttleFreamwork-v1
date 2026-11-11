@@ -1,0 +1,83 @@
+boot
+menu executed: Tools/BattleFramework/Skill Editor
+windows found: 1
+skill 10002 = 天诛 seg=3 groups=3
+sel methods: add_OnSelectionChanged(Action) remove_OnSelectionChanged(Action) add_SelectionChanged(Action`1) remove_SelectionChanged(Action`1) add_SelectionConfirmed(Action`1) remove_SelectionConfirmed(Action`1) set_SupportsMultiSelect(Boolean) get_Item(Int32) Add(OdinMenuItem) Contains(OdinMenuItem) IndexOf(OdinMenuItem) Remove(OdinMenuItem) RemoveAt(Int32) Equals(Object) 
+item methods: set_IsVisible(Boolean) set_Icon(Texture) set_IconSelected(Texture) set_IsSelectable(Boolean) set_IsEnabled(Boolean) set_Name(String) set_SearchString(String) set_Style(OdinMenuStyle) Select(Boolean) GetChildMenuItemsRecursive(Boolean) SetObjectInstance(Object) SetObjectInstances(IList) set_Value(Object) set_Toggled(Boolean) set_IconGetter(Func`1) DrawMenuItem(Int32) Equals(Object) 
+tree item matched: 10002 天诛  [3段]
+selection.Add(item) OK
+item.Select(true) OK
+tree items matched: 1
+catalog Count=23
+opt(0) = 0 立即伤害  stub=False
+opt(2) = 2 添加Buff  stub=False
+opt(5) = 5 浮空（未实现）  stub=True
+opt(22) = 22 受击表现  stub=False
+Focus + Repaint
+DONE
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(26,9): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(27,23): error CS0246: The type or namespace name 'UnitMountEntry' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(27,45): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(39,9): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(39,41): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(40,16): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(41,47): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(42,52): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(47,16): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(48,16): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(49,37): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(56,25): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(58,49): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(61,20): error CS0103: The name 'SkillEditorModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(62,74): error CS0103: The name 'SkillEditorModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(64,9): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(64,63): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(65,16): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(69,36): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(73,36): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(77,36): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(85,16): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(37,9): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(38,23): error CS0246: The type or namespace name 'UnitMountEntry' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(38,45): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(50,9): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(50,41): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(51,16): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(52,47): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(53,52): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(58,16): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(59,16): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(60,37): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(67,25): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(69,49): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(72,20): error CS0103: The name 'SkillEditorModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(73,74): error CS0103: The name 'SkillEditorModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(75,9): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(75,63): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(76,16): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(80,36): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(84,36): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(88,36): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(96,16): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(37,9): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(38,23): error CS0246: The type or namespace name 'UnitMountEntry' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(38,45): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(50,9): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(50,41): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(51,16): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(52,47): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(53,52): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(58,16): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(59,16): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(60,37): error CS0246: The type or namespace name 'SkillUnitMountPanel' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(67,25): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(69,49): error CS0103: The name 'SkillUnitMountModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(72,20): error CS0103: The name 'SkillEditorModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(73,74): error CS0103: The name 'SkillEditorModel' does not exist in the current context
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(75,9): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(75,63): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(76,16): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(80,36): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(84,36): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(88,36): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
+[Error] Assets\Editor\SkillEditor\_TempSmokeTest.cs(96,16): error CS0246: The type or namespace name 'SkillCreateWizard' could not be found (are you missing a using directive or an assembly reference?)
